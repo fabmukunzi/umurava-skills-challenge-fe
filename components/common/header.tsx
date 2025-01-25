@@ -1,0 +1,109 @@
+'use client';
+
+import { Fragment, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import { UmuravaLogo } from '@/lib/images';
+import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
+import clsx from 'clsx';
+
+const HeaderComponent = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const navbarItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Challenge & Hackthons', href: '/challenges' },
+    { name: 'For Educational Institutions', href: '/#' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact Us', href: '/contact' },
+  ];
+
+  return (
+    <Fragment>
+      <header className="w-full fixed top-0 left-0 bg-white z-50">
+        <div className="mx-auto flex items-center justify-between md:px-6 lg:px-14 2xl:px-20 py-4">
+          <div className="flex items-center">
+            <a href="/">
+              <Image src={UmuravaLogo} alt="Umurava Logo" width={180} />
+            </a>
+          </div>
+
+          <nav className="hidden lg:flex flex-1 justify-center space-x-6">
+            {navbarItems.map((item, index) => {
+              const isActive = pathname === item.href;
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  className={`transition-colors ${
+                    isActive
+                      ? 'text-primary'
+                      : 'text-black hover:text-primary'
+                  }`}
+                >
+                  {item.name}
+                </a>
+              );
+            })}
+          </nav>
+
+          <div className="hidden lg:block">
+            <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
+              Join the Program
+            </Button>
+          </div>
+
+          <div className="block lg:hidden">
+            <div
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-black focus:outline-none border p-2 rounded-md mr-4"
+            >
+              {isMenuOpen ? (
+                <X size={24} className="text-primary" />
+              ) : (
+                <Menu className="text-primary" size={24} />
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={clsx(
+            'lg:hidden bg-white shadow-lg overflow-hidden transition-all duration-500 ease-in-out',
+            {
+              'max-h-screen opacity-100': isMenuOpen,
+              'max-h-0 opacity-0': !isMenuOpen,
+            }
+          )}
+        >
+          <nav className="flex flex-col space-y-4 px-6 py-4">
+            {navbarItems.map((item, index) => {
+              const isActive = pathname === item.href;
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  className={`font-medium transition-colors ${
+                    isActive ? 'text-primary' : 'text-black hover:text-primary'
+                  }`}
+                >
+                  {item.name}
+                </a>
+              );
+            })}
+          </nav>
+          <div className="px-6 pb-4">
+            <Button className="w-full bg-[#041738] text-white">
+              Join the Program
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <div className="h-[80px] lg:h-[90px]"></div>
+    </Fragment>
+  );
+};
+
+export default HeaderComponent;
