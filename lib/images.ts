@@ -14,6 +14,11 @@ import UmuravaWhiteLogo from '@/assets/umurava-white-logo.png';
 import SokofundLogo from '@/assets/sokofund-logo.png';
 import SokofundDashboard from '@/assets/sokofund-dashboard.svg';
 import BackgroundSVG2 from '@/assets/background-svg-2.png';
+import WhiteSchoolCase from '@/assets/white-school-case.svg';
+import DiplomaIcon from '@/assets/diploma-icon.svg';
+import GrowthIcon from '@/assets/growth-icon.svg';
+import MedalIcon from '@/assets/medal-icon.svg';
+import ChallengesDashboardView from '@/assets/challenges-dashboard-view.png'
 
 export {
   UmuravaLogo,
@@ -32,4 +37,9 @@ export {
   SokofundDashboard,
   SokofundLogo,
   BackgroundSVG2,
+  WhiteSchoolCase,
+  DiplomaIcon,
+  MedalIcon,
+  GrowthIcon,
+  ChallengesDashboardView,
 };

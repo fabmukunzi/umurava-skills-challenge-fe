@@ -15,7 +15,7 @@ const Projectcard: FC<{ project: IProject }> = ({ project }) => {
   return (
     <Card className="text-black">
       <CardContent className="p-4">
-        <div className="relative bg-primary h-52 w-[20rem] flex items-center justify-center rounded-lg">
+        <div className="relative bg-primary h-48 flex items-center justify-center rounded-lg">
           <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           <Badge
             variant="secondary"
@@ -24,24 +24,24 @@ const Projectcard: FC<{ project: IProject }> = ({ project }) => {
             Open
           </Badge>
         </div>
-        <h1 className="font-semibold md:text-lg my-5 text-base">
+        <h1 className="font-semibold md:text-lg my-5 text-base truncate">
           {project.title}
         </h1>
-        <p className="font-semibold text-sm mb-1">Skills Needed:</p>
+        <p className="font-semibold text-[13px] mb-1">Skills Needed:</p>
         <div className="flex gap-2">
           {project.skills?.map((skill) => (
-            <Badge className="rounded-xl py-1.5 max-w-screen-sm:text-[10px]" variant="outline" key={skill}>
+            <Badge className="rounded-xl py-1.5 max-w-screen-sm:text-[10px] text-[10.5px]" variant="outline" key={skill}>
               {skill}
             </Badge>
           ))}
         </div>
-        <p className="font-semibold text-sm my-3">
+        <p className="font-semibold text-[13px] my-3">
           Seniority Level:{' '}
           <span className="font-normal text-primary_grey">
             ({project.seniorityLevel.join(',')})
           </span>
         </p>
-        <p className="font-semibold text-sm">
+        <p className="font-semibold text-[13px]">
           Timeline:{' '}
           <span className="font-normal text-primary_grey">
             {project.duration}
