@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
-import '../assets/css/globals.css'
-import '../assets/css/embla.css';
+import HeaderComponent from '@/components/common/header';
+import FooterComponent from '@/components/common/footer';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
@@ -20,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${workSans.className} text-primary antialiased`}>
-        {children}
+        <HeaderComponent />
+        <main className="overflow-x-hidden">{children}</main>
+        <FooterComponent />
       </body>
     </html>
   );

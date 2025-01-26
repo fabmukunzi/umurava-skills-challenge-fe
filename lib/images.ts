@@ -9,7 +9,11 @@ import YoutubeIcon from '@/assets/youtube-icon.svg';
 import UnlockCareer from '@/assets/unlock-career.png';
 import BackgroundSVG from '@/assets/rounde-bg-svg.png';
 import LoginScreenimage from '@/assets/login-screen.svg';
-import TalentChallengeDashboardImage from '@/assets/talent-challenge-dashboard.svg'
+import TalentChallengeDashboardImage from '@/assets/talent-challenge-dashboard.svg';
+import UmuravaWhiteLogo from '@/assets/umurava-white-logo.png';
+import SokofundLogo from '@/assets/sokofund-logo.png';
+import SokofundDashboard from '@/assets/sokofund-dashboard.svg';
+import BackgroundSVG2 from '@/assets/background-svg-2.png';
 
 export {
   UmuravaLogo,
@@ -23,5 +27,9 @@ export {
   UnlockCareer,
   BackgroundSVG,
   TalentChallengeDashboardImage,
-  LoginScreenimage
+  LoginScreenimage,
+  UmuravaWhiteLogo,
+  SokofundDashboard,
+  SokofundLogo,
+  BackgroundSVG2,
 };
