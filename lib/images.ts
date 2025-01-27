@@ -19,6 +19,7 @@ import DiplomaIcon from '@/assets/diploma-icon.svg';
 import GrowthIcon from '@/assets/growth-icon.svg';
 import MedalIcon from '@/assets/medal-icon.svg';
 import ChallengesDashboardView from '@/assets/challenges-dashboard-view.png'
+import ChallengesDashboardView2 from '@/assets/challenges-hackathons.svg'
 
 export {
   UmuravaLogo,
@@ -42,4 +43,5 @@ export {
   MedalIcon,
   GrowthIcon,
   ChallengesDashboardView,
+  ChallengesDashboardView2
 };

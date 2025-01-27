@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { IAdvert } from '@/lib/types/project';
 import { ArrowRight } from 'lucide-react';
 

@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge';
 import { EmblaOptionsType } from 'embla-carousel';
-import Carousel from '../common/carousel';
+import Carousel from '@/components/common/carousel';
 import { SokofundDashboard, SokofundLogo } from '@/lib/images';
-import AdvertCard from '../common/advert-card';
+import AdvertCard from '@/components/common/homepage/advert-card';
 
 const SkillsCovered = () => {
   const skills = [

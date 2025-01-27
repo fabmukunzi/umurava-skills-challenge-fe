@@ -7,17 +7,11 @@ import { UmuravaLogo } from '@/lib/images';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
+import { homepageRoutes } from '@/lib/routes';
 
 const HeaderComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const navbarItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Challenge & Hackthons', href: '/challenges' },
-    { name: 'For Educational Institutions', href: '/#' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact Us', href: '/contact' },
-  ];
 
   return (
     <Fragment>
@@ -30,19 +24,19 @@ const HeaderComponent = () => {
           </div>
 
           <nav className="hidden lg:flex flex-1 justify-center space-x-6">
-            {navbarItems.map((item, index) => {
-              const isActive = pathname === item.href;
+            {homepageRoutes.map((item, index) => {
+              const isActive = pathname === item.path;
               return (
                 <a
                   key={index}
-                  href={item.href}
+                  href={item.path}
                   className={`transition-colors ${
                     isActive
                       ? 'text-primary'
                       : 'text-black hover:text-primary'
                   }`}
                 >
-                  {item.name}
+                  {item.label}
                 </a>
               );
             })}
@@ -78,17 +72,17 @@ const HeaderComponent = () => {
           )}
         >
           <nav className="flex flex-col space-y-4 px-6 py-4">
-            {navbarItems.map((item, index) => {
-              const isActive = pathname === item.href;
+            {homepageRoutes.map((item, index) => {
+              const isActive = pathname === item.path;
               return (
                 <a
                   key={index}
-                  href={item.href}
+                  href={item.path}
                   className={`font-medium transition-colors ${
                     isActive ? 'text-primary' : 'text-black hover:text-primary'
                   }`}
                 >
-                  {item.name}
+                  {item.label}
                 </a>
               );
             })}

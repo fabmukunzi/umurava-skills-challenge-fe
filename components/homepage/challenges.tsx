@@ -1,5 +1,5 @@
 import { IProject } from '@/lib/types/project';
-import Projectcard from '../common/project-card';
+import Projectcard from '../common/homepage/project-card';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 

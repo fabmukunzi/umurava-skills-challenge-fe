@@ -1,5 +1,5 @@
 import Carousel from '@/components/common/carousel';
-import TestimonialCard from '@/components/common/testimonial-card';
+import TestimonialCard from '@/components/common/homepage/testimonial-card';
 import { EmblaOptionsType } from 'embla-carousel';
 
 const TestimonialSection = () => {

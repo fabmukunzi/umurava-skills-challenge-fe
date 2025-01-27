@@ -1,13 +1,9 @@
 import { FC } from 'react';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { UmuravaWhiteLogo } from '@/lib/images';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
 import Link from 'next/link';
 import { IProject } from '@/lib/types/project';
 
@@ -30,7 +26,11 @@ const Projectcard: FC<{ project: IProject }> = ({ project }) => {
         <p className="font-semibold text-[13px] mb-1">Skills Needed:</p>
         <div className="flex gap-2">
           {project.skills?.map((skill) => (
-            <Badge className="rounded-xl py-1.5 max-w-screen-sm:text-[10px] text-[10.5px]" variant="outline" key={skill}>
+            <Badge
+              className="rounded-xl py-1.5 max-w-screen-sm:text-[10px] text-[10.5px]"
+              variant="outline"
+              key={skill}
+            >
               {skill}
             </Badge>
           ))}
@@ -50,7 +50,7 @@ const Projectcard: FC<{ project: IProject }> = ({ project }) => {
       </CardContent>
       <CardFooter className="border-t items-center px-5 py-3">
         <Link href={`/challenges/${project.id}`}>
-          <Button size='sm'>View project</Button>
+          <Button size="sm">View Challenge</Button>
         </Link>
       </CardFooter>
     </Card>
