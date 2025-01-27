@@ -11,6 +11,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { homepageRoutes } from '@/lib/routes';
 
 const FooterComponent = () => {
   const socialLinks = [
@@ -46,7 +47,11 @@ const FooterComponent = () => {
               href={socialLink.href}
               key={index}
             >
-              <Image className='object-fit h-4 w-4 mx-auto' src={socialLink.icon} alt={socialLink.name} />
+              <Image
+                className="object-fit h-4 w-4 mx-auto"
+                src={socialLink.icon}
+                alt={socialLink.name}
+              />
             </Link>
           ))}
         </div>
@@ -71,14 +76,14 @@ const FooterComponent = () => {
         </div>
         <div className="md:w-1/3 flex flex-col gap-4">
           <h1 className="text-white font-bold text-2xl">Quick Links</h1>
-          <a className="block" href="/">
+          <a className="block" href={homepageRoutes.home.path}>
             Home
           </a>
-          <a className="block" href="/program">
+          <a className="block" href={homepageRoutes.challengeHackathons.path}>
             Program
           </a>
-          <a href="/about">About</a>
-          <a className="block" href="/contact">
+          <a href={homepageRoutes.about.path}>About</a>
+          <a className="block" href={homepageRoutes.contact.path}>
             Contact Us
           </a>
         </div>
@@ -87,16 +92,22 @@ const FooterComponent = () => {
             Join our newsletter to keep up to date with us!
           </h1>
           <div className="relative">
-            <Input className="h-14" placeholder="Email" />
-            <Button size="lg" className="absolute right-2 top-1.5">
+            <Input className="md:h-auto lg:h-14 h-14" placeholder="Email" />
+            <Button
+              size="lg"
+              className="absolute right-2 lg:top-1.5 top-1.5 md:top-[0.126rem] md:px-2 lg:px-7 px-7 md:h-8 lg:h-11 md:text-sm lg:text-base md:font-normal lg:font-semibold font-semibold"
+            >
               Subscribe
             </Button>
           </div>
         </div>
       </div>
       <div className="flex md:flex-row flex-col-reverse gap-4 text-center justify-between pt-8">
-        <h1 className='text-sm'>Copyright &copy; All Rights Reserved SawaPay {new Date().getFullYear()}.</h1>
-        <div className='text-sm'>
+        <h1 className="text-sm">
+          Copyright &copy; All Rights Reserved SawaPay{' '}
+          {new Date().getFullYear()}.
+        </h1>
+        <div className="text-sm">
           <a href="/privacy">Privacy Policy</a> |
           <a href="/terms"> Terms & Conditions</a>
         </div>

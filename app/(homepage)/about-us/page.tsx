@@ -51,8 +51,8 @@ const AboutPage = () => {
         <video
           className="rounded-xl lg:w-[500px] h-[400px] object-cover"
           src="https://res.cloudinary.com/dagurahkl/video/upload/v1737999966/highlights-video_yaztbf.mp4"
-          controls
-          // autoPlay
+          // controls
+          autoPlay
         ></video>
       </div>
       <div className="w-11/12 mx-auto">
@@ -62,7 +62,7 @@ const AboutPage = () => {
           </h1>
         </div>
         <div className="grid md:grid-cols-2 gap-6 md:w-11/12 mx-auto">
-          {solutions.map((experience, index) => (
+          {solutions.map((solution, index) => (
             <Card
               key={index}
               className={`${
@@ -72,17 +72,17 @@ const AboutPage = () => {
               <CardHeader>
                 <CardTitle>
                   <div className="p-4 bg-white rounded-md w-fit">
-                    <Image src={SchoolCaseIcon} alt="Experience icon" />
+                    <Image src={SchoolCaseIcon} alt="solution icon" />
                   </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <h1 className="font-semibold md:text-2xl text-xl">
-                  {experience.title}
+                  {solution.title}
                 </h1>
               </CardContent>
               <CardFooter>
-                <h1>{experience.description}</h1>
+                <h1>{solution.description}</h1>
               </CardFooter>
             </Card>
           ))}
@@ -108,7 +108,7 @@ const AboutPage = () => {
           <Button className="mt-8 px-6">Get Started</Button>
         </div>
         <Image
-          className="object-fill h-[25rem] w-[30rem] md:-ml-10 -ml-5"
+          className="object-fill h-[25rem] w-[30rem] md:-ml-10"
           src={ChallengesDashboardView2}
           alt="Dashboard View"
         />

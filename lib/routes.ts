@@ -1,27 +1,27 @@
-export const homepageRoutes = [
-  {
+export const homepageRoutes = {
+  home: {
     label: 'Home',
     path: '/',
     name: 'home',
   },
-  {
-    label: 'Challenge & Hackthons',
+  challengeHackathons: {
+    label: 'Challenge & Hackathons',
     path: '/challenges',
-    name: 'challenge-hackthons',
+    name: 'challenge-hackathons',
   },
-  {
-    label: 'For Learning Instistutions',
+  learningInstitutions: {
+    label: 'For Learning Institutions',
     path: '/learning-institutions',
     name: 'learning-institutions',
   },
-  {
+  about: {
     label: 'About Us',
     path: '/about-us',
     name: 'about',
   },
-  {
-    label: 'Contact Us ',
+  contact: {
+    label: 'Contact Us',
     path: '/contact-us',
     name: 'contact',
   },
-];
+};

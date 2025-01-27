@@ -53,7 +53,7 @@ const ParticipationBenefits = () => {
         </p>
       </div>
 
-      <div className="md:flex gap-5 max-w-screen-md:flex-wrap items-center justify-center mx-2">
+      <div className="lg:flex gap-5 max-w-screen-md:flex-wrap items-center justify-center mx-2">
         <div className="grid md:grid-cols-2 gap-6 md:w-11/12 lg:w-4/5 mx-auto">
           {benefits.map((benefit, index) => (
             <Card

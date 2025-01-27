@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { HomeImage } from '@/lib/images';
+import Link from 'next/link';
+import { homepageRoutes } from '@/lib/routes';
 
 const HeroSection = () => {
   return (
@@ -14,12 +16,14 @@ const HeroSection = () => {
           working on Hands-on projects & hackathons from various businesses &
           organizations.
         </p>
-        <Button
-          size="lg"
-          className="px-8 lg:px-12 py-5 lg:py-7 font-medium text-sm lg:text-lg"
-        >
-          Get Started
-        </Button>
+        <Link href={homepageRoutes.challengeHackathons.path}>
+          <Button
+            size="lg"
+            className="px-8 lg:px-12 py-5 lg:py-7 font-medium text-sm lg:text-lg"
+          >
+            Get Started
+          </Button>
+        </Link>
       </div>
       <div className="w-full lg:w-1/2 flex justify-center">
         <Image

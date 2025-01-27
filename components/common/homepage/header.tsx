@@ -12,6 +12,19 @@ import { homepageRoutes } from '@/lib/routes';
 const HeaderComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const navbarItems = [
+    { name: homepageRoutes.home.label, path: homepageRoutes.home.path },
+    {
+      name: homepageRoutes.challengeHackathons.label,
+      path: homepageRoutes.challengeHackathons.path,
+    },
+    {
+      name: homepageRoutes.learningInstitutions.label,
+      path: homepageRoutes.learningInstitutions.path,
+    },
+    { name: homepageRoutes.about.label, path: homepageRoutes.about.path },
+    { name: homepageRoutes.contact.label, path: homepageRoutes.contact.path },
+  ];
 
   return (
     <Fragment>
@@ -24,19 +37,17 @@ const HeaderComponent = () => {
           </div>
 
           <nav className="hidden lg:flex flex-1 justify-center space-x-6">
-            {homepageRoutes.map((item, index) => {
+            {navbarItems.map((item, index) => {
               const isActive = pathname === item.path;
               return (
                 <a
                   key={index}
                   href={item.path}
                   className={`transition-colors ${
-                    isActive
-                      ? 'text-primary'
-                      : 'text-black hover:text-primary'
+                    isActive ? 'text-primary' : 'text-black hover:text-primary'
                   }`}
                 >
-                  {item.label}
+                  {item.name}
                 </a>
               );
             })}
@@ -72,7 +83,7 @@ const HeaderComponent = () => {
           )}
         >
           <nav className="flex flex-col space-y-4 px-6 py-4">
-            {homepageRoutes.map((item, index) => {
+            {navbarItems.map((item, index) => {
               const isActive = pathname === item.path;
               return (
                 <a
@@ -82,7 +93,7 @@ const HeaderComponent = () => {
                     isActive ? 'text-primary' : 'text-black hover:text-primary'
                   }`}
                 >
-                  {item.label}
+                  {item.name}
                 </a>
               );
             })}
