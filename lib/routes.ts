@@ -25,3 +25,21 @@ export const homepageRoutes = {
     name: 'contact',
   },
 };
+
+export const dashboardRoutes = {
+  dashboard: {
+    label: 'Dashboard',
+    path: '/dashboard',
+    name: 'dashboard',
+  },
+  challengeHackathons: {
+    label: 'Challenge & Hackathons',
+    path: '/dashboard/challenges',
+    name: 'challenge-hackathons',
+  },
+  community: {
+    label: 'Community',
+    path: '/community',
+    name: 'community',
+  },
+};

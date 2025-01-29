@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
-import '../assets/css/globals.css'
+import '../assets/css/globals.css';
 import '../assets/css/embla.css';
 
 const workSans = Work_Sans({

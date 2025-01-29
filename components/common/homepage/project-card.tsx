@@ -7,9 +7,13 @@ import { Badge } from '../../ui/badge';
 import Link from 'next/link';
 import { IProject } from '@/lib/types/project';
 
-const Projectcard: FC<{ project: IProject }> = ({ project }) => {
+const Projectcard: FC<{
+  project: IProject;
+  className?: string;
+  usage?: 'dashboard' | 'homepage';
+}> = ({ project, className, usage = 'homepage' }) => {
   return (
-    <Card className="text-black">
+    <Card className={`text-black ${className}`}>
       <CardContent className="p-4">
         <div className="relative bg-primary h-48 flex items-center justify-center rounded-lg">
           <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
@@ -49,7 +53,13 @@ const Projectcard: FC<{ project: IProject }> = ({ project }) => {
         </p>
       </CardContent>
       <CardFooter className="border-t items-center px-5 py-3">
-        <Link href={`/challenges/${project.id}`}>
+        <Link
+          href={`${
+            usage === 'homepage'
+              ? `/challenges/${project.id}`
+              : `/dashboard/challenges/${project.id}`
+          }`}
+        >
           <Button size="sm">View Challenge</Button>
         </Link>
       </CardFooter>

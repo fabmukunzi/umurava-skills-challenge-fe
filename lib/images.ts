@@ -32,6 +32,7 @@ import IgiheLogo from '@/assets/logos/IGIHE_LOGO 1.svg';
 import ViamoLogo from '@/assets/logos/EducationCollaborative 1 (1).svg';
 import LateriteLogo from '@/assets/logos/HiiL_Logo 1 (1).svg';
 import SokoFundLogo2 from '@/assets/logos/SokoFund 1.svg';
+import CollapsedUmuravaLogo from '@/assets/logos/umurava-collapsed-logo.svg';
 
 export {
   UmuravaLogo,
@@ -68,4 +69,5 @@ export {
   ViamoLogo,
   LateriteLogo,
   SokoFundLogo2,
+  CollapsedUmuravaLogo
 };
