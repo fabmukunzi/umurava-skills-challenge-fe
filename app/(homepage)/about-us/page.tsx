@@ -31,7 +31,7 @@ const AboutPage = () => {
   return (
     <div className="py-20">
       <div className="flex flex-col-reverse lg:flex-row justify-between md:w-4/5 w-11/12 mx-auto md:gap-32 gap-10 items-center">
-        <div>
+        <div className='lg:w-1/2'>
           <h1 className="text-xl md:text-2xl xl:text-3xl font-bold mb-6 md:-mt-10">
             Our Story
           </h1>
@@ -48,12 +48,12 @@ const AboutPage = () => {
             markets.
           </p>
         </div>
-        <video
-          className="rounded-xl lg:w-[500px] h-[400px] object-cover"
-          src="https://res.cloudinary.com/dagurahkl/video/upload/v1737999966/highlights-video_yaztbf.mp4"
+        <iframe
+          className="rounded-xl lg:w-1/2 w-full h-[400px] object-cover"
+          src={`https://www.youtube.com/embed/EXJPh16MoiU`}
           // controls
-          autoPlay
-        ></video>
+          // autoPlay
+        ></iframe>
       </div>
       <div className="w-11/12 mx-auto">
         <div className="text-center text-black py-20 xl:w-1/2 lg:w-2/3 mx-auto">

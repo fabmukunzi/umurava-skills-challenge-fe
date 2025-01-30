@@ -2,13 +2,13 @@
 'use client';
 
 import {
-  Calendar,
   Home,
   Inbox,
   Settings,
-  HelpCircle,
-  UserPlus,
   LogOut,
+  Gift,
+  Headset,
+  UserRoundPlus,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -40,14 +40,14 @@ const items = [
   {
     title: dashboardRoutes.community.label,
     url: dashboardRoutes.community.path,
-    icon: Calendar,
+    icon: UserRoundPlus,
   },
 ];
 
 const footerItems = [
   { title: 'Settings', icon: Settings, url: '/settings' },
-  { title: 'Help Center', icon: HelpCircle, url: '/help' },
-  { title: 'Refer Family & Friends', icon: UserPlus, url: '/refer' },
+  { title: 'Help Center', icon: Headset, url: '/help' },
+  { title: 'Refer Family & Friends', icon: Gift, url: '/refer' },
 ];
 
 export function AppSidebar() {

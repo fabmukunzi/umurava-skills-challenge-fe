@@ -18,7 +18,7 @@ const TalentStatisticsCard: FC<CardProps> = ({ title, value }) => {
             <p className="text-xl font-bold text-[#2e2e2e]">{value}</p>
           </div>
         </div>
-        <div className="bg-primary/20 text-primary flex items-center justify-center h-12 w-12 rounded-full">
+        <div className="bg-[#D0E0FC] text-primary flex items-center justify-center h-12 w-12 rounded-full">
           <SquareMenu size={20} />
         </div>
       </div>

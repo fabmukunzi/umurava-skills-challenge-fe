@@ -1,7 +1,7 @@
 import Projectcard from '@/components/common/homepage/project-card';
 import { Button } from '@/components/ui/button';
 import { IProject } from '@/lib/types/project';
-import { BookText } from 'lucide-react';
+import { BookText, Plus } from 'lucide-react';
 
 const ChallengesPage = () => {
   const baseData: IProject = {
@@ -24,25 +24,33 @@ const ChallengesPage = () => {
     deadline: new Date(new Date().getTime() + index * 24 * 60 * 60 * 1000),
   }));
   return (
-    <div>
-      <div className='my-4'>
-        <h1 className="text-2xl text-black font-semibold">
-          Challenges
-        </h1>
+    <div className="md:px-4">
+      <div className="my-4">
+        <h1 className="text-2xl text-black font-semibold">Challenges</h1>
         <p className="text-primary_grey">
           Join a challenge or a hackathon to gain valuable work experience,
         </p>
       </div>
-      <div className='my-10 flex flex-wrap gap-10'>
-        {Array(4).fill(null).map((_,index)=>(
-            <Button variant='outline' key={index}>
-                <BookText />
-                All Challenge
-                <span className='bg-primary rounded-3xl text-white h-5 w-5'>0</span>
-                </Button>
-        ))}
+      <div className="my-10 grid grid-cols-2 lg:grid-cols-5 flex-grow gap-5">
+        {Array(4)
+          .fill(null)
+          .map((_, index) => (
+            <Button
+              variant="outline"
+              className="bg-secondary_bg text-sm font-normal border-neutral-500 text-black 2xl:w-52"
+              key={index}
+            >
+              <BookText className="text-neutral-500" />
+              All Challenge
+              <span className="bg-neutral-300 rounded-3xl h-5 w-5">0</span>
+            </Button>
+          ))}
+        <Button size='lg' className='col-span-2 md:col-span-1' >
+          <Plus />
+          Create New Challenge
+        </Button>
       </div>
-      <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
         {challengesData.map((challenge) => (
           <Projectcard
             usage="dashboard"
