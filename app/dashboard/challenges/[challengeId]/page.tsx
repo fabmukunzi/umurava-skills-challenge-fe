@@ -1,30 +1,84 @@
+"use client"
+
 import CustomBreadcrumb from '@/components/common/bread-crumb';
-import { Card } from '@/components/ui/card';
+import KeyInstruction from '@/components/dashboard/key-instruction-card';
 import { UmuravaWhiteLogo } from '@/lib/images';
 import { dashboardRoutes } from '@/lib/routes';
 import Image from 'next/image';
+import ParticipantsCard from '@/components/dashboard/participants';
+import { Card } from '@/components/ui/card';
+import { Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
 const SingleChallengePage = () => {
   const project = {
-    id: '12345',
-    title: 'Payroll and HR Management System',
-    deadline: new Date(),
-    duration: '5 days',
-    moneyPrize: '500 USD',
-    skills: ['UI/UX Design', 'User Research', 'User Research'],
-    seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-    contactEmail: 'test1@example.com',
+    title: 'Design a Dashboard for Sokofund',
+    projectBrief:'A Fintech company that is developing a Digital Financial Platform designed for businesses and their workforce in Africa is partnering with Umurava to run a Skills Challenge for Product Design. This Fintech Company offers Payroll Management System to Employers and Embedded Financial services and products to Employees and Gig Workers across Africa.',
     description:
-      'A Fintech company that is developing a Digital Financial Platform designed for businesses and their workforce in Africa is partnering with Umurava to run a Skills Challenge for Product Design. This Fintech Company offers Payroll Management System to Employers and Embedded Financial services and products to Employees and Gig Workers across Africa.',
-    brief: 'Brief for Design a Dashboard for SokoFund',
-    tasks: 'Task 1',
+      '<p><strong>Product Requirements</strong></p><ul><li>UX research to understand Project Requirements&nbsp;</li><li>Understanding User Needs</li><li>Understanding Business Goals&nbsp;</li><li>Determine interaction between users&nbsp;</li><li>Requirements Catalog</li></ul><p><strong>Product Design:</strong></p><ul><li>User Interface Design for each step&nbsp;</li><li>Creating wireframes to outline the basic structure and layout of the web and mobile app.</li><li>Designing visually appealing and user-friendly interfaces for the web and mobile apps focusing on usability and user experience.</li><li>Ensuring the web application works seamlessly across web, mobile, and tablet devices.</li><li>Provide a feedback session for in-development guidance</li></ul><p><strong>Deliverables:</strong></p><ul><li>Requirements Catalog and User Interaction Diagram</li><li>User Interface Mockups&nbsp;</li><li>Payroll and HR System Design Completed</li></ul><p><strong>Note</strong></p><p>Find Product Requirements Summary and Features Description for Saway Pay <a href="https://google.rw/" rel="noopener noreferrer" target="_blank">HERE</a></p>',
+    challengeCategory: 'Web design',
+    moneyPrize: '$150 - $400',
+    submissionLink: 'http://example.com',
+    deadline: new Date(),
+    startDate: new Date(),
+    contactEmail: 'talent@umurava.africa',
+    skillsNeeded: ['UI/UX Design', 'User Research'],
+    seniorityLevel: ['Intermediate'],
   };
-  const data =
-    '<p><strong>Hrlooeoeeor</strong></p><ul><li>dggddjdjd</li><li>ddjhsjnmxnkaj</li><li>jjss</li></ul><p><strong>Devleleidjidj</strong></p><p>link <a href="https://google.rw/" rel="noopener noreferrer" target="_blank">here</a></p><p><br></p>';
+
+  const participants = [
+    {
+      id: 1,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'John Doe',
+      occupation: 'Product Designer',
+    },
+    {
+      id: 2,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 3,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 4,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 5,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 6,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+  ];
+
+  const { challengeId } = useParams();
 
   return (
     <div>
       <CustomBreadcrumb
+        className="md:mx-10 py-4"
         items={[
           {
             label: 'Challenges & Hackathons',
@@ -36,19 +90,66 @@ const SingleChallengePage = () => {
         ]}
       />
 
-      <div>
-        <Card className="w-7/12 p-6">
-          <div className="relative bg-primary h-48 flex items-center justify-center rounded-lg">
+      <div className="lg:mx-10 flex md:flex-row flex-col  lg:gap-10 gap-5 my-10">
+        <Card className="md:w-8/12 p-6">
+          <div className="relative bg-primary h-80 flex items-center justify-center rounded-lg mb-6">
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           </div>
-          <h1>Project Brief : {project.title}</h1>
-          <p>{project.description}</p>
-          <h1>Tasks:</h1>
-          <div
-            className="prose prose-blue max-w-none prose-li:my-0 prose-li:leading-6 prose-ul:my-0 prose-p:my-3"
-            dangerouslySetInnerHTML={{ __html: data }}
-          />
+          <h1 className="text-2xl font-semibold my-1">{project.title}</h1>
+          <p className="text-gray-700 mb-6">{project.projectBrief}</p>
+
+          <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2>
+          {project.description && (
+            <div
+              className="prose prose-blue max-w-none prose-li:my-0 prose-a:no-underline"
+              dangerouslySetInnerHTML={{ __html: project.description }}
+            />
+          )}
         </Card>
+
+        <div className="lg:w-4/12 md:w-6/12 h-fit">
+          <Card className="p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4">Key Instructions</h2>
+            <p className="my-2">
+              You are free to schedule a clarification call with the team via
+              the information below.
+            </p>
+
+            <div className="space-y-6">
+              <KeyInstruction
+                icon={<Mail size={22} />}
+                title="Contact Email"
+                value={project.contactEmail}
+              />
+              <KeyInstruction
+                icon={<Mail size={22} />}
+                title="Challenge Category"
+                value={project.challengeCategory}
+              />
+              <KeyInstruction
+                icon={<Mail size={22} />}
+                title="Deadline"
+                value={project?.deadline?.toDateString()}
+              />
+              <KeyInstruction
+                icon={<Mail size={22} />}
+                title="Money Prize"
+                value={project.moneyPrize}
+              />
+            </div>
+            <div className="flex w-full mt-5 gap-6">
+              <Button className="w-full h-12 bg-red-500">Delete</Button>
+              <Link
+              className='w-full'
+                href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
+              >
+                <Button className="w-full h-12">Edit</Button>
+              </Link>
+            </div>
+          </Card>
+
+          <ParticipantsCard participants={participants} />
+        </div>
       </div>
     </div>
   );

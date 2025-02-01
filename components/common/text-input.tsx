@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import {
   ControllerRenderProps,
   FieldValues,
@@ -19,7 +20,7 @@ interface TextInputProps<T extends FieldValues> {
   label: string;
   type?: string;
   placeholder?: string;
-  className?:string;
+  className?: string;
 }
 
 const TextInput = <T extends FieldValues>({
@@ -28,18 +29,18 @@ const TextInput = <T extends FieldValues>({
   label,
   type = 'text',
   placeholder,
-  className
+  className,
 }: TextInputProps<T>) => {
   return (
     <FormField
       control={form.control}
       name={name as string}
       render={({ field }: { field: ControllerRenderProps<T, any> }) => (
-        <FormItem className='w-full'>
+        <FormItem className="w-full">
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
-              className={`h-12 w-full ${className}`}
+              className={cn('h-12', className)}
               type={type}
               placeholder={placeholder}
               {...field}

@@ -39,7 +39,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </header>
 
-          <main className="p-4 flex-1 h-fit overflow-y-auto bg-secondary_bg">
+          <main className="p-4 flex-1 overflow-y-auto bg-secondary_bg">
             {children}
           </main>
         </div>
