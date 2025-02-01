@@ -1,7 +1,9 @@
 import Projectcard from '@/components/common/homepage/project-card';
 import { Button } from '@/components/ui/button';
+import { dashboardRoutes } from '@/lib/routes';
 import { IProject } from '@/lib/types/project';
 import { BookText, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 const ChallengesPage = () => {
   const baseData: IProject = {
@@ -45,10 +47,12 @@ const ChallengesPage = () => {
               <span className="bg-neutral-300 rounded-3xl h-5 w-5">0</span>
             </Button>
           ))}
-        <Button size='lg' className='col-span-2 md:col-span-1' >
-          <Plus />
-          Create New Challenge
-        </Button>
+        <Link href={dashboardRoutes.challengeHackathons.new.path}>
+          <Button size="lg" className="col-span-2 md:col-span-1">
+            <Plus />
+            Create New Challenge
+          </Button>
+        </Link>
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
         {challengesData.map((challenge) => (

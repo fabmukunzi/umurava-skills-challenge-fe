@@ -36,6 +36,16 @@ export const dashboardRoutes = {
     label: 'Challenge & Hackathons',
     path: '/dashboard/challenges',
     name: 'challenge-hackathons',
+    new: {
+      label: 'Create New Challenge',
+      path: '/dashboard/challenges/new',
+      name: 'create-new-challenge',
+    },
+    // edit: {
+    //   label: 'Edit a Challenge',
+    //   path: '/dashboard/challenges/',
+    //   name: 'create-new-challenge',
+    // },
   },
   community: {
     label: 'Community',

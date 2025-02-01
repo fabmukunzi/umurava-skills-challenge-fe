@@ -19,6 +19,9 @@ const SingleChallengePage = () => {
     brief: 'Brief for Design a Dashboard for SokoFund',
     tasks: 'Task 1',
   };
+  const data =
+    '<p><strong>Hrlooeoeeor</strong></p><ul><li>dggddjdjd</li><li>ddjhsjnmxnkaj</li><li>jjss</li></ul><p><strong>Devleleidjidj</strong></p><p>link <a href="https://google.rw/" rel="noopener noreferrer" target="_blank">here</a></p><p><br></p>';
+
   return (
     <div>
       <CustomBreadcrumb
@@ -41,6 +44,10 @@ const SingleChallengePage = () => {
           <h1>Project Brief : {project.title}</h1>
           <p>{project.description}</p>
           <h1>Tasks:</h1>
+          <div
+            className="prose prose-blue max-w-none prose-li:my-0 prose-li:leading-6 prose-ul:my-0 prose-p:my-3"
+            dangerouslySetInnerHTML={{ __html: data }}
+          />
         </Card>
       </div>
     </div>
