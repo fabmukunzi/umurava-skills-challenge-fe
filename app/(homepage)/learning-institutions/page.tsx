@@ -79,11 +79,11 @@ const LearningInstitutionsPage = () => {
     <div>
       <div className="flex flex-col lg:flex-row justify-between lg:w-5/6 w-11/12 mx-auto gap-10 pt-20 lg:items-center">
         <div className="lg:w-1/2">
-          <h1 className="text-lg md:text-xl xl:text-2xl font-bold mb-6">
+          <h1 className="text-lg md:text-xl xl:text-3xl font-bold mb-6">
             Accelerate Your Students and Traineess Employability and Career
             Growth through Project-based Learning Solution
           </h1>
-          <p className="text-black">
+          <p className="text-black text-lg">
             We partner with Universities, Schools, and Trainining Institutions
             to  build the work experience of their students and trainees through
             project based learning challenges and hackathons
@@ -91,7 +91,7 @@ const LearningInstitutionsPage = () => {
           <Button className="mt-8 py-6">Partner with us</Button>
         </div>
         <Image
-          className="object-cover h-[20rem] w-[30rem] rounded-2xl"
+          className="object-cover h-[22rem] w-[35rem] rounded-3xl"
           src={StudentsImage}
           alt="Dashboard View"
         />

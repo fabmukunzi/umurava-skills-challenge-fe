@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
-import { SquareMenu } from 'lucide-react';
 import { FC } from 'react';
+import SVGIcon from '@/components/common/svg';
+import FlatPaperIcon from '@/components/common/svg/flatpaper-icon';
 
 interface CardProps {
   title: string;
@@ -19,7 +20,7 @@ const TalentStatisticsCard: FC<CardProps> = ({ title, value }) => {
           </div>
         </div>
         <div className="bg-[#D0E0FC] text-primary flex items-center justify-center h-12 w-12 rounded-full">
-          <SquareMenu size={20} />
+          <SVGIcon Icon={FlatPaperIcon} height={20} width={20} />
         </div>
       </div>
     </Card>

@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
@@ -7,15 +7,20 @@ import { dashboardRoutes } from '@/lib/routes';
 import Image from 'next/image';
 import ParticipantsCard from '@/components/dashboard/participants';
 import { Card } from '@/components/ui/card';
-import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import SVGIcon from '@/components/common/svg';
+import MailIcon from '@/components/common/svg/mail-icon';
+import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
+import DollarIcon from '@/components/common/svg/dollar-icon';
+import CalendarIcon from '@/components/common/svg/calendar-icon';
 
 const SingleChallengePage = () => {
   const project = {
     title: 'Design a Dashboard for Sokofund',
-    projectBrief:'A Fintech company that is developing a Digital Financial Platform designed for businesses and their workforce in Africa is partnering with Umurava to run a Skills Challenge for Product Design. This Fintech Company offers Payroll Management System to Employers and Embedded Financial services and products to Employees and Gig Workers across Africa.',
+    projectBrief:
+      'A Fintech company that is developing a Digital Financial Platform designed for businesses and their workforce in Africa is partnering with Umurava to run a Skills Challenge for Product Design. This Fintech Company offers Payroll Management System to Employers and Embedded Financial services and products to Employees and Gig Workers across Africa.',
     description:
       '<p><strong>Product Requirements</strong></p><ul><li>UX research to understand Project Requirements&nbsp;</li><li>Understanding User Needs</li><li>Understanding Business Goals&nbsp;</li><li>Determine interaction between users&nbsp;</li><li>Requirements Catalog</li></ul><p><strong>Product Design:</strong></p><ul><li>User Interface Design for each step&nbsp;</li><li>Creating wireframes to outline the basic structure and layout of the web and mobile app.</li><li>Designing visually appealing and user-friendly interfaces for the web and mobile apps focusing on usability and user experience.</li><li>Ensuring the web application works seamlessly across web, mobile, and tablet devices.</li><li>Provide a feedback session for in-development guidance</li></ul><p><strong>Deliverables:</strong></p><ul><li>Requirements Catalog and User Interaction Diagram</li><li>User Interface Mockups&nbsp;</li><li>Payroll and HR System Design Completed</li></ul><p><strong>Note</strong></p><p>Find Product Requirements Summary and Features Description for Saway Pay <a href="https://google.rw/" rel="noopener noreferrer" target="_blank">HERE</a></p>',
     challengeCategory: 'Web design',
@@ -75,6 +80,10 @@ const SingleChallengePage = () => {
 
   const { challengeId } = useParams();
 
+  const user = {
+    role: 'TALENT',
+  };
+
   return (
     <div>
       <CustomBreadcrumb
@@ -90,7 +99,7 @@ const SingleChallengePage = () => {
         ]}
       />
 
-      <div className="lg:mx-10 flex md:flex-row flex-col  lg:gap-10 gap-5 my-10">
+      <div className="lg:mx-10 flex md:flex-row flex-col  lg:gap-8 gap-5 my-10">
         <Card className="md:w-8/12 p-6">
           <div className="relative bg-primary h-80 flex items-center justify-center rounded-lg mb-6">
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
@@ -107,7 +116,7 @@ const SingleChallengePage = () => {
           )}
         </Card>
 
-        <div className="lg:w-4/12 md:w-6/12 h-fit">
+        <div className="lg:w-5/12 md:w-6/12 h-fit">
           <Card className="p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Key Instructions</h2>
             <p className="my-2">
@@ -115,40 +124,52 @@ const SingleChallengePage = () => {
               the information below.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-6 my-10">
               <KeyInstruction
-                icon={<Mail size={22} />}
+                icon={<SVGIcon height={23} width={23} Icon={MailIcon} />}
                 title="Contact Email"
                 value={project.contactEmail}
               />
               <KeyInstruction
-                icon={<Mail size={22} />}
+                icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
                 title="Challenge Category"
                 value={project.challengeCategory}
               />
               <KeyInstruction
-                icon={<Mail size={22} />}
+                icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Deadline"
                 value={project?.deadline?.toDateString()}
               />
               <KeyInstruction
-                icon={<Mail size={22} />}
+                icon={<SVGIcon height={23} width={23} Icon={DollarIcon} />}
                 title="Money Prize"
                 value={project.moneyPrize}
               />
             </div>
-            <div className="flex w-full mt-5 gap-6">
-              <Button className="w-full h-12 bg-red-500">Delete</Button>
+            {user.role === 'ADMIN' ? (
+              <div className="flex w-full mt-5 gap-6">
+                <Button className="w-full h-12 bg-red-500">Delete</Button>
+                <Link
+                  className="w-full"
+                  href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
+                >
+                  <Button className="w-full h-12">Edit</Button>
+                </Link>
+              </div>
+            ) : (
               <Link
-              className='w-full'
-                href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
+                className="w-full"
+                href={project.submissionLink}
+                target="blank"
               >
-                <Button className="w-full h-12">Edit</Button>
+                <Button className="w-full h-12">Submit Your Work</Button>
               </Link>
-            </div>
+            )}
           </Card>
 
-          <ParticipantsCard participants={participants} />
+          {user.role === 'ADMIN' && (
+            <ParticipantsCard participants={participants} />
+          )}
         </div>
       </div>
     </div>

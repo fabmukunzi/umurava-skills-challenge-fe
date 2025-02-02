@@ -44,7 +44,7 @@ const ChallengeForm = ({
 
   const categories = [
     { value: 'Artificial Intelligence', label: 'Artificial Intelligence' },
-    { value: 'Web Development', label: 'Web Development' },
+    { value: 'Web Design', label: 'Web Design' },
     { value: 'Blockchain', label: 'Blockchain' },
   ];
 
@@ -65,7 +65,7 @@ const ChallengeForm = ({
   return (
     <Card className="md:w-3/5 mx-auto p-6 my-10">
       <h1 className="text-2xl font-bold text-center">
-        {isEdit ? 'Edit Challenge' : 'Create New Challenge'}
+        {isEdit ? 'Edit a Challenge' : 'Create New Challenge'}
       </h1>
       <p className='text-center text-primary_grey'>Fill out these details to build your broadcast</p>
       <Form {...form}>

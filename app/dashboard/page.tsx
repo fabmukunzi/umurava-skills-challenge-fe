@@ -1,10 +1,13 @@
 import Projectcard from '@/components/common/homepage/project-card';
+import SVGIcon from '@/components/common/svg';
+import FlatPaperIcon from '@/components/common/svg/flatpaper-icon';
+import UserGroupIcon from '@/components/common/svg/user-group-icon';
 import AdminStatCard from '@/components/dashboard/admin-statistics-card';
 import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
 import { IProject } from '@/lib/types/project';
-import { ChevronRight, Eye, FileText, SquareMenu, Users2 } from 'lucide-react';
+import { ChevronRight, Eye } from 'lucide-react';
 import Link from 'next/link';
 
 const DashboardPage = () => {
@@ -55,37 +58,37 @@ const DashboardPage = () => {
     { title: 'Ongoing Challenges', value: '200' },
   ];
   const user = {
-    role: 'ADMIN',
+    role: 'TALENT',
   };
   const adminStatData = [
     {
       title: 'Total Challenges',
       number: 29405,
-      icon: <SquareMenu size={24} />,
+      icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 15,
     },
     {
       title: 'Total Participants',
       number: 29405,
-      icon: <Users2 size={24} />,
+      icon: <SVGIcon height={20} width={20} Icon={UserGroupIcon} />,
       percentage: 8,
     },
     {
       title: 'Reports Generated',
       number: 300,
-      icon: <SquareMenu size={24} />,
+      icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 5,
     },
     {
       title: 'New Clients',
       number: 75,
-      icon: <SquareMenu size={24} />,
+      icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 12,
     },
     {
       title: 'Notifications Sent',
       number: 980,
-      icon: <FileText size={24} />,
+      icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 20,
     },
   ];
@@ -120,11 +123,7 @@ const DashboardPage = () => {
           {adminStatData.map((card, index) => (
             <div
               key={index}
-              className={
-                index < 2
-                  ? 'md:col-span-3'
-                  : 'md:col-span-2'
-              }
+              className={index < 2 ? 'md:col-span-3' : 'md:col-span-2'}
             >
               <AdminStatCard {...card} />
             </div>
@@ -143,14 +142,9 @@ const DashboardPage = () => {
           See all <ChevronRight />
         </Link>
       </div>
-      <div className="flex flex-wrap gap-5 justify-between mx-auto pb-20">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
         {challengesData.map((challenge, index) => (
-          <Projectcard
-            className="2xl:w-[23.5rem]"
-            key={index}
-            project={challenge}
-            usage="dashboard"
-          />
+          <Projectcard key={index} project={challenge} usage="dashboard" />
         ))}
       </div>
     </div>

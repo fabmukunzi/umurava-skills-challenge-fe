@@ -34,6 +34,7 @@ import LateriteLogo from '@/assets/logos/HiiL_Logo 1 (1).svg';
 import SokoFundLogo2 from '@/assets/logos/SokoFund 1.svg';
 import CollapsedUmuravaLogo from '@/assets/logos/umurava-collapsed-logo.svg';
 import HomeIcon from '@/assets/images/home-icon.svg';
+import MessageIcon from '@/assets/images/message-icon.svg';
 
 export {
   UmuravaLogo,
@@ -71,5 +72,6 @@ export {
   LateriteLogo,
   SokoFundLogo2,
   CollapsedUmuravaLogo,
-  HomeIcon
+  HomeIcon,
+  MessageIcon
 };
