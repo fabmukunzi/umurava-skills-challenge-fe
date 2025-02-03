@@ -1,7 +1,10 @@
+'use client';
+
 import { IProject } from '@/lib/types/project';
-import Projectcard from '../common/homepage/project-card';
-import { Button } from '../ui/button';
+import Projectcard from '@/components/common/homepage/project-card';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 const Challenges = () => {
   const challengesData: IProject[] = [
@@ -47,7 +50,13 @@ const Challenges = () => {
   ];
   return (
     <div className="bg-white px-4 sm:px-6 lg:px-12 2xl:px-20 border-b pb-10">
-      <div className="text-center text-black py-20 xl:w-1/2 md:w-2/3 mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1, ease: 'easeInOut' }}
+        viewport={{ once: true }}
+        className="text-center text-black py-20 xl:w-1/2 md:w-2/3 mx-auto"
+      >
         <h1 className="text-2xl md:text-3xl xl:text-4xl font-bold">
           Explore Challenges & Hackathons 
         </h1>
@@ -55,12 +64,18 @@ const Challenges = () => {
           Join Skills Challenges Program to accelerate your career growth and
           become part of Africa’s largest workforce of digital professionals. 
         </p>
-      </div>
-      <div className="flex gap-6 flex-wrap justify-center mx-auto">
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1, ease: 'easeInOut' }}
+        viewport={{ once: true }}
+        className="flex gap-6 flex-wrap justify-center mx-auto"
+      >
         {challengesData.map((challenge, index) => (
           <Projectcard key={index} project={challenge} />
         ))}
-      </div>
+      </motion.div>
       <div>
         <Link className="flex justify-center my-10" href="/challenges">
           <Button

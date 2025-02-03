@@ -8,7 +8,7 @@ const CreateChallengePage = () => {
   const router = useRouter();
 
   const onSubmit = (values: ChallengeFormData) => {
-    console.log(values);
+    console.log(values)
     router.push('/challenges');
   };
 

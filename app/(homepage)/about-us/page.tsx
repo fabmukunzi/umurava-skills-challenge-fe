@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -8,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import { ChallengesDashboardView2, SchoolCaseIcon } from '@/lib/images';
 import Image from 'next/image';
-import React from 'react';
+import { motion } from 'framer-motion';
 
 const AboutPage = () => {
   const solutions = [
@@ -31,7 +33,12 @@ const AboutPage = () => {
   return (
     <div className="py-20">
       <div className="flex flex-col-reverse lg:flex-row justify-between md:w-4/5 w-11/12 mx-auto md:gap-32 gap-10 items-center">
-        <div className='lg:w-1/2'>
+        <motion.div
+          initial={{ x: -30, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="lg:w-1/2"
+        >
           <h1 className="text-xl md:text-2xl xl:text-3xl font-bold mb-6 md:-mt-10">
             Our Story
           </h1>
@@ -47,53 +54,95 @@ const AboutPage = () => {
             and build portfolios so that they become ready for global job
             markets.
           </p>
-        </div>
-        <iframe
+        </motion.div>
+        <motion.iframe
+          initial={{ x: 30, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
           className="rounded-xl lg:w-1/2 w-full h-[400px] object-cover"
-          src={`https://www.youtube.com/embed/EXJPh16MoiU`}
-          // controls
-          // autoPlay
-        ></iframe>
+          src="https://www.youtube.com/embed/bOgZPZrom2Q"
+          title="Introducing Umurava Skills Challenges | Project-Based Learning Solution for Youths"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        ></motion.iframe>
       </div>
       <div className="w-11/12 mx-auto">
-        <div className="text-center text-black py-20 xl:w-1/2 lg:w-2/3 mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: 'easeInOut' }}
+          viewport={{ once: true }}
+          className="text-center text-black py-20 xl:w-1/2 lg:w-2/3 mx-auto"
+        >
           <h1 className="text-2xl md:text-3xl xl:text-4xl font-bold">
             Why we are solving this problem
           </h1>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6 md:w-11/12 mx-auto">
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          transition={{ staggerChildren: 0.2, ease: 'easeInOut' }}
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 gap-6 md:w-11/12 mx-auto"
+        >
           {solutions.map((solution, index) => (
-            <Card
+            <motion.div
               key={index}
-              className={`${
-                index === 0 ? 'md:col-span-2' : ''
-              } bg-primary text-white`}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.8 }}
+              whileHover={{ scale: 1.05 }}
             >
-              <CardHeader>
-                <CardTitle>
-                  <div className="p-4 bg-white rounded-md w-fit">
-                    <Image src={SchoolCaseIcon} alt="solution icon" />
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <h1 className="font-semibold md:text-2xl text-xl">
-                  {solution.title}
-                </h1>
-              </CardContent>
-              <CardFooter>
-                <h1>{solution.description}</h1>
-              </CardFooter>
-            </Card>
+              <Card
+                className={`${
+                  index === 0 ? 'md:col-span-2' : ''
+                } bg-primary text-white`}
+              >
+                <CardHeader>
+                  <CardTitle>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                      viewport={{ once: true }}
+                      className="p-4 bg-white rounded-md w-fit"
+                    >
+                      <Image src={SchoolCaseIcon} alt="solution icon" />
+                    </motion.div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <h1 className="font-semibold md:text-2xl text-xl">
+                    {solution.title}
+                  </h1>
+                </CardContent>
+                <CardFooter>
+                  <h1>{solution.description}</h1>
+                </CardFooter>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
+
       <div className="flex flex-col lg:flex-row justify-between lg:w-5/6 w-11/12 mx-auto gap-10 pt-20 lg:items-center">
-        <div className="lg:w-1/2">
-          <h1 className="text-xl text-black md:text-2xl xl:text-3xl font-bold mb-6">
+        <motion.div
+          initial={{ x: -30, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="lg:w-1/2"
+        >
+          <motion.h1
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 1 }}
+            className="text-xl text-black md:text-2xl xl:text-3xl font-bold mb-6"
+          >
             Skills Challenges Program is built on the Umurava Talent Marketplace
             Platform
-          </h1>
+          </motion.h1>
           <p className="text-black">
             A Project-based Learning Solution aimed at providing young and
             senior talents with an opportunity to showcase their skills to
@@ -106,12 +155,18 @@ const AboutPage = () => {
             opportunities and projects.
           </p>
           <Button className="mt-8 px-6">Get Started</Button>
-        </div>
-        <Image
-          className="object-fill h-[25rem] w-[30rem] md:-ml-10"
-          src={ChallengesDashboardView2}
-          alt="Dashboard View"
-        />
+        </motion.div>
+        <motion.div
+          initial={{ x: 30, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <Image
+            className="object-fill h-[25rem] w-[30rem] md:-ml-10"
+            src={ChallengesDashboardView2}
+            alt="Dashboard View"
+          />
+        </motion.div>
       </div>
     </div>
   );

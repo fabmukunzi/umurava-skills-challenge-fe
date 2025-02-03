@@ -1,7 +1,10 @@
+'use client';
+
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import Projectcard from '@/components/common/homepage/project-card';
 import { homepageRoutes } from '@/lib/routes';
 import { IProject } from '@/lib/types/project';
+import { motion } from 'framer-motion';
 
 const ChallegesPage = () => {
   const baseData: IProject = {
@@ -36,11 +39,17 @@ const ChallegesPage = () => {
           },
         ]}
       />
-      <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 w-11/12 mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: 'easeInOut' }}
+        viewport={{ once: true }}
+        className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 w-11/12 mx-auto"
+      >
         {challengesData.map((challenge) => (
           <Projectcard key={challenge.id} project={challenge} />
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

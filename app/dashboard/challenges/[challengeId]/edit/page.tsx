@@ -33,7 +33,7 @@ const EditChallengePage = () => {
   }, []);
 
   const onSubmit = (values: ChallengeFormData) => {
-    console.log(values);
+console.log(values)
     router.push('/challenges');
   };
 
