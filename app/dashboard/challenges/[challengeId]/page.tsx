@@ -15,24 +15,12 @@ import MailIcon from '@/components/common/svg/mail-icon';
 import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
 import DollarIcon from '@/components/common/svg/dollar-icon';
 import CalendarIcon from '@/components/common/svg/calendar-icon';
+import { useSelector } from 'react-redux';
+import { AppState } from '@/lib/types/user';
+import { useGetChallengeByIdQuery } from '@/store/actions/challenge';
+import { getChallengeDuration } from '@/lib/get-challenge-duration';
 
 const SingleChallengePage = () => {
-  const project = {
-    title: 'Design a Dashboard for Sokofund',
-    projectBrief:
-      'A Fintech company that is developing a Digital Financial Platform designed for businesses and their workforce in Africa is partnering with Umurava to run a Skills Challenge for Product Design. This Fintech Company offers Payroll Management System to Employers and Embedded Financial services and products to Employees and Gig Workers across Africa.',
-    description:
-      '<p><strong>Product Requirements</strong></p><ul><li>UX research to understand Project Requirements&nbsp;</li><li>Understanding User Needs</li><li>Understanding Business Goals&nbsp;</li><li>Determine interaction between users&nbsp;</li><li>Requirements Catalog</li></ul><p><strong>Product Design:</strong></p><ul><li>User Interface Design for each step&nbsp;</li><li>Creating wireframes to outline the basic structure and layout of the web and mobile app.</li><li>Designing visually appealing and user-friendly interfaces for the web and mobile apps focusing on usability and user experience.</li><li>Ensuring the web application works seamlessly across web, mobile, and tablet devices.</li><li>Provide a feedback session for in-development guidance</li></ul><p><strong>Deliverables:</strong></p><ul><li>Requirements Catalog and User Interaction Diagram</li><li>User Interface Mockups&nbsp;</li><li>Payroll and HR System Design Completed</li></ul><p><strong>Note</strong></p><p>Find Product Requirements Summary and Features Description for Saway Pay <a href="https://google.rw/" rel="noopener noreferrer" target="_blank">HERE</a></p>',
-    challengeCategory: 'Web design',
-    moneyPrize: '$150 - $400',
-    submissionLink: 'http://example.com',
-    deadline: new Date(),
-    startDate: new Date(),
-    contactEmail: 'talent@umurava.africa',
-    skillsNeeded: ['UI/UX Design', 'User Research'],
-    seniorityLevel: ['Intermediate'],
-  };
-
   const participants = [
     {
       id: 1,
@@ -78,11 +66,16 @@ const SingleChallengePage = () => {
     },
   ];
 
-  const { challengeId } = useParams();
+  const params = useParams();
+  const challengeId = params?.challengeId as string;
 
-  const user = {
-    role: 'TALENT',
-  };
+  const { data } = useGetChallengeByIdQuery(challengeId, {
+    skip: !challengeId,
+  });
+
+  const project = data?.challenge;
+
+  const user = useSelector((state: AppState) => state?.userReducer?.user);
 
   return (
     <div>
@@ -94,7 +87,7 @@ const SingleChallengePage = () => {
             href: dashboardRoutes.challengeHackathons.path,
           },
           {
-            label: project.title,
+            label: project?.challengeTitle ?? '',
           },
         ]}
       />
@@ -104,11 +97,13 @@ const SingleChallengePage = () => {
           <div className="relative bg-primary h-80 flex items-center justify-center rounded-lg mb-6">
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           </div>
-          <h1 className="text-2xl font-semibold my-1">{project.title}</h1>
-          <p className="text-gray-700 mb-6">{project.projectBrief}</p>
+          <h1 className="text-2xl font-semibold my-1">
+            {project?.challengeTitle}
+          </h1>
+          <p className="text-gray-700 mb-6">{project?.projectBrief}</p>
 
           <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2>
-          {project.description && (
+          {project?.description && (
             <div
               className="prose prose-blue max-w-none prose-li:my-0 prose-a:no-underline"
               dangerouslySetInnerHTML={{ __html: project.description }}
@@ -128,22 +123,25 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={MailIcon} />}
                 title="Contact Email"
-                value={project.contactEmail}
+                value={project?.contactEmail ?? ''}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
                 title="Challenge Category"
-                value={project.challengeCategory}
+                value={project?.category?.title ?? ''}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
-                title="Deadline"
-                value={project?.deadline?.toDateString()}
+                title="Duration"
+                value={`${getChallengeDuration(
+                  project?.startDate || new Date().toISOString(),
+                  project?.deadline || new Date().toISOString()
+                )} Days`}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={DollarIcon} />}
                 title="Money Prize"
-                value={project.moneyPrize}
+                value={project?.moneyPrize ?? ''}
               />
             </div>
             {user.role === 'ADMIN' ? (
@@ -159,7 +157,7 @@ const SingleChallengePage = () => {
             ) : (
               <Link
                 className="w-full"
-                href={project.submissionLink}
+                href={project?.submissionLink ?? ''}
                 target="blank"
               >
                 <Button className="w-full h-12">Submit Your Work</Button>

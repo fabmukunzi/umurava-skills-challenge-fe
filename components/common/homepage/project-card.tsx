@@ -6,6 +6,10 @@ import { UmuravaWhiteLogo } from '@/lib/images';
 import { Badge } from '../../ui/badge';
 import Link from 'next/link';
 import { IProject } from '@/lib/types/project';
+import {
+  getChallengeDuration,
+  getChallengeStatus,
+} from '@/lib/get-challenge-duration';
 
 const Projectcard: FC<{
   project: IProject;
@@ -21,11 +25,11 @@ const Projectcard: FC<{
             variant="secondary"
             className="absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl bg-[#0F973D] text-white"
           >
-            Open
+            {getChallengeStatus(project.startDate, project.deadline)}
           </Badge>
         </div>
         <h1 className="font-semibold md:text-lg my-5 text-base truncate">
-          {project.title}
+          {project.challengeTitle}
         </h1>
         <p className="font-semibold text-[13px] mb-1">Skills Needed:</p>
         <div className="flex gap-2">
@@ -42,13 +46,13 @@ const Projectcard: FC<{
         <p className="font-semibold text-[13px] my-3">
           Seniority Level:{' '}
           <span className="font-normal text-primary_grey">
-            ({project.seniorityLevel.join(',')})
+            ({project?.seniority?.join(',')})
           </span>
         </p>
         <p className="font-semibold text-[13px]">
           Timeline:{' '}
           <span className="font-normal text-primary_grey">
-            {project.duration}
+            {getChallengeDuration(project.startDate, project.deadline)} days
           </span>
         </p>
       </CardContent>

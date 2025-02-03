@@ -2,31 +2,39 @@
 
 import { useRouter } from 'next/navigation';
 import ChallengeForm from '@/components/common/dashboard/challenge-form';
-import { ChallengeFormData } from '@/lib/challenge-form-validation';
+import { CreateChallengeDto, useCreateChallengeMutation } from '@/store/actions/challenge';
+import { dashboardRoutes } from '@/lib/routes';
 
 const CreateChallengePage = () => {
   const router = useRouter();
+  const [createChallenge] = useCreateChallengeMutation();
 
-  const onSubmit = (values: ChallengeFormData) => {
-    console.log(values)
-    router.push('/challenges');
+  const onSubmit = async(values: CreateChallengeDto) => {
+
+    try{
+    await createChallenge(values).unwrap();
+    router.push(dashboardRoutes.challengeHackathons.path);  
+    }catch(err){
+      console.log(err);
+    }
+    
   };
 
   return (
     <ChallengeForm
       onSubmit={onSubmit}
       defaultValues={{
-        title: '',
+        challengeTitle: '',
         projectBrief: '',
         description: '',
-        challengeCategory: '',
+        categoryId: '',
         moneyPrize: '',
         submissionLink: '',
-        deadline: new Date(),
-        startDate: new Date(),
+        deadline: '',
+        startDate: '',
         contactEmail: '',
-        skillsNeeded: [],
-        seniorityLevel: [],
+        skills: [],
+        seniority: [],
       }}
     />
   );

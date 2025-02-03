@@ -26,6 +26,8 @@ import { usePathname } from 'next/navigation';
 import GearIcon from '@/components/common/svg/gear-icon';
 import HeadsetIcon from '@/components/common/svg/headset-icon';
 import GiftBoxIcon from '@/components/common/svg/giftbox-icon';
+import { useSelector } from 'react-redux';
+import { AppState } from '@/lib/types/user';
 
 const items = [
   {
@@ -74,6 +76,7 @@ export function AppSidebar() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | undefined>(undefined);
+  const user = useSelector((state: AppState) => state?.userReducer?.user);
 
   return (
     <>
@@ -87,12 +90,12 @@ export function AppSidebar() {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => {
+                {items.map((item,index) => {
                   const isSelected = selectedItem === item.title;
                   const isHovered = hoveredItem === item.title;
                   return (
                     <SidebarMenuItem
-                      key={item.title}
+                      key={index}
                       className={`rounded group py-0 ${
                         selectedItem === item.title
                           ? 'bg-white text-primary'
@@ -153,12 +156,12 @@ export function AppSidebar() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {footerItems.map((item) => {
+                  {footerItems.map((item,index) => {
                     const isSelected = selectedItem === item.title;
                     const isHovered = hoveredItem === item.title;
                     return (
                       <SidebarMenuItem
-                        key={item.title}
+                        key={index}
                         className={`rounded group py-0 ${
                           isHovered || isSelected
                             ? 'bg-white text-primary'
@@ -193,15 +196,15 @@ export function AppSidebar() {
             <div className="py-6 mt-4 px-2 flex items-center gap-4">
               <div className="flex items-center space-x-3">
                 <Image
-                  src="https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg"
+                  src={user?.profile_image}
                   alt="Profile"
                   width={40}
                   height={40}
                   className="rounded-full object-cover border-2 border-white"
                 />
                 <div>
-                  <p className="text-white font-medium">Hilaire Sh</p>
-                  <p className="text-white text-sm">hilaire@uidesign</p>
+                  <p className="text-white font-medium">{user?.full_name}</p>
+                  <p className="text-white text-sm">{user?.email}</p>
                 </div>
               </div>
               <div>

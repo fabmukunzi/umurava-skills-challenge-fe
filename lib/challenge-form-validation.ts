@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 export const challengeFormSchema = z.object({
-  title: z.string().min(2, { message: 'Title must be at least 2 characters.' }),
+  challengeTitle: z.string().min(2, { message: 'Title must be at least 2 characters.' }),
   projectBrief: z
     .string()
     .min(10, { message: 'Project brief must be at least 10 characters.' }),
   description: z
     .string()
     .min(20, { message: 'Description must be at least 20 characters.' }),
-  challengeCategory: z
+    categoryId: z
     .string()
     .min(1, { message: 'Please select a category.' }),
   moneyPrize: z.string().min(1, { message: 'Enter a valid prize amount.' }),
@@ -26,11 +26,11 @@ export const challengeFormSchema = z.object({
     }),
 
   contactEmail: z.string().email({ message: 'Enter a valid email.' }),
-  skillsNeeded: z
+  skills: z
     .array(z.string())
     .min(1, { message: 'Select at least one skill.' })
     .refine((val) => val.length > 0, { message: 'Skills are required.' }),
-  seniorityLevel: z
+  seniority: z
   .array(z.string())
   .min(1, { message: 'Please select a seniority level.' })
   .refine((val) => val.length > 0, { message: 'seniority is required.' })

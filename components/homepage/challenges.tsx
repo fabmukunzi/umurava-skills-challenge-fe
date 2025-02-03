@@ -1,53 +1,14 @@
 'use client';
 
-import { IProject } from '@/lib/types/project';
 import Projectcard from '@/components/common/homepage/project-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useGetChallengesQuery } from '@/store/actions/challenge';
 
 const Challenges = () => {
-  const challengesData: IProject[] = [
-    {
-      id: '12345',
-      title: 'Design a Dashboard for SokoFund',
-      deadline: new Date(),
-      duration: '5 days',
-      moneyPrize: '500 USD',
-      skills: ['UI/UX Design', 'User Research', 'User Research'],
-      seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-      contactEmail: 'test1@example.com',
-      description: 'Design a Dashboard for SokoFund description',
-      brief: 'Brief for Design a Dashboard for SokoFund',
-      tasks: 'Task 1',
-    },
-    {
-      id: '1224455',
-      title: 'Design a Dashboard for SokoFund',
-      deadline: new Date(),
-      duration: '7 days',
-      moneyPrize: '1000 USD',
-      skills: ['UI/UX Design', 'User Research', 'User Research'],
-      seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-      contactEmail: 'test2@example.com',
-      description: 'Design a Dashboard for SokoFund description',
-      brief: 'Brief for Design a Dashboard for SokoFund',
-      tasks: 'Task 2',
-    },
-    {
-      id: '1224466',
-      title: 'Design a Dashboard for SokoFund',
-      deadline: new Date(),
-      duration: '7 days',
-      moneyPrize: '1000 USD',
-      skills: ['UI/UX Design', 'User Research', 'User Research'],
-      seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-      contactEmail: 'test2@example.com',
-      description: 'Design a Dashboard for SokoFund description',
-      brief: 'Brief for Design a Dashboard for SokoFund',
-      tasks: 'Task 2',
-    },
-  ];
+   const { data } = useGetChallengesQuery({ limit: 3, page: 1 });
+   const challengesData=data?.challenges
   return (
     <div className="bg-white px-4 sm:px-6 lg:px-12 2xl:px-20 border-b pb-10">
       <motion.div
@@ -70,10 +31,10 @@ const Challenges = () => {
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 1, ease: 'easeInOut' }}
         viewport={{ once: true }}
-        className="flex gap-6 flex-wrap justify-center mx-auto"
+        className="grid lg:grid-cols-3 gap-6 flex-wrap w-[80%] justify-center mx-auto"
       >
-        {challengesData.map((challenge, index) => (
-          <Projectcard key={index} project={challenge} />
+        {challengesData?.map((challenge, index) => (
+          <Projectcard className='w-full' key={index} project={challenge} />
         ))}
       </motion.div>
       <div>

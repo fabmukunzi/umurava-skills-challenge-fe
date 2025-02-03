@@ -1,3 +1,5 @@
+'use client';
+
 import Projectcard from '@/components/common/homepage/project-card';
 import SVGIcon from '@/components/common/svg';
 import FlatPaperIcon from '@/components/common/svg/flatpaper-icon';
@@ -6,60 +8,21 @@ import AdminStatCard from '@/components/dashboard/admin-statistics-card';
 import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { IProject } from '@/lib/types/project';
+import { AppState } from '@/lib/types/user';
+import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { ChevronRight, Eye } from 'lucide-react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 const DashboardPage = () => {
-  const challengesData: IProject[] = [
-    {
-      id: '12345',
-      title: 'Design a Dashboard for SokoFund',
-      deadline: new Date(),
-      duration: '5 days',
-      moneyPrize: '500 USD',
-      skills: ['UI/UX Design', 'User Research', 'User Research'],
-      seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-      contactEmail: 'test1@example.com',
-      description: 'Design a Dashboard for SokoFund description',
-      brief: 'Brief for Design a Dashboard for SokoFund',
-      tasks: 'Task 1',
-    },
-    {
-      id: '1224455',
-      title: 'Design a Dashboard for SokoFund',
-      deadline: new Date(),
-      duration: '7 days',
-      moneyPrize: '1000 USD',
-      skills: ['UI/UX Design', 'User Research', 'User Research'],
-      seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-      contactEmail: 'test2@example.com',
-      description: 'Design a Dashboard for SokoFund description',
-      brief: 'Brief for Design a Dashboard for SokoFund',
-      tasks: 'Task 2',
-    },
-    {
-      id: '1224466',
-      title: 'Design a Dashboard for SokoFund',
-      deadline: new Date(),
-      duration: '7 days',
-      moneyPrize: '1000 USD',
-      skills: ['UI/UX Design', 'User Research', 'User Research'],
-      seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-      contactEmail: 'test2@example.com',
-      description: 'Design a Dashboard for SokoFund description',
-      brief: 'Brief for Design a Dashboard for SokoFund',
-      tasks: 'Task 2',
-    },
-  ];
+   const { data } = useGetChallengesQuery({ limit: 3, page: 1 });
+   const challengesData=data?.challenges
   const statistics = [
     { title: 'Completed Challenges', value: '05' },
     { title: 'Open Challenges', value: '200' },
     { title: 'Ongoing Challenges', value: '200' },
   ];
-  const user = {
-    role: 'TALENT',
-  };
+  const user = useSelector((state: AppState) => state?.userReducer?.user);
   const adminStatData = [
     {
       title: 'Total Challenges',
@@ -108,7 +71,7 @@ const DashboardPage = () => {
           View Profile
         </Button>
       </div>
-      {user.role !== 'ADMIN' ? (
+      {user?.role !== 'ADMIN' ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard
@@ -143,7 +106,7 @@ const DashboardPage = () => {
         </Link>
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
-        {challengesData.map((challenge, index) => (
+        {challengesData?.map((challenge, index) => (
           <Projectcard key={index} project={challenge} usage="dashboard" />
         ))}
       </div>

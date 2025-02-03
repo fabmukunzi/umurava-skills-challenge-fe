@@ -24,7 +24,7 @@ const UnlockCareer = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: 'easeOut' }}
             viewport={{ once: true }}
-            className="w-1/2"
+            className="md:w-1/2"
           >
             <Image src={UnlockCareerImage} className='h-full' alt="Unlock Career" />
           </motion.div>
@@ -34,7 +34,7 @@ const UnlockCareer = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
             viewport={{ once: true }}
-            className="my-10 w-1/2"
+            className="my-10 md:w-1/2"
           >
             <h1 className="md:text-4xl text-2xl font-bold">
               Ready to Unlock Your Career Potential Today!

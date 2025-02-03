@@ -1,18 +1,29 @@
 import { StaticImageData } from "next/image";
 
+export interface ICategory {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+}
+
 export interface IProject {
-    id: string;
-    title: string;
-    deadline: Date;
-    duration: string;
-    moneyPrize: string;
-    skills: string[];
-    seniorityLevel: string[];
-    contactEmail: string;
-    description: string;
-    brief: string;
-    tasks: string;
-  }
+  id: string;
+  challengeTitle: string;
+  description: string;
+  projectBrief: string;
+  startDate: string;
+  deadline: string;
+  moneyPrize: string;
+  seniority: string[];
+  categoryId: string;
+  skills: string[];
+  submissionLink: string;
+  contactEmail: string;
+  createdAt: string;
+  category: ICategory;
+}
+
   
   export interface IAdvert {
     logo: StaticImageData;

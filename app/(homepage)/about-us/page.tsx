@@ -94,12 +94,9 @@ const AboutPage = () => {
               }}
               transition={{ duration: 0.8 }}
               whileHover={{ scale: 1.05 }}
+              className={`${index === 0 ? 'md:col-span-2' : ''} bg-primary text-white rounded-xl`}
             >
-              <Card
-                className={`${
-                  index === 0 ? 'md:col-span-2' : ''
-                } bg-primary text-white`}
-              >
+              <Card className={`border-none shadow-none bg-primary text-white`}>
                 <CardHeader>
                   <CardTitle>
                     <motion.div

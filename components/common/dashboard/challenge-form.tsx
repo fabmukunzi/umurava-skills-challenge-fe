@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,10 +10,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  challengeFormSchema,
-  ChallengeFormData,
-} from '@/lib/challenge-form-validation';
+import { challengeFormSchema } from '@/lib/challenge-form-validation';
 import 'react-quill/dist/quill.snow.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -22,32 +18,30 @@ import { DateInput } from '@/components/common/date-input';
 import TextInput from '@/components/common/text-input';
 import SelectInput from '@/components/common/select-box';
 import { Textarea } from '@/components/ui/textarea';
+import { CreateChallengeDto } from '@/store/actions/challenge';
+import { useGetCategoriesQuery } from '@/store/actions/categories';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const ChallengeForm = ({
   onSubmit,
   defaultValues,
   isEdit = false,
 }: {
-  onSubmit: (values: ChallengeFormData) => void;
-  defaultValues: ChallengeFormData;
+  onSubmit: (values: CreateChallengeDto) => void;
+  defaultValues: CreateChallengeDto;
   isEdit?: boolean;
 }) => {
-  const form = useForm<ChallengeFormData>({
+  const form = useForm<CreateChallengeDto>({
     resolver: zodResolver(challengeFormSchema),
     defaultValues,
   });
 
-  const ReactQuill = useMemo(
-    () => dynamic(() => import('react-quill'), { ssr: false }),
-    []
-  );
-
-  const categories = [
-    { value: 'Artificial Intelligence', label: 'Artificial Intelligence' },
-    { value: 'Web Design', label: 'Web Design' },
-    { value: 'Blockchain', label: 'Blockchain' },
-  ];
-
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const categories = categoriesData?.categories?.map((category) => ({
+    value: category.id,
+    label: category.title,
+  }));
   const skills = [
     { value: 'JavaScript', label: 'JavaScript' },
     { value: 'Python', label: 'Python' },
@@ -67,7 +61,9 @@ const ChallengeForm = ({
       <h1 className="text-2xl font-bold text-center">
         {isEdit ? 'Edit a Challenge' : 'Create New Challenge'}
       </h1>
-      <p className='text-center text-primary_grey'>Fill out these details to build your broadcast</p>
+      <p className="text-center text-primary_grey">
+        Fill out these details to build your broadcast
+      </p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -75,7 +71,7 @@ const ChallengeForm = ({
         >
           <FormField
             control={form.control}
-            name="title"
+            name="challengeTitle"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Challenge/Hackhaton Title</FormLabel>
@@ -158,10 +154,10 @@ const ChallengeForm = ({
           <div className="flex w-full flex-wrap md:flex-nowrap gap-5 items-center">
             <SelectInput
               form={form}
-              name="challengeCategory"
+              name="categoryId"
               label="Challenge Category"
               placeholder="Select a category"
-              options={categories}
+              options={categories??[]}
             />
 
             <TextInput
@@ -174,7 +170,7 @@ const ChallengeForm = ({
           </div>
           <SelectInput
             form={form}
-            name="skillsNeeded"
+            name="skills"
             label="Skills Needed"
             placeholder="Select skills needed"
             options={skills}
@@ -182,7 +178,7 @@ const ChallengeForm = ({
           />
           <SelectInput
             form={form}
-            name="seniorityLevel"
+            name="seniority"
             label="Seniority Level"
             placeholder="Select seniority level"
             options={seniorityLevels}

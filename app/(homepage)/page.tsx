@@ -1,3 +1,5 @@
+"use client"
+
 import Challenges from '@/components/homepage/challenges';
 import GainExperience from '@/components/homepage/experience';
 import GetStarted from '@/components/homepage/get-started';
@@ -10,7 +12,6 @@ import UnlockCareer from '@/components/homepage/unlock-career';
 import { Fragment } from 'react';
 
 export default function Home() {
-
   return (
     <Fragment>
       <HeroSection />

@@ -1,14 +1,11 @@
-"use client"
+'use client';
 
 // import type { Metadata } from 'next';
-import { Work_Sans } from 'next/font/google';
-import { usePathname } from 'next/navigation'; 
 import '../assets/css/globals.css';
 import '../assets/css/embla.css';
-
-const workSans = Work_Sans({
-  subsets: ['latin'],
-});
+import { Provider } from 'react-redux';
+import { store } from '@/store';
+import { Suspense } from 'react';
 
 // export const metadata: Metadata = {
 //   title: 'Umurava skills challenge',
@@ -20,14 +17,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isDashboard = pathname?.startsWith('/dashboard');
-
   return (
-    <html lang="en">
-      <body className={`${workSans.className} text-primary antialiased ${isDashboard ? 'overflow-hidden' : ''}`}>
-        {children}
-      </body>
-    </html>
+    <Provider store={store}>
+      <html lang="en">
+        <body>
+          <Suspense>{children}</Suspense>
+        </body>
+      </html>
+    </Provider>
   );
 }

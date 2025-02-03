@@ -1,35 +1,20 @@
+"use client"
+
 import Projectcard from '@/components/common/homepage/project-card';
 import SVGIcon from '@/components/common/svg';
 import PaperIcon from '@/components/common/svg/paper-icon';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { IProject } from '@/lib/types/project';
+import { AppState } from '@/lib/types/user';
+import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 const ChallengesPage = () => {
-  const baseData: IProject = {
-    id: '12345',
-    title: 'Design a Dashboard for SokoFund',
-    deadline: new Date(),
-    duration: '5 days',
-    moneyPrize: '500 USD',
-    skills: ['UI/UX Design', 'User Research', 'User Research'],
-    seniorityLevel: ['Junior', 'Intermediate', 'Senior'],
-    contactEmail: 'test@example.com',
-    description: 'Design a Dashboard for SokoFund description',
-    brief: 'Brief for Design a Dashboard for SokoFund',
-    tasks: 'Task 1',
-  };
-  const challengesData: IProject[] = Array.from({ length: 6 }, (_, index) => ({
-    ...baseData,
-    id: `${baseData.id}-${index + 1}`,
-    title: `${baseData.title}`,
-    deadline: new Date(new Date().getTime() + index * 24 * 60 * 60 * 1000),
-  }));
-  const user = {
-    role: 'TALENT',
-  };
+  const { data } = useGetChallengesQuery({ limit: 9, page: 1 });
+  const challengesData=data?.challenges
+  const user = useSelector((state: AppState) => state?.userReducer?.user);
   return (
     <div className="md:px-4">
       <div className="my-4">
@@ -89,7 +74,7 @@ const ChallengesPage = () => {
         )}
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 mx-auto">
-        {challengesData.map((challenge) => (
+        {challengesData?.map((challenge) => (
           <Projectcard
             usage="dashboard"
             key={challenge.id}
