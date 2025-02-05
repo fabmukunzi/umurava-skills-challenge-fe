@@ -1,16 +1,11 @@
 'use client';
 
-// import type { Metadata } from 'next';
-import '../assets/css/globals.css';
-import '../assets/css/embla.css';
+import '@/assets/css/globals.css';
+import '@/assets/css/embla.css';
 import { Provider } from 'react-redux';
 import { store } from '@/store';
 import { Suspense } from 'react';
-
-// export const metadata: Metadata = {
-//   title: 'Umurava skills challenge',
-//   description: 'Build Work Experience through Skills Challenges Program',
-// };
+import { Toaster } from '@/components/ui/toaster';
 
 export default function RootLayout({
   children,
@@ -22,6 +17,7 @@ export default function RootLayout({
       <html lang="en">
         <body>
           <Suspense>{children}</Suspense>
+          <Toaster />
         </body>
       </html>
     </Provider>

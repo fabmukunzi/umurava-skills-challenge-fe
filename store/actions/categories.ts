@@ -1,4 +1,4 @@
-import { ICategory } from '@/lib/types/project';
+import { ICategory, ISkill } from '@/lib/types/project';
 import { baseAPI } from '@/store/api';
 
 const categoryEndpoints = baseAPI.injectEndpoints({
@@ -9,7 +9,13 @@ const categoryEndpoints = baseAPI.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getSkills: builder.query<{ skills: ISkill[] }, void>({
+        query: () => ({
+          url: `/skills`,
+          method: 'GET',
+        }),
+      }),
   }),
 });
 
-export const { useGetCategoriesQuery } = categoryEndpoints;
+export const { useGetCategoriesQuery,useGetSkillsQuery } = categoryEndpoints;

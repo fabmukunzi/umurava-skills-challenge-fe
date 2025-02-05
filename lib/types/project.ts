@@ -12,8 +12,8 @@ export interface IProject {
   challengeTitle: string;
   description: string;
   projectBrief: string;
-  startDate: string;
-  deadline: string;
+  startDate: Date;
+  deadline: Date;
   moneyPrize: string;
   seniority: string[];
   categoryId: string;
@@ -22,6 +22,12 @@ export interface IProject {
   contactEmail: string;
   createdAt: string;
   category: ICategory;
+}
+
+export interface ISkill{
+  id:string;
+  name:string;
+  createdAt:string;
 }
 
   

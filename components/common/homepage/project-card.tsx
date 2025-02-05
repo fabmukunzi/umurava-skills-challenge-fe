@@ -32,16 +32,18 @@ const Projectcard: FC<{
           {project.challengeTitle}
         </h1>
         <p className="font-semibold text-[13px] mb-1">Skills Needed:</p>
-        <div className="flex gap-2">
-          {project.skills?.map((skill) => (
-            <Badge
-              className="rounded-xl py-1.5 max-w-screen-sm:text-[10px] text-[10.5px]"
-              variant="outline"
-              key={skill}
-            >
-              {skill}
-            </Badge>
-          ))}
+        <div className="flex gap-2 flex-wrap">
+          {project.skills
+            ?.filter((skill) => skill.trim() !== '')
+            ?.map((skill) => (
+              <Badge
+                className="rounded-xl py-1.5 max-w-screen-sm:text-[10px] text-[10.5px]"
+                variant="outline"
+                key={skill}
+              >
+                {skill}
+              </Badge>
+            ))}
         </div>
         <p className="font-semibold text-[13px] my-3">
           Seniority Level:{' '}

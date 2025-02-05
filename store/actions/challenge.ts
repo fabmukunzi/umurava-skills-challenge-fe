@@ -1,8 +1,8 @@
 import { IProject } from '@/lib/types/project';
 import { baseAPI } from '@/store/api';
 
-export interface CreateChallengeDto
-  extends Omit<IProject, 'id' | 'createdAt'|'category'> {}
+export type CreateChallengeDto = Omit<IProject, 'id' | 'createdAt' | 'category'>;
+
 interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
 }
@@ -10,11 +10,16 @@ interface ChallengeQueryParams {
   limit: number;
   page: number;
 }
+interface IStatusCount {
+  Open: number;
+  Ongoing: number;
+  Completed: number;
+}
 
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getChallenges: builder.query<
-      { challenges: IProject[] },
+      { challenges: IProject[]; statusCounts: IStatusCount; total: number,totalPages: number},
       ChallengeQueryParams
     >({
       query: ({ limit, page }) => ({
@@ -22,6 +27,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         method: 'GET',
         params: { limit, page },
       }),
+      providesTags:['challenges'],
     }),
 
     getChallengeById: builder.query<{ challenge: IProject }, string>({
@@ -29,6 +35,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         url: `/challenges/${id}`,
         method: 'GET',
       }),
+      providesTags:['challenge'],
     }),
 
     createChallenge: builder.mutation<IProject, CreateChallengeDto>({
@@ -37,14 +44,16 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         method: 'POST',
         body: challengeData,
       }),
+      invalidatesTags:['challenges'],
     }),
 
     updateChallenge: builder.mutation<IProject, UpdateChallengeDto>({
       query: ({ id, ...challengeData }) => ({
         url: `/challenges/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: challengeData,
       }),
+      invalidatesTags:['challenge','challenges'],
     }),
 
     deleteChallenge: builder.mutation<{ message: string }, string>({
@@ -52,6 +61,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         url: `/challenges/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags:['challenge','challenges'],
     }),
   }),
 });

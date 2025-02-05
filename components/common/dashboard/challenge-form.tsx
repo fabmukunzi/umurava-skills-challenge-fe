@@ -19,7 +19,10 @@ import TextInput from '@/components/common/text-input';
 import SelectInput from '@/components/common/select-box';
 import { Textarea } from '@/components/ui/textarea';
 import { CreateChallengeDto } from '@/store/actions/challenge';
-import { useGetCategoriesQuery } from '@/store/actions/categories';
+import {
+  useGetCategoriesQuery,
+  useGetSkillsQuery,
+} from '@/store/actions/categories';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -27,10 +30,12 @@ const ChallengeForm = ({
   onSubmit,
   defaultValues,
   isEdit = false,
+  isSubmitting = false,
 }: {
   onSubmit: (values: CreateChallengeDto) => void;
   defaultValues: CreateChallengeDto;
   isEdit?: boolean;
+  isSubmitting?: boolean;
 }) => {
   const form = useForm<CreateChallengeDto>({
     resolver: zodResolver(challengeFormSchema),
@@ -42,19 +47,19 @@ const ChallengeForm = ({
     value: category.id,
     label: category.title,
   }));
-  const skills = [
-    { value: 'JavaScript', label: 'JavaScript' },
-    { value: 'Python', label: 'Python' },
-    { value: 'Java', label: 'Java' },
-    { value: 'UI/UX Design', label: 'UI/UX Design' },
-    { value: 'User Research', label: 'User Research' },
-  ];
+  const { data: skillsData } = useGetSkillsQuery();
+  const skills = skillsData?.skills?.map((skill) => ({
+    value: skill.id,
+    label: skill.name,
+  }));
 
   const seniorityLevels = [
     { value: 'Junior', label: 'Junior' },
     { value: 'Intermediate', label: 'Intermediate' },
     { value: 'Senior', label: 'Senior' },
   ];
+
+
 
   return (
     <Card className="md:w-3/5 mx-auto p-6 my-10">
@@ -157,7 +162,7 @@ const ChallengeForm = ({
               name="categoryId"
               label="Challenge Category"
               placeholder="Select a category"
-              options={categories??[]}
+              options={categories ?? []}
             />
 
             <TextInput
@@ -173,7 +178,7 @@ const ChallengeForm = ({
             name="skills"
             label="Skills Needed"
             placeholder="Select skills needed"
-            options={skills}
+            options={skills ?? []}
             multi={true}
           />
           <SelectInput
@@ -186,11 +191,26 @@ const ChallengeForm = ({
           />
 
           <div className="w-full flex gap-5 py-5">
-            <Button className="w-5/12 h-12" variant="outline" type="button">
+            <Button
+              disabled={isSubmitting}
+              className="w-5/12 h-12"
+              variant="outline"
+              type="button"
+            >
               Cancel
             </Button>
-            <Button className="w-7/12 h-12" type="submit">
-              {isEdit ? 'Update Challenge' : 'Create Challenge'}
+            <Button
+              disabled={isSubmitting}
+              className="w-7/12 h-12 flex items-center justify-center"
+              type="submit"
+            >
+              {isSubmitting ? (
+                <div className="h-6 w-6 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+              ) : isEdit ? (
+                'Update Challenge'
+              ) : (
+                'Create Challenge'
+              )}
             </Button>
           </div>
         </form>

@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
 import { UmuravaWhiteLogo } from '@/lib/images';
@@ -9,7 +11,7 @@ import ParticipantsCard from '@/components/dashboard/participants';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import SVGIcon from '@/components/common/svg';
 import MailIcon from '@/components/common/svg/mail-icon';
 import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
@@ -17,8 +19,25 @@ import DollarIcon from '@/components/common/svg/dollar-icon';
 import CalendarIcon from '@/components/common/svg/calendar-icon';
 import { useSelector } from 'react-redux';
 import { AppState } from '@/lib/types/user';
-import { useGetChallengeByIdQuery } from '@/store/actions/challenge';
+import {
+  useDeleteChallengeMutation,
+  useGetChallengeByIdQuery,
+} from '@/store/actions/challenge';
 import { getChallengeDuration } from '@/lib/get-challenge-duration';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
 
 const SingleChallengePage = () => {
   const participants = [
@@ -66,16 +85,39 @@ const SingleChallengePage = () => {
     },
   ];
 
+  const router = useRouter();
   const params = useParams();
+  const { toast } = useToast();
   const challengeId = params?.challengeId as string;
 
-  const { data } = useGetChallengeByIdQuery(challengeId, {
+  const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
 
   const project = data?.challenge;
 
   const user = useSelector((state: AppState) => state?.userReducer?.user);
+  const [deleteChallenge] = useDeleteChallengeMutation();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteChallenge(challengeId).unwrap();
+      router.push(dashboardRoutes.challengeHackathons.path);
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong',
+        variant: 'destructive',
+        description: error?.data?.message,
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (isLoading)
+    return <SingleChallengeSkeleton isAdmin={user.role === 'ADMIN'} />;
 
   return (
     <div>
@@ -133,10 +175,14 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={`${getChallengeDuration(
-                  project?.startDate || new Date().toISOString(),
-                  project?.deadline || new Date().toISOString()
-                )} Days`}
+                value={
+                  project?.startDate && project?.deadline
+                    ? `${getChallengeDuration(
+                        new Date(project.startDate),
+                        new Date(project.deadline)
+                      )} Days`
+                    : 'N/A'
+                }
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={DollarIcon} />}
@@ -146,7 +192,34 @@ const SingleChallengePage = () => {
             </div>
             {user.role === 'ADMIN' ? (
               <div className="flex w-full mt-5 gap-6">
-                <Button className="w-full h-12 bg-red-500">Delete</Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="w-full h-12 bg-red-500"
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? 'Deleting...' : 'Delete'}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the challenge and remove its data.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        className="bg-red-500"
+                      >
+                        Yes, delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
                 <Link
                   className="w-full"
                   href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}

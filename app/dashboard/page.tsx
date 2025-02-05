@@ -1,5 +1,6 @@
 'use client';
 
+import SkeletonCard from '@/components/common/challenge-skeleton-card';
 import Projectcard from '@/components/common/homepage/project-card';
 import SVGIcon from '@/components/common/svg';
 import FlatPaperIcon from '@/components/common/svg/flatpaper-icon';
@@ -9,24 +10,34 @@ import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
 import { AppState } from '@/lib/types/user';
+import { useGetSkillsQuery } from '@/store/actions/categories';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { ChevronRight, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 
 const DashboardPage = () => {
-   const { data } = useGetChallengesQuery({ limit: 3, page: 1 });
-   const challengesData=data?.challenges
+  const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1 });
+  const challengesData = data?.challenges;
+
+  const { data: skillsData, isLoading: loadingSkills } = useGetSkillsQuery();
+
+  const getSkillNamesByIds = (ids: string[]) => {
+    return ids.map((id) => {
+      const skill = skillsData?.skills?.find((skill) => skill.id === id);
+      return skill ? skill.name : '';
+    });
+  };
   const statistics = [
-    { title: 'Completed Challenges', value: '05' },
-    { title: 'Open Challenges', value: '200' },
-    { title: 'Ongoing Challenges', value: '200' },
+    { title: 'Completed Challenges', value: data?.statusCounts.Completed || 0 },
+    { title: 'Open Challenges', value: data?.statusCounts.Open || 0 },
+    { title: 'Ongoing Challenges', value: data?.statusCounts.Ongoing || 0 },
   ];
   const user = useSelector((state: AppState) => state?.userReducer?.user);
   const adminStatData = [
     {
       title: 'Total Challenges',
-      number: 29405,
+      number: data?.total || 0,
       icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 15,
     },
@@ -76,7 +87,7 @@ const DashboardPage = () => {
           {statistics.map((stat, index) => (
             <TalentStasticsCard
               title={stat.title}
-              value={stat.value}
+              value={stat?.value?.toString()}
               key={index}
             />
           ))}
@@ -105,11 +116,26 @@ const DashboardPage = () => {
           See all <ChevronRight />
         </Link>
       </div>
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
-        {challengesData?.map((challenge, index) => (
-          <Projectcard key={index} project={challenge} usage="dashboard" />
-        ))}
-      </div>
+      {isLoading || loadingSkills ? (
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
+          {[...Array(3)].map((_, index) => (
+            <SkeletonCard className="w-full" key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
+          {challengesData?.map((challenge, index) => (
+            <Projectcard
+              key={index}
+              project={{
+                ...challenge,
+                skills: getSkillNamesByIds(challenge.skills),
+              }}
+              usage="dashboard"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

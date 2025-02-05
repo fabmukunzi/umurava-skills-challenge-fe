@@ -10,6 +10,7 @@ import { Bell, Search } from 'lucide-react';
 import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 const workSans = Work_Sans({
@@ -20,14 +21,19 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const queryParam = useSearchParams();
   const userRole = queryParam.get('role');
 
-  if (userRole) {
-    localStorage.setItem('userRole', userRole);
-  }
+  useEffect(() => {
+    if (typeof window !== 'undefined' && userRole) {
+      localStorage.setItem('userRole', userRole);
+    }
+  }, [userRole]);
 
   const user: UserSchema = {
     full_name: 'Hilaire Sh',
     email: 'hilaire@uidesign',
-    role: localStorage.getItem('userRole') || 'TALENT',
+    role:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('userRole') || 'TALENT'
+        : 'TALENT',
     profile_image:
       'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
   };
