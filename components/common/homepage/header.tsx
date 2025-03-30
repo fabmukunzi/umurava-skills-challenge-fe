@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
 import { homepageRoutes } from '@/lib/routes';
+import Link from 'next/link';
 
 const HeaderComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,11 +54,11 @@ const HeaderComponent = () => {
             })}
           </nav>
 
-          <div className="hidden lg:block">
+          <Link href={homepageRoutes.login.path} className="hidden lg:block">
             <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
               Join the Program
             </Button>
-          </div>
+          </Link>
 
           <div className="block lg:hidden">
             <div
@@ -75,7 +76,7 @@ const HeaderComponent = () => {
 
         <div
           className={clsx(
-            'lg:hidden bg-white shadow-lg overflow-hidden transition-all duration-500 ease-in-out',
+            'lg:hidden bg-white pb-5 shadow-lg overflow-hidden transition-all duration-500 ease-in-out',
             {
               'max-h-screen opacity-100': isMenuOpen,
               'max-h-0 opacity-0': !isMenuOpen,
@@ -98,11 +99,11 @@ const HeaderComponent = () => {
               );
             })}
           </nav>
-          <div className="px-6 pb-4">
-            <Button className="w-full bg-[#041738] text-white">
+          <Link href={homepageRoutes.login.path} className="px-6 pb-4">
+            <Button className="w-fit bg-[#041738] hover:bg-[#041738]/50 text-white">
               Join the Program
             </Button>
-          </div>
+          </Link>
         </div>
       </header>
 
