@@ -21,9 +21,20 @@ export const homepageRoutes = {
   },
   contact: {
     label: 'Contact Us',
-    path: '/contact-us',
+    path: '#contact-us',
     name: 'contact',
   },
+  login: {
+    label: 'Login',
+    path: '/login',
+    name: 'login',
+  },
+  signup:{
+    label: 'Signup',
+    path: '/signup',
+    name: 'signup',
+  }
+
 };
 
 export const dashboardRoutes = {

@@ -35,6 +35,7 @@ import SokoFundLogo2 from '@/assets/logos/SokoFund 1.svg';
 import CollapsedUmuravaLogo from '@/assets/logos/umurava-collapsed-logo.svg';
 import HomeIcon from '@/assets/images/home-icon.svg';
 import MessageIcon from '@/assets/images/message-icon.svg';
+import GoogleIcon2 from '@/assets/images/google-icon-logo-svgrepo-com.svg'
 
 export {
   UmuravaLogo,
@@ -73,5 +74,6 @@ export {
   SokoFundLogo2,
   CollapsedUmuravaLogo,
   HomeIcon,
-  MessageIcon
+  MessageIcon,
+  GoogleIcon2
 };
