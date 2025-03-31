@@ -19,6 +19,7 @@ import Link from 'next/link';
 import SVGIcon from '@/components/common/svg';
 import HomeIcon from '@/components/common/svg/home-icon';
 import PaperIcon from '@/components/common/svg/paper-icon';
+import SubmissionIcon from '../svg/submission-icon';
 import PersonPlusIcon from '@/components/common/svg/person-plus-icon';
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -39,6 +40,11 @@ const items = [
     title: dashboardRoutes.challengeHackathons.label,
     url: dashboardRoutes.challengeHackathons.path,
     icon: PaperIcon,
+  },
+  {
+    title: dashboardRoutes.submissions.label,
+    url: dashboardRoutes.submissions.path,
+    icon: SubmissionIcon,
   },
   {
     title: dashboardRoutes.community.label,
@@ -120,11 +126,10 @@ export function AppSidebar() {
                   return (
                     <SidebarMenuItem
                       key={index}
-                      className={`rounded group py-0 ${
-                        selectedItem === item.title
-                          ? 'bg-white text-primary'
-                          : 'hover:bg-white hover:text-primary text-white'
-                      }`}
+                      className={`rounded group py-0 ${selectedItem === item.title
+                        ? 'bg-white text-primary'
+                        : 'hover:bg-white hover:text-primary text-white'
+                        }`}
                       onClick={() => {
                         if (item.isDialog) {
                           setIsDialogOpen(true);
@@ -186,11 +191,10 @@ export function AppSidebar() {
                     return (
                       <SidebarMenuItem
                         key={index}
-                        className={`rounded group py-0 ${
-                          isHovered || isSelected
-                            ? 'bg-white text-primary'
-                            : ' text-white'
-                        }`}
+                        className={`rounded group py-0 ${isHovered || isSelected
+                          ? 'bg-white text-primary'
+                          : ' text-white'
+                          }`}
                         onClick={() => setSelectedItem(item.title)}
                         onMouseEnter={() => setHoveredItem(item.title)}
                         onMouseLeave={() => setHoveredItem(undefined)}

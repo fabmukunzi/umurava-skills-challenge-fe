@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
 const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
+export const challengeSubmissionSchema = z.object({
+  submissionLink: z.string().url({ message: 'Enter a valid URL.' }),
+  description: z
+    .string()
+    .min(20, { message: 'Description must be at least 20 characters.' }),
+});
 
 export const challengeFormSchema = z.object({
   challengeName: z

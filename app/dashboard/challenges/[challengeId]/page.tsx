@@ -16,6 +16,7 @@ import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
 import DollarIcon from '@/components/common/svg/dollar-icon';
 import CalendarIcon from '@/components/common/svg/calendar-icon';
 import {
+  SubmitChallengeDto,
   useDeleteChallengeMutation,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
@@ -34,10 +35,65 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
-import { useSession } from 'next-auth/react';
-import { handleError } from '@/lib/errorHandler';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Textarea } from '@/components/ui/textarea';
 
 const SingleChallengePage = () => {
+  const form = useForm<SubmitChallengeDto>({
+    resolver: zodResolver(challengeSubmissionSchema),
+    defaultValues: {},
+  });
+
+  const participants = [
+    {
+      id: 1,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'John Doe',
+      occupation: 'Product Designer',
+    },
+    {
+      id: 2,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 3,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 4,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 5,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+    {
+      id: 6,
+      profileImage:
+        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
+      fullName: 'Jane Smith',
+      occupation: 'UX Researcher',
+    },
+  ];
+
   const router = useRouter();
   const params = useParams();
   const challengeId = params?.challengeId as string;
@@ -58,6 +114,8 @@ const SingleChallengePage = () => {
 
   const [deleteChallenge] = useDeleteChallengeMutation();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -68,6 +126,27 @@ const SingleChallengePage = () => {
       handleError(error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const onSubmit = async (data: SubmitChallengeDto) => {
+    setIsSubmitting(true);
+    console.log('data', data);
+    try {
+      toast({
+        title: 'Success',
+        description: 'Your submission has been sent successfully.',
+      });
+      setOpenSubmitDialog(false);
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong',
+        variant: 'destructive',
+        description: error?.data?.message,
+      });
+    } finally {
+      setIsSubmitting(false);
+      form.reset();
     }
   };
 
@@ -139,9 +218,9 @@ const SingleChallengePage = () => {
                 value={
                   project?.startDate && project?.endDate
                     ? `${getChallengeDuration(
-                        new Date(project.startDate),
-                        new Date(project.endDate)
-                      )} Days`
+                      new Date(project.startDate),
+                      new Date(project.deadline)
+                    )} Days`
                     : 'N/A'
                 }
               />
@@ -218,7 +297,7 @@ const SingleChallengePage = () => {
                 </Link>
               </div>
             ) : (
-              <Button className="w-full h-12">Submit Your Work</Button>
+              <Button className="w-full h-12" onClick={() => setOpenSubmitDialog(!openSubmitDialog)}>Submit Your Work</Button>
             )}
           </Card>
 
@@ -230,7 +309,67 @@ const SingleChallengePage = () => {
             )}
         </div>
       </div>
-    </div>
+
+      <Dialog open={openSubmitDialog} onOpenChange={setOpenSubmitDialog}>
+        <DialogContent
+          hideCloseButton={true}
+          className="flex flex-col mx-auto"
+        >
+
+          <h1 className="text-black text-lg font-semibold">
+            Submit Your Work
+          </h1>
+          <h2 className="text-primary_grey text-base">
+            Submit your work and provide either a Github repository URL or Google drive link.
+          </h2>
+          <ul className='list-disc text-left text-primary_grey *:text-base px-4 md:px-8'>
+            <li>For public reposities: Share the Github URL</li>
+            <li>For private repositories: provide a Googlr drive link with view access.</li>
+            <li>Share the file/folder with <span className='font-semibold'>team@umurava.africa</span> (Note: Ensure <span className='font-semibold'>Viewer</span> access is granted).</li>
+          </ul>
+          <Form {...form}>
+            <form className='space-y-2 md:space-y-4' onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="submissionLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-12"
+                        placeholder="Enter your project URL"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Notes</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Add any additional notes or comments here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button className="w-full h-12 flex items-center justify-center" disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </div >
   );
 };
 

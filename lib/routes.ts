@@ -29,7 +29,7 @@ export const homepageRoutes = {
     path: '/login',
     name: 'login',
   },
-  signup:{
+  signup: {
     label: 'Signup',
     path: '/signup',
     name: 'signup',
@@ -62,6 +62,11 @@ export const dashboardRoutes = {
     //   path: '/dashboard/challenges/',
     //   name: 'create-new-challenge',
     // },
+  },
+  submissions: {
+    label: 'Submissions',
+    path: '/submissions',
+    name: 'submissions',
   },
   community: {
     label: 'Community',

@@ -21,6 +21,11 @@ export type CreateChallengeDto = Omit<
 interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
 }
+
+export type SubmitChallengeDto = {
+  submissionLink: string;
+  description: string;
+}
 interface ChallengeQueryParams {
   limit: number;
   page: number;
