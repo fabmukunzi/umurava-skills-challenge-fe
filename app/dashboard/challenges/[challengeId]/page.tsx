@@ -316,7 +316,7 @@ const SingleChallengePage = () => {
           hideCloseButton={true}
           className="flex flex-col mx-auto"
         >
-          <div className='flex items-center justify-between gap-2 mb-4'>
+          <div className='flex items-center justify-between gap-2'>
             <h1 className="text-black text-lg font-semibold">
               Submit Your Work
             </h1>

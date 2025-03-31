@@ -31,6 +31,12 @@ interface ChallengeQueryParams {
   page: number;
 }
 
+export type ChallengeFeedbackDto = {
+  feedback: string;
+  submissionId: string;
+  challengeId: string;
+}
+
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getChallenges: builder.query<IGetChallengesResponse, ChallengeQueryParams>({
