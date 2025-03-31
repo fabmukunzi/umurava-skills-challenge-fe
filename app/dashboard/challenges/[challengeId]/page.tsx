@@ -42,6 +42,7 @@ import { useForm } from 'react-hook-form';
 import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from '@/components/ui/textarea';
+import { CloseIcon } from '@/components/common/svg/close-icon';
 
 const SingleChallengePage = () => {
   const form = useForm<SubmitChallengeDto>({
@@ -315,10 +316,17 @@ const SingleChallengePage = () => {
           hideCloseButton={true}
           className="flex flex-col mx-auto"
         >
-
-          <h1 className="text-black text-lg font-semibold">
-            Submit Your Work
-          </h1>
+          <div className='flex items-center justify-between gap-2 mb-4'>
+            <h1 className="text-black text-lg font-semibold">
+              Submit Your Work
+            </h1>
+            <div onClick={() => setOpenSubmitDialog(false)} className='cursor-pointer hover:text-[#2B71F0] text-white border border-[#2B71F0] rounded-full p-2'>
+              <SVGIcon
+                color={`#2B71F0`}
+                className="!size-5"
+                Icon={CloseIcon}
+              /></div>
+          </div>
           <h2 className="text-primary_grey text-base">
             Submit your work and provide either a Github repository URL or Google drive link.
           </h2>
