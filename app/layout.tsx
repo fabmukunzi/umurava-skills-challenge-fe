@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { store } from '@/store';
 import { Suspense } from 'react';
 import { Toaster } from '@/components/ui/toaster';
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({
   children,
@@ -14,12 +15,14 @@ export default function RootLayout({
 }>) {
   return (
     <Provider store={store}>
-      <html lang="en">
-        <body>
-          <Suspense>{children}</Suspense>
-          <Toaster />
-        </body>
-      </html>
+      <SessionProvider>
+        <html lang="en">
+          <body>
+            <Suspense>{children}</Suspense>
+            <Toaster />
+          </body>
+        </html>
+      </SessionProvider>
     </Provider>
   );
 }

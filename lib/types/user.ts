@@ -11,3 +11,9 @@ export interface AppState {
     user: UserSchema;
   };
 }
+
+export interface SignupRequest {
+  names: string;
+  email: string;
+  password: string;
+}

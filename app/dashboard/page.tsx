@@ -9,12 +9,11 @@ import AdminStatCard from '@/components/dashboard/admin-statistics-card';
 import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { AppState } from '@/lib/types/user';
 import { useGetSkillsQuery } from '@/store/actions/categories';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { ChevronRight, Eye } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
 
 const DashboardPage = () => {
   const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1 });
@@ -29,11 +28,10 @@ const DashboardPage = () => {
     });
   };
   const statistics = [
-    { title: 'Completed Challenges', value: data?.statusCounts.Completed || 0 },
-    { title: 'Open Challenges', value: data?.statusCounts.Open || 0 },
-    { title: 'Ongoing Challenges', value: data?.statusCounts.Ongoing || 0 },
+    { title: 'Completed Challenges', value: data?.statusCounts?.Completed || 0 },
+    { title: 'Open Challenges', value: data?.statusCounts?.Open || 0 },
+    { title: 'Ongoing Challenges', value: data?.statusCounts?.Ongoing || 0 },
   ];
-  const user = useSelector((state: AppState) => state?.userReducer?.user);
   const adminStatData = [
     {
       title: 'Total Challenges',
@@ -66,6 +64,8 @@ const DashboardPage = () => {
       percentage: 20,
     },
   ];
+  const session = useSession();
+  const user=session.data?.user
   return (
     <div className="px-2">
       <div className="flex flex-wrap max-w-screen-md:text-center justify-between items-center my-6">
@@ -82,7 +82,7 @@ const DashboardPage = () => {
           View Profile
         </Button>
       </div>
-      {user?.role !== 'ADMIN' ? (
+      {user?.role?.toLocaleLowerCase() !== 'admin' ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard

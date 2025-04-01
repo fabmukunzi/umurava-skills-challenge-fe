@@ -1,11 +1,13 @@
-'use client';
-
-import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Umurava skills challenge',
+    description: 'Build Work Experience through Skills Challenges Program',
+  };
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <SessionProvider>
       <div className="flex min-h-screen bg-gray-100 px-6 py-12 lg:px-20">
         <div className="hidden lg:flex flex-col justify-start mt-10 w-1/2 pr-12">
           <h1 className="text-4xl font-bold text-gray-900">
@@ -22,6 +24,5 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           {children}
         </div>
       </div>
-    </SessionProvider>
   );
 }

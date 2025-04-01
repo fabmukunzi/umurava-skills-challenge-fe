@@ -26,8 +26,8 @@ import { usePathname } from 'next/navigation';
 import GearIcon from '@/components/common/svg/gear-icon';
 import HeadsetIcon from '@/components/common/svg/headset-icon';
 import GiftBoxIcon from '@/components/common/svg/giftbox-icon';
-import { useSelector } from 'react-redux';
-import { AppState } from '@/lib/types/user';
+import { signOut, useSession } from 'next-auth/react';
+import SidebarSkeleton from '../sidebar-skeleton';
 
 const items = [
   {
@@ -54,6 +54,18 @@ const footerItems = [
   { title: 'Refer Family & Friends', icon: GiftBoxIcon, url: '/refer' },
 ];
 
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string;
+      profileUrl: string;
+    };
+  }
+}
+
 export function AppSidebar() {
   const pathname = usePathname();
   const [selectedItem, setSelectedItem] = useState(() => {
@@ -64,6 +76,9 @@ export function AppSidebar() {
     );
     return matchingItem?.title || items[0].title;
   });
+
+  const session = useSession();
+  const user = session.data?.user;
 
   useEffect(() => {
     const matchingItem = items.find(
@@ -76,7 +91,16 @@ export function AppSidebar() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | undefined>(undefined);
-  const user = useSelector((state: AppState) => state?.userReducer?.user);
+  if (!session?.data) {
+    return <SidebarSkeleton />;
+  }
+
+  const handleLogout = async () => {
+    await signOut({
+      redirect: true,
+      callbackUrl: '/',
+    });
+  };
 
   return (
     <>
@@ -90,7 +114,7 @@ export function AppSidebar() {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item,index) => {
+                {items.map((item, index) => {
                   const isSelected = selectedItem === item.title;
                   const isHovered = hoveredItem === item.title;
                   return (
@@ -156,7 +180,7 @@ export function AppSidebar() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {footerItems.map((item,index) => {
+                  {footerItems.map((item, index) => {
                     const isSelected = selectedItem === item.title;
                     const isHovered = hoveredItem === item.title;
                     return (
@@ -194,21 +218,21 @@ export function AppSidebar() {
             </SidebarGroup>
 
             <div className="py-6 mt-4 px-2 flex items-center gap-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-1">
                 <Image
-                  src={user?.profile_image}
+                  src={user?.profileUrl || ''}
                   alt="Profile"
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                   className="rounded-full object-cover border-2 border-white"
                 />
                 <div>
-                  <p className="text-white font-medium">{user?.full_name}</p>
-                  <p className="text-white text-sm">{user?.email}</p>
+                  <p className="text-white font-medium">{user?.name}</p>
+                  <p className="text-white text-xs truncate">{user?.email}</p>
                 </div>
               </div>
-              <div>
-                <LogOut className="w-5 h-5 text-white" />
+              <div className="cursor-pointer">
+                <LogOut onClick={handleLogout} className="w-5 h-5 text-white" />
               </div>
             </div>
           </div>

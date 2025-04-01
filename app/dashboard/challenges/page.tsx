@@ -69,7 +69,7 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           Completed Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.statusCounts.Completed}
+            {data?.statusCounts?.Completed}
           </span>
         </Button>
         <Button
@@ -79,7 +79,7 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           Open Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.statusCounts.Open}
+            {data?.statusCounts?.Open}
           </span>
         </Button>
         <Button
@@ -89,10 +89,10 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           Ongoing Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.statusCounts.Ongoing}
+            {data?.statusCounts?.Ongoing}
           </span>
         </Button>
-        {user.role === 'ADMIN' && (
+        {user?.role === 'ADMIN' && (
           <Link href={dashboardRoutes.challengeHackathons.new.path}>
             <Button size="lg" className="col-span-2 md:col-span-1">
               <Plus />

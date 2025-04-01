@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GoogleIcon2 } from '@/lib/images';
 import Image from 'next/image';
 import Link from 'next/link';
+import { homepageRoutes } from '@/lib/routes';
 
 interface LoginForm {
   email: string;
@@ -25,40 +26,36 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     setError('');
-console.log(data)
-console.log(router)
+  
     try {
-      // const response = await fetch('http://localhost:5000/api/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // });
-
-      // const result = await response.json();
-      // if (!response.ok) {
-      //   throw new Error(result.message || 'Login failed');
-      // }
-
-      // localStorage.setItem('token', result.token);
-      // router.push('/dashboard');
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+        callbackUrl: '/dashboard',
+      });
+  
+      if (result?.error) {
+        setError(result.error);
+      } else {
+        router.push(result?.url || '/dashboard');
+      }
     } catch (error: unknown) {
-      setError(
-        error instanceof Error ? error.message : 'An unknown error occurred'
-      );
+      setError(error instanceof Error ? error.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleOAuthSignIn = async () => {
     setLoading(true);
     setError('');
     try {
+      // Google OAuth login
       await signIn('google', { callbackUrl: '/dashboard' });
     } catch (error: unknown) {
-      setError(
-        error instanceof Error ? error.message : 'An unknown error occurred'
-      );
+      setError(error instanceof Error ? error.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
@@ -74,9 +71,7 @@ console.log(router)
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
             <Input
               {...register('email')}
               type="email"
@@ -86,9 +81,7 @@ console.log(router)
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
             <Input
               {...register('password')}
               type="password"
@@ -98,6 +91,9 @@ console.log(router)
             />
           </div>
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          <Link href={homepageRoutes.forgotPassword.path} className="text-primary text-sm float-right">
+            Forgot password?
+          </Link>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </Button>
@@ -112,17 +108,13 @@ console.log(router)
             onClick={handleOAuthSignIn}
             className="w-full bg-primary/20 hover:bg-primary/30 text-black rounded-full flex items-center justify-center gap-2"
           >
-            <Image
-              className="w-5 h-5 mr-2"
-              src={GoogleIcon2}
-              alt="Google Icon"
-            />
+            <Image className="w-5 h-5 mr-2" src={GoogleIcon2} alt="Google Icon" />
             Sign in with Google
           </Button>
         </div>
         <p className="text-center text-sm text-gray-600 mt-4">
           Don&apos;t have an account yet?{' '}
-          <Link href="/signup" className="text-primary">
+          <Link href={homepageRoutes.signup.path} className="text-primary">
             Sign up
           </Link>
         </p>

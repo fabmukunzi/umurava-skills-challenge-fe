@@ -23,7 +23,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       ChallengeQueryParams
     >({
       query: ({ limit, page }) => ({
-        url: `/challenges`,
+        url: `/public/challenges`,
         method: 'GET',
         params: { limit, page },
       }),

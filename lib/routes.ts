@@ -33,6 +33,11 @@ export const homepageRoutes = {
     label: 'Signup',
     path: '/signup',
     name: 'signup',
+  },
+  forgotPassword:{
+    label: 'Forgot Password',
+    path: '/forgot-password',
+    name: 'forgot-password',
   }
 
 };
