@@ -26,16 +26,16 @@ export type SubmitChallengeDto = {
   submissionLink: string;
   description: string;
 }
-interface ChallengeQueryParams {
-  limit: number;
-  page: number;
-}
-
 export type ChallengeFeedbackDto = {
   feedback: string;
   submissionId: string;
   challengeId: string;
 }
+interface ChallengeQueryParams {
+  limit: number;
+  page: number;
+}
+
 
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({

@@ -34,7 +34,7 @@ export const homepageRoutes = {
     path: '/signup',
     name: 'signup',
   },
-  forgotPassword:{
+  forgotPassword: {
     label: 'Forgot Password',
     path: '/forgot-password',
     name: 'forgot-password',
@@ -62,11 +62,6 @@ export const dashboardRoutes = {
     //   path: '/dashboard/challenges/',
     //   name: 'create-new-challenge',
     // },
-  },
-  submissions: {
-    label: 'Submissions',
-    path: '/submissions',
-    name: 'submissions',
   },
   community: {
     label: 'Community',

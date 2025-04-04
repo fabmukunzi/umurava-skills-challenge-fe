@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
@@ -33,16 +33,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Textarea } from '@/components/ui/textarea';
-import { CloseIcon } from '@/components/common/svg/close-icon';
+} from "@/components/ui/alert-dialog";
+import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { challengeSubmissionSchema } from "@/lib/challenge-form-validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Textarea } from "@/components/ui/textarea";
 
 const SingleChallengePage = () => {
   const form = useForm<SubmitChallengeDto>({
@@ -54,44 +60,44 @@ const SingleChallengePage = () => {
     {
       id: 1,
       profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'John Doe',
-      occupation: 'Product Designer',
+        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
+      fullName: "John Doe",
+      occupation: "Product Designer",
     },
     {
       id: 2,
       profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
+        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
+      fullName: "Jane Smith",
+      occupation: "UX Researcher",
     },
     {
       id: 3,
       profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
+        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
+      fullName: "Jane Smith",
+      occupation: "UX Researcher",
     },
     {
       id: 4,
       profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
+        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
+      fullName: "Jane Smith",
+      occupation: "UX Researcher",
     },
     {
       id: 5,
       profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
+        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
+      fullName: "Jane Smith",
+      occupation: "UX Researcher",
     },
     {
       id: 6,
       profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
+        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
+      fullName: "Jane Smith",
+      occupation: "UX Researcher",
     },
   ];
 
@@ -132,17 +138,17 @@ const SingleChallengePage = () => {
 
   const onSubmit = async (data: SubmitChallengeDto) => {
     setIsSubmitting(true);
-    console.log('data', data);
+    console.log("data", data);
     try {
       toast({
-        title: 'Success',
-        description: 'Your submission has been sent successfully.',
+        title: "Success",
+        description: "Your submission has been sent successfully.",
       });
       setOpenSubmitDialog(false);
     } catch (error: any) {
       toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
+        title: "Something went wrong",
+        variant: "destructive",
         description: error?.data?.message,
       });
     } finally {
@@ -166,7 +172,7 @@ const SingleChallengePage = () => {
         className="md:mx-10 py-4"
         items={[
           {
-            label: 'Challenges & Hackathons',
+            label: "Challenges & Hackathons",
             href: dashboardRoutes.challengeHackathons.path,
           },
           {
@@ -206,7 +212,7 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={MailIcon} />}
                 title="Contact Email"
-                value={project?.contactEmail ?? ''}
+                value={project?.contactEmail ?? ""}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
@@ -222,7 +228,7 @@ const SingleChallengePage = () => {
                       new Date(project.startDate),
                       new Date(project.deadline)
                     )} Days`
-                    : 'N/A'
+                    : "N/A"
                 }
               />
               {Array.isArray(project?.moneyPrize) &&
@@ -268,7 +274,7 @@ const SingleChallengePage = () => {
                       className="w-full h-12 bg-red-500"
                       disabled={isDeleting}
                     >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? "Deleting..." : "Delete"}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -298,7 +304,12 @@ const SingleChallengePage = () => {
                 </Link>
               </div>
             ) : (
-              <Button className="w-full h-12" onClick={() => setOpenSubmitDialog(!openSubmitDialog)}>Submit Your Work</Button>
+              <Button
+                className="w-full h-12"
+                onClick={() => setOpenSubmitDialog(!openSubmitDialog)}
+              >
+                Submit Your Work
+              </Button>
             )}
           </Card>
 
@@ -313,30 +324,36 @@ const SingleChallengePage = () => {
 
       <Dialog open={openSubmitDialog} onOpenChange={setOpenSubmitDialog}>
         <DialogContent
-          hideCloseButton={true}
+          hideCloseButton={false}
           className="flex flex-col mx-auto"
         >
-          <div className='flex items-center justify-between gap-2'>
+          <div className="flex items-center justify-between gap-2">
             <h1 className="text-black text-lg font-semibold">
               Submit Your Work
             </h1>
-            <div onClick={() => setOpenSubmitDialog(false)} className='cursor-pointer hover:text-[#2B71F0] text-white border border-[#2B71F0] rounded-full p-2'>
-              <SVGIcon
-                color={`#2B71F0`}
-                className="!size-5"
-                Icon={CloseIcon}
-              /></div>
           </div>
           <h2 className="text-primary_grey text-base">
-            Submit your work and provide either a Github repository URL or Google drive link.
+            Submit your work and provide either a Github repository URL or
+            Google drive link.
           </h2>
-          <ul className='list-disc text-left text-primary_grey *:text-base px-4 md:px-8'>
+          <ul className="list-disc text-left text-primary_grey *:text-base px-4 md:px-8">
             <li>For public reposities: Share the Github URL</li>
-            <li>For private repositories: provide a Googlr drive link with view access.</li>
-            <li>Share the file/folder with <span className='font-semibold'>team@umurava.africa</span> (Note: Ensure <span className='font-semibold'>Viewer</span> access is granted).</li>
+            <li>
+              For private repositories: provide a Googlr drive link with view
+              access.
+            </li>
+            <li>
+              Share the file/folder with{" "}
+              <span className="font-semibold">team@umurava.africa</span> (Note:
+              Ensure <span className="font-semibold">Viewer</span> access is
+              granted).
+            </li>
           </ul>
           <Form {...form}>
-            <form className='space-y-2 md:space-y-4' onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+              className="space-y-2 md:space-y-4"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
               <FormField
                 control={form.control}
                 name="submissionLink"
@@ -370,14 +387,17 @@ const SingleChallengePage = () => {
                   </FormItem>
                 )}
               />
-              <Button className="w-full h-12 flex items-center justify-center" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+              <Button
+                className="w-full h-12 flex items-center justify-center"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </form>
           </Form>
         </DialogContent>
       </Dialog>
-    </div >
+    </div>
   );
 };
 

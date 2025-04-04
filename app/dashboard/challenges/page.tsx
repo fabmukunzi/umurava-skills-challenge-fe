@@ -24,6 +24,8 @@ const ChallengesPage = () => {
 
   const totalPages = data?.data.pagination.totalPages || 0;
 
+  console.log(challengesData, 'challenge data');
+
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };

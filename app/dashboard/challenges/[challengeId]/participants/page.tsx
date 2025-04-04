@@ -21,7 +21,6 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { feedbackSubmissionSchema } from "@/lib/feedback-form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CloseIcon } from "@/components/common/svg/close-icon";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -112,10 +111,10 @@ const Participants = () => {
         title: "Feedback updated successfully",
         description: "Your feedback has been updated.",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error updating feedback",
-        description: "Please try again later.",
+        description: error?.data?.message,
         variant: "destructive",
       });
     } finally {
@@ -204,12 +203,6 @@ const Participants = () => {
               <h2 className="text-primary_grey text-base">
                 View participant&apos;s submission for this Challenge.{" "}
               </h2>
-            </div>
-            <div
-              onClick={() => setOpenSubmission(false)}
-              className="cursor-pointer hover:text-[#2B71F0] text-white border border-[#2B71F0] rounded-full p-2"
-            >
-              <SVGIcon color={`#2B71F0`} className="!size-5" Icon={CloseIcon} />
             </div>
           </div>
           <div className="flex items-end justify-between ">
