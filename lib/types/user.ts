@@ -1,8 +1,8 @@
 
 export interface UserSchema {
-  full_name: string;
+  names: string;
   role: string;
-  profile_image: string;
+  profile_url: string;
   email:string;
 }
 

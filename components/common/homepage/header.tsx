@@ -7,7 +7,7 @@ import { UmuravaLogo } from '@/lib/images';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
-import { homepageRoutes } from '@/lib/routes';
+import { dashboardRoutes, homepageRoutes } from '@/lib/routes';
 import Link from 'next/link';
 
 const HeaderComponent = () => {
@@ -54,7 +54,7 @@ const HeaderComponent = () => {
             })}
           </nav>
 
-          <Link href={homepageRoutes.login.path} className="hidden lg:block">
+          <Link href={dashboardRoutes.dashboard.path} className="hidden lg:block">
             <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
               Join the Program
             </Button>
@@ -99,7 +99,7 @@ const HeaderComponent = () => {
               );
             })}
           </nav>
-          <Link href={homepageRoutes.login.path} className="px-6 pb-4">
+          <Link href={dashboardRoutes.dashboard.path} className="px-6 pb-4">
             <Button className="w-fit bg-[#041738] hover:bg-[#041738]/50 text-white">
               Join the Program
             </Button>

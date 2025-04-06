@@ -1,4 +1,4 @@
-import { SignupRequest } from '@/lib/types/user';
+import { SignupRequest, UserSchema } from '@/lib/types/user';
 import { baseAPI } from '@/store/api';
 
 interface SignupResponse {
@@ -30,11 +30,37 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
-    resetPassword: builder.mutation<void, { newPassword: string; token: string }>({
+    resetPassword: builder.mutation<
+      void,
+      { newPassword: string; token: string }
+    >({
       query: (data) => ({
-        url: "/auth/reset-password",
-        method: "POST",
+        url: '/auth/reset-password',
+        method: 'POST',
         body: data,
+      }),
+    }),
+    getProfile: builder.query<{ data: UserSchema }, void>({
+      query: () => '/auth/profile',
+    }),
+    updateProfile: builder.mutation<
+      void,
+      { names?: string; profile_url?: string; email?: string }
+    >({
+      query: (body) => ({
+        url: '/auth/profile',
+        method: 'PUT',
+        body,
+      }),
+    }),
+    changePassword: builder.mutation<
+      void,
+      { currentPassword: string; newPassword: string }
+    >({
+      query: (body) => ({
+        url: '/auth/profile/change-password',
+        method: 'PUT',
+        body,
       }),
     }),
   }),
@@ -44,5 +70,8 @@ export const {
   useSignupMutation,
   useVerifyEmailQuery,
   useForgotPasswordMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
 } = usersEndpoints;

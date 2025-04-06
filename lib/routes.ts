@@ -68,4 +68,14 @@ export const dashboardRoutes = {
     path: '/community',
     name: 'community',
   },
+  profile: {
+    label: 'Profile',
+    path: '/dashboard/profile',
+    name: 'profile',
+  },
+  settings: {
+    label: 'Settings',
+    path: '/dashboard/settings',
+    name: 'settings',
+  },
 };

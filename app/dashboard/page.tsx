@@ -28,7 +28,10 @@ const DashboardPage = () => {
     });
   };
   const statistics = [
-    { title: 'Completed Challenges', value: data?.statusCounts?.Completed || 0 },
+    {
+      title: 'Completed Challenges',
+      value: data?.statusCounts?.Completed || 0,
+    },
     { title: 'Open Challenges', value: data?.statusCounts?.Open || 0 },
     { title: 'Ongoing Challenges', value: data?.statusCounts?.Ongoing || 0 },
   ];
@@ -65,7 +68,7 @@ const DashboardPage = () => {
     },
   ];
   const session = useSession();
-  const user=session.data?.user
+  const user = session.data?.user;
   return (
     <div className="px-2">
       <div className="flex flex-wrap max-w-screen-md:text-center justify-between items-center my-6">
@@ -77,10 +80,12 @@ const DashboardPage = () => {
             Build Work Experience through Skills Challenges
           </p>
         </div>
-        <Button className="py-6">
-          <Eye />
-          View Profile
-        </Button>
+        <Link href={dashboardRoutes.profile.path}>
+          <Button className="py-6">
+            <Eye />
+            View Profile
+          </Button>
+        </Link>
       </div>
       {user?.role?.toLocaleLowerCase() !== 'admin' ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
