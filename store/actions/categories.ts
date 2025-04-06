@@ -16,7 +16,6 @@ const categoryEndpoints = baseAPI.injectEndpoints({
       }),
     }),
   }),
-}),
 });
 
 export const { useGetCategoriesQuery, useGetSkillsQuery } = categoryEndpoints;

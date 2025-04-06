@@ -53,57 +53,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
 
 const SingleChallengePage = () => {
-  const session = useSession();
-  const userRole = session.data?.user?.role;
+  // const session = useSession();
+  // const userRole = session.data?.user?.role;
   const form = useForm<SubmitChallengeDto>({
     resolver: zodResolver(challengeSubmissionSchema),
     defaultValues: {},
   });
-
-  const participants = [
-    {
-      id: 1,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "John Doe",
-      occupation: "Product Designer",
-    },
-    {
-      id: 2,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 3,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 4,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 5,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 6,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-  ];
 
   const router = useRouter();
   const params = useParams();
