@@ -6,6 +6,7 @@ import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGe
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSession } from 'next-auth/react';
 import { INotification } from '@/lib/types/notification';
+import { Button } from '@/components/ui/button';
 
 const NotificationPage = () => {
     const session = useSession();
@@ -21,13 +22,13 @@ const NotificationPage = () => {
     const [deleteNotification] = useDeleteNotificationMutation();
     const [deleteAllNotifications] = useDeleteAllNotificationsMutation();
 
-    const handleMarkAsRead = (notificationId) => {
+    const handleMarkAsRead = (notificationId: string) => {
         markNotificationAsRead(notificationId)
     }
     const handleMarkAllAsRead = () => {
         markAllNotificationsAsRead()
     }
-    const handleDeleteNotification = (notificationId) => {
+    const handleDeleteNotification = (notificationId: string) => {
         deleteNotification(notificationId)
     }
     const handleDeleteAllNotifications = () => {
@@ -36,9 +37,7 @@ const NotificationPage = () => {
 
     if (isLoading) {
         return <div className="flex flex-col gap-4 items-center justify-center h-screen">
-            {Array.from({ length: 3 }, (_, index) => (
-                <Skeleton key={index} className="h-32 w-full bg-gray-300" />
-            ))}
+            <Skeleton className="h-32 w-full bg-gray-300" />
         </div>
     }
     if (isError) {
@@ -51,20 +50,20 @@ const NotificationPage = () => {
         <main className="p-4">
             <h1 className="text-2xl font-bold mb-4">Notifications</h1>
             <div className="space-y-4">
-                <div className="flex justify-end gap-4 mb-4">
-                    <button
+                {notificationsData?.length > 0 && (<div className="flex justify-end gap-4 mb-4">
+                    <Button
                         onClick={handleMarkAllAsRead}
-                        className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                        className="h-12 text-white bg-primary font-medium"
                     >
                         Mark All as Read
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={handleDeleteAllNotifications}
-                        className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                        className="h-12 text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                     >
                         Delete All
-                    </button>
-                </div>
+                    </Button>
+                </div>)}
 
                 {notificationsData?.length ? (
                     notificationsData.map((item: INotification) => (
@@ -84,19 +83,19 @@ const NotificationPage = () => {
                                 </div>
                                 <div className="flex gap-2">
                                     {item.status === 'unread' && (
-                                        <button
+                                        <Button
                                             onClick={() => handleMarkAsRead(item._id)}
-                                            className="text-blue-500 hover:text-blue-700 text-sm"
+                                            className="h-12 text-white bg-primary font-medium"
                                         >
                                             Mark as Read
-                                        </button>
+                                        </Button>
                                     )}
-                                    <button
+                                    <Button
                                         onClick={() => handleDeleteNotification(item._id)}
-                                        className="text-red-500 hover:text-red-700 text-sm"
+                                        className="h-12 text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                                     >
                                         Delete
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </motion.div>
