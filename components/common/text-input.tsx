@@ -21,6 +21,7 @@ interface TextInputProps<T extends FieldValues> {
   type?: string;
   placeholder?: string;
   className?: string;
+  hideLabel?: boolean;
 }
 
 const TextInput = <T extends FieldValues>({
@@ -30,6 +31,7 @@ const TextInput = <T extends FieldValues>({
   type = 'text',
   placeholder,
   className,
+  hideLabel = false,
 }: TextInputProps<T>) => {
   return (
     <FormField
@@ -37,7 +39,7 @@ const TextInput = <T extends FieldValues>({
       name={name as string}
       render={({ field }: { field: ControllerRenderProps<T, any> }) => (
         <FormItem className="w-full">
-          <FormLabel>{label}</FormLabel>
+          {!hideLabel && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Input
               className={cn('h-12', className)}

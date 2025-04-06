@@ -3,15 +3,15 @@ import { baseAPI } from '@/store/api';
 
 const categoryEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<{ categories: ICategory[] }, void>({
+    getCategories: builder.query<{ data: ICategory[] }, void>({
       query: () => ({
-        url: `/categories`,
+        url: `/admin/challenge-category`,
         method: 'GET',
       }),
     }),
-    getSkills: builder.query<{ skills: ISkill[] }, void>({
+    getSkills: builder.query<{ data: ISkill[] }, void>({
         query: () => ({
-          url: `/skills`,
+          url: `/public/skills`,
           method: 'GET',
         }),
       }),

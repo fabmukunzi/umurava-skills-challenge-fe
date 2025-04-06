@@ -10,12 +10,10 @@ import MailIcon from '@/components/common/svg/mail-icon';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { getChallengeDuration } from '@/lib/get-challenge-duration';
 import { UmuravaWhiteLogo } from '@/lib/images';
 import { homepageRoutes } from '@/lib/routes';
 import { useGetChallengeByIdQuery } from '@/store/actions/challenge';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
 const HomeSingleProjectView = () => {
@@ -26,7 +24,7 @@ const HomeSingleProjectView = () => {
     skip: !challengeId,
   });
 
-  const project = data?.challenge;
+  const project = data?.data;
 
   if (isLoading) return <SingleChallengeSkeleton />;
 
@@ -40,7 +38,7 @@ const HomeSingleProjectView = () => {
             href: homepageRoutes.challengeHackathons.path,
           },
           {
-            label: project?.challengeTitle ?? '',
+            label: project?.challengeName ?? '',
           },
         ]}
       />
@@ -51,15 +49,15 @@ const HomeSingleProjectView = () => {
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           </div>
           <h1 className="text-2xl font-semibold my-1">
-            {project?.challengeTitle}
+            {project?.challengeName}
           </h1>
-          <p className="text-gray-700 mb-6">{project?.projectBrief}</p>
+          {/* <p className="text-gray-700 mb-6">{project?.projectBrief}</p> */}
 
-          <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2>
-          {project?.description && (
+          {/* <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2> */}
+          {project?.projectDescription && (
             <div
               className="prose prose-blue max-w-none prose-li:my-0 prose-a:no-underline"
-              dangerouslySetInnerHTML={{ __html: project.description }}
+              dangerouslySetInnerHTML={{ __html: project.projectDescription }}
             />
           )}
         </Card>
@@ -81,33 +79,47 @@ const HomeSingleProjectView = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
                 title="Challenge Category"
-                value={project?.category?.title ?? ''}
+                value={project?.challengeCategory ?? ''}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={
-                  project?.startDate && project?.deadline
-                    ? `${getChallengeDuration(
-                        new Date(project.startDate),
-                        new Date(project.deadline)
-                      )} Days`
-                    : 'N/A'
-                }
+                value={project?.duration?.toString() || ''}
               />
-              <KeyInstruction
-                icon={<SVGIcon height={23} width={23} Icon={DollarIcon} />}
-                title="Money Prize"
-                value={project?.moneyPrize ?? ''}
-              />
+              {Array.isArray(project?.moneyPrize) &&
+                project.moneyPrize.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4">
+                      🏆 Prize Pool
+                    </h2>
+                    <div className="space-y-4">
+                      {project?.moneyPrize.map((prize) => (
+                        <Card
+                          key={prize._id}
+                          className="flex justify-between items-center px-3 py-2 border border-dashed border-primary bg-muted/30 rounded-xl"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="bg-primary/20 text-primary flex justify-center items-center h-9 w-9 rounded-full">
+                              <SVGIcon
+                                height={20}
+                                width={20}
+                                Icon={DollarIcon}
+                              />
+                            </div>
+                            <span className="font-medium text-sm text-muted-foreground">
+                              {prize.categoryPrize}
+                            </span>
+                          </div>
+                          <span className="font-semibold text-primary">
+                            {prize.prize.toLocaleString()} $
+                          </span>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
-            <Link
-              className="w-full"
-              href={project?.submissionLink ?? ''}
-              target="blank"
-            >
-              <Button className="w-full h-12">Submit Your Work</Button>
-            </Link>
+            <Button className="w-full h-12">Submit Your Work</Button>
           </Card>
         </div>
       </div>

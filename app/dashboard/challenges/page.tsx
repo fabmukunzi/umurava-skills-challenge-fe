@@ -6,13 +6,11 @@ import SVGIcon from '@/components/common/svg';
 import PaperIcon from '@/components/common/svg/paper-icon';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { AppState } from '@/lib/types/user';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import { useGetSkillsQuery } from '@/store/actions/categories';
+import { useSession } from 'next-auth/react';
 
 const ITEMS_PER_PAGE = 6;
 const ChallengesPage = () => {
@@ -22,10 +20,9 @@ const ChallengesPage = () => {
     limit: ITEMS_PER_PAGE,
     page: currentPage,
   });
-  const challengesData = data?.challenges;
-  const user = useSelector((state: AppState) => state?.userReducer?.user);
+  const challengesData = data?.data?.challenges;
 
-  const totalPages = data?.totalPages || 0;
+  const totalPages = data?.data.pagination.totalPages || 0;
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -35,14 +32,8 @@ const ChallengesPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
-  const { data: skillsData, isLoading: loadingSkills } = useGetSkillsQuery();
-
-  const getSkillNamesByIds = (ids: string[]) => {
-    return ids.map((id) => {
-      const skill = skillsData?.skills?.find((skill) => skill.id === id);
-      return skill ? skill.name : '';
-    });
-  };
+  const session = useSession();
+  const user = session.data?.user;
   return (
     <div className="md:px-4">
       <div className="my-4">
@@ -59,7 +50,7 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           All Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.total}
+            {data?.data.aggregates.totalChallenges}
           </span>
         </Button>
         <Button
@@ -69,7 +60,7 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           Completed Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.statusCounts?.Completed}
+            {data?.data.aggregates.totalCompletedChallenges}
           </span>
         </Button>
         <Button
@@ -79,7 +70,7 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           Open Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.statusCounts?.Open}
+            {data?.data.aggregates.totalOpenChallenges}
           </span>
         </Button>
         <Button
@@ -89,10 +80,12 @@ const ChallengesPage = () => {
           <SVGIcon Icon={PaperIcon} color="#98A2B3" />
           Ongoing Challenges
           <span className="bg-neutral-300 rounded-3xl flex-shrink-0 h-5 w-5">
-            {data?.statusCounts?.Ongoing}
+            {data?.data.aggregates.totalOngoingChallenges}
           </span>
         </Button>
-        {user?.role === 'ADMIN' && (
+        {['admin', 'super admin'].includes(
+        user?.role?.toLocaleLowerCase() || ''
+      ) && (
           <Link href={dashboardRoutes.challengeHackathons.new.path}>
             <Button size="lg" className="col-span-2 md:col-span-1">
               <Plus />
@@ -101,7 +94,7 @@ const ChallengesPage = () => {
           </Link>
         )}
       </div>
-      {isLoading || isFetching || loadingSkills ? (
+      {isLoading || isFetching ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(6)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
@@ -112,11 +105,8 @@ const ChallengesPage = () => {
           {challengesData?.map((challenge) => (
             <Projectcard
               usage="dashboard"
-              key={challenge.id}
-              project={{
-                ...challenge,
-                skills: getSkillNamesByIds(challenge.skills),
-              }}
+              key={challenge._id}
+              project={challenge}
             />
           ))}
         </div>

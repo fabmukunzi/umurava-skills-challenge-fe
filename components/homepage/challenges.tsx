@@ -6,20 +6,11 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import SkeletonCard from '@/components/common/challenge-skeleton-card';
-import { useGetSkillsQuery } from '@/store/actions/categories';
 
 const Challenges = () => {
   const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1 });
-  const challengesData = data?.challenges;
+  const challengesData = data?.data.challenges;
 
-  const { data: skillsData, isLoading: loadingSkills } = useGetSkillsQuery();
-
-  const getSkillNamesByIds = (ids: string[]) => {
-    return ids.map((id) => {
-      const skill = skillsData?.skills?.find((skill) => skill.id === id);
-      return skill ? skill.name : '';
-    });
-  };
   return (
     <div className="bg-white px-4 sm:px-6 lg:px-12 2xl:px-20 border-b pb-10">
       <motion.div
@@ -37,7 +28,7 @@ const Challenges = () => {
           become part of Africa’s largest workforce of digital professionals. 
         </p>
       </motion.div>{' '}
-      {isLoading || loadingSkills ? (
+      {isLoading ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(3)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
@@ -55,10 +46,7 @@ const Challenges = () => {
             <Projectcard
               className="w-full"
               key={index}
-              project={{
-                ...challenge,
-                skills: getSkillNamesByIds(challenge.skills),
-              }}
+              project={challenge}
             />
           ))}
         </motion.div>

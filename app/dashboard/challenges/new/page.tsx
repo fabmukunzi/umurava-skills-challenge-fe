@@ -7,24 +7,24 @@ import {
   useCreateChallengeMutation,
 } from '@/store/actions/challenge';
 import { dashboardRoutes } from '@/lib/routes';
-import { useToast } from '@/hooks/use-toast';
+import dayjs from 'dayjs';
+import { handleError } from '@/lib/errorHandler';
 
 const CreateChallengePage = () => {
   const router = useRouter();
   const [createChallenge, { isLoading }] = useCreateChallengeMutation();
-  const { toast } = useToast();
 
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
-      await createChallenge(values).unwrap();
+      const { startDate, endDate, ...restValues } = values;
+      await createChallenge({
+        startDate: dayjs(startDate).format('DD-MM-YYYY'),
+        endDate: dayjs(endDate).format('DD-MM-YYYY'),
+        ...restValues,
+      }).unwrap();
       router.push(dashboardRoutes.challengeHackathons.path);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: error?.data?.message,
-      });
+    } catch (error) {
+      handleError(error);
     }
   };
 
@@ -33,17 +33,16 @@ const CreateChallengePage = () => {
       onSubmit={onSubmit}
       isSubmitting={isLoading}
       defaultValues={{
-        challengeTitle: '',
-        projectBrief: '',
-        description: '',
-        categoryId: '',
-        moneyPrize: '',
-        submissionLink: '',
-        deadline: new Date(),
-        startDate: new Date(),
+        challengeName: '',
+        projectDescription: '',
+        challengeCategory: '',
+        moneyPrize: [],
+        endDate: '',
+        startDate: '',
         contactEmail: '',
         skills: [],
-        seniority: [],
+        levels: [],
+        teamSize: '',
       }}
     />
   );

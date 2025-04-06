@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,44 +15,61 @@ import { Input } from '@/components/ui/input';
 import { challengeFormSchema } from '@/lib/challenge-form-validation';
 import 'react-quill/dist/quill.snow.css';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 import { DateInput } from '@/components/common/date-input';
 import TextInput from '@/components/common/text-input';
 import SelectInput from '@/components/common/select-box';
-import { Textarea } from '@/components/ui/textarea';
 import { CreateChallengeDto } from '@/store/actions/challenge';
 import {
   useGetCategoriesQuery,
   useGetSkillsQuery,
 } from '@/store/actions/categories';
+import dayjs from 'dayjs';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+interface ChallengeFormProps {
+  onSubmit: SubmitHandler<CreateChallengeDto>;
+  defaultValues: CreateChallengeDto;
+  isEdit?: boolean;
+  isSubmitting?: boolean;
+}
 
 const ChallengeForm = ({
   onSubmit,
   defaultValues,
   isEdit = false,
   isSubmitting = false,
-}: {
-  onSubmit: (values: CreateChallengeDto) => void;
-  defaultValues: CreateChallengeDto;
-  isEdit?: boolean;
-  isSubmitting?: boolean;
-}) => {
+}: ChallengeFormProps) => {
   const form = useForm<CreateChallengeDto>({
     resolver: zodResolver(challengeFormSchema),
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      startDate: dayjs(defaultValues.startDate || new Date()).format(
+        'DD-MM-YYYY'
+      ),
+      endDate: dayjs(defaultValues.endDate || new Date()).format('DD-MM-YYYY'),
+      moneyPrize: defaultValues.moneyPrize?.length
+        ? defaultValues.moneyPrize
+        : [{ categoryPrize: '', prize: '' }],
+    },
+  });
+  
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'moneyPrize',
   });
 
   const { data: categoriesData } = useGetCategoriesQuery();
-  const categories = categoriesData?.categories?.map((category) => ({
-    value: category.id,
-    label: category.title,
+  const categories = categoriesData?.data?.map((category) => ({
+    value: category.challengeCategoryName,
+    label: category.challengeCategoryName,
   }));
+
   const { data: skillsData } = useGetSkillsQuery();
-  const skills = skillsData?.skills?.map((skill) => ({
-    value: skill.id,
-    label: skill.name,
+  const skills = skillsData?.data?.map((skill) => ({
+    value: skill.skillName,
+    label: skill.skillName,
   }));
 
   const seniorityLevels = [
@@ -59,7 +78,7 @@ const ChallengeForm = ({
     { value: 'Senior', label: 'Senior' },
   ];
 
-
+  const today = dayjs().startOf('day').toDate();
 
   return (
     <Card className="md:w-3/5 mx-auto p-6 my-10">
@@ -76,7 +95,7 @@ const ChallengeForm = ({
         >
           <FormField
             control={form.control}
-            name="challengeTitle"
+            name="challengeName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Challenge/Hackhaton Title</FormLabel>
@@ -92,55 +111,89 @@ const ChallengeForm = ({
             )}
           />
 
-          <div className="flex  flex-wrap md:flex-nowrap gap-5 w-full">
-            <div className="flex flex-wrap md:flex-nowrap justify-between gap-5 w-full">
-              <DateInput
-                form={form}
-                placeHolder="Select start date"
-                name="startDate"
-                label="Start Date"
-              />
-              <DateInput
-                form={form}
-                placeHolder="Select deadline date"
-                name="deadline"
-                label="Deadline"
-              />
-            </div>
+          <div className="flex flex-wrap md:flex-nowrap gap-5 w-full">
+            <DateInput
+              form={form}
+              name="startDate"
+              label="Start Date"
+              placeHolder="Select start date"
+              disablePast={true}
+              disableBeforeDate={today}
+            />
+            <DateInput
+              form={form}
+              name="endDate"
+              label="Deadline"
+              placeHolder="Select deadline date"
+              disablePast={true}
+              disableBeforeDate={today}
+            />
           </div>
 
-          <div className="flex  flex-wrap md:flex-nowrap gap-5 w-full">
-            <TextInput
-              form={form}
-              name="moneyPrize"
-              label="Money Prize ($)"
-              type="text"
-            />
-            <TextInput
-              form={form}
-              name="contactEmail"
-              label="Contact Email"
-              type="email"
-              placeholder="contact@example.com"
-            />
+          <div className="space-y-4">
+            <FormLabel>Prize Pool</FormLabel>
+            {fields?.map((field, index) => (
+              <div
+                key={field.id}
+                className="flex gap-4 items-center justify-center w-full"
+              >
+                <TextInput
+                  form={form}
+                  hideLabel={true}
+                  name={
+                    `moneyPrize.${index}.categoryPrize` as keyof CreateChallengeDto
+                  }
+                  label="Category"
+                  placeholder="e.g. First Runner"
+                />
+                <TextInput
+                  form={form}
+                  hideLabel={true}
+                  name={`moneyPrize.${index}.prize` as keyof CreateChallengeDto}
+                  label="Amount ($)"
+                  placeholder="500"
+                />
+                {fields?.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="border-dashed border-red-600 text-red-600"
+                    onClick={() => remove(index)}
+                  >
+                    Remove
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button
+              className="border-dashed"
+              type="button"
+              onClick={() => append({ categoryPrize: '', prize: '' })}
+              variant="outline"
+            >
+              + Add Prize
+            </Button>
           </div>
-          <FormField
-            control={form.control}
-            name="projectBrief"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Project Brief</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Brief about the project" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+
+          <TextInput
+            form={form}
+            name="teamSize"
+            label="Team Size"
+            type="number"
+            placeholder="Enter max team size"
+          />
+
+          <TextInput
+            form={form}
+            name="contactEmail"
+            label="Contact Email"
+            type="email"
+            placeholder="contact@example.com"
           />
 
           <FormField
             control={form.control}
-            name="description"
+            name="projectDescription"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
@@ -156,23 +209,14 @@ const ChallengeForm = ({
             )}
           />
 
-          <div className="flex w-full flex-wrap md:flex-nowrap gap-5 items-center">
-            <SelectInput
-              form={form}
-              name="categoryId"
-              label="Challenge Category"
-              placeholder="Select a category"
-              options={categories ?? []}
-            />
+          <SelectInput
+            form={form}
+            name="challengeCategory"
+            label="Challenge Category"
+            placeholder="Select a category"
+            options={categories ?? []}
+          />
 
-            <TextInput
-              form={form}
-              name="submissionLink"
-              label="Submission Link"
-              type="url"
-              placeholder="https://submission.com"
-            />
-          </div>
           <SelectInput
             form={form}
             name="skills"
@@ -181,9 +225,10 @@ const ChallengeForm = ({
             options={skills ?? []}
             multi={true}
           />
+
           <SelectInput
             form={form}
-            name="seniority"
+            name="levels"
             label="Seniority Level"
             placeholder="Select seniority level"
             options={seniorityLevels}

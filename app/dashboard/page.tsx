@@ -9,7 +9,6 @@ import AdminStatCard from '@/components/dashboard/admin-statistics-card';
 import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { useGetSkillsQuery } from '@/store/actions/categories';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { ChevronRight, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -17,28 +16,26 @@ import Link from 'next/link';
 
 const DashboardPage = () => {
   const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1 });
-  const challengesData = data?.challenges;
+  const challengesData = data?.data.challenges;
 
-  const { data: skillsData, isLoading: loadingSkills } = useGetSkillsQuery();
-
-  const getSkillNamesByIds = (ids: string[]) => {
-    return ids.map((id) => {
-      const skill = skillsData?.skills?.find((skill) => skill.id === id);
-      return skill ? skill.name : '';
-    });
-  };
   const statistics = [
     {
       title: 'Completed Challenges',
-      value: data?.statusCounts?.Completed || 0,
+      value: data?.data.aggregates.totalCompletedChallenges || 0,
     },
-    { title: 'Open Challenges', value: data?.statusCounts?.Open || 0 },
-    { title: 'Ongoing Challenges', value: data?.statusCounts?.Ongoing || 0 },
+    {
+      title: 'Open Challenges',
+      value: data?.data.aggregates.totalOpenChallenges || 0,
+    },
+    {
+      title: 'Ongoing Challenges',
+      value: data?.data.aggregates.totalOngoingChallenges || 0,
+    },
   ];
   const adminStatData = [
     {
       title: 'Total Challenges',
-      number: data?.total || 0,
+      number: data?.data.aggregates.totalChallenges || 0,
       icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 15,
     },
@@ -87,7 +84,9 @@ const DashboardPage = () => {
           </Button>
         </Link>
       </div>
-      {user?.role?.toLocaleLowerCase() !== 'admin' ? (
+      {['admin', 'super admin'].includes(
+        user?.role?.toLocaleLowerCase() || ''
+      ) ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard
@@ -121,7 +120,7 @@ const DashboardPage = () => {
           See all <ChevronRight />
         </Link>
       </div>
-      {isLoading || loadingSkills ? (
+      {isLoading ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(3)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
@@ -130,14 +129,7 @@ const DashboardPage = () => {
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
           {challengesData?.map((challenge, index) => (
-            <Projectcard
-              key={index}
-              project={{
-                ...challenge,
-                skills: getSkillNamesByIds(challenge.skills),
-              }}
-              usage="dashboard"
-            />
+            <Projectcard key={index} project={challenge} usage="dashboard" />
           ))}
         </div>
       )}

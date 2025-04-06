@@ -1,34 +1,23 @@
 import { StaticImageData } from "next/image";
 
 export interface ICategory {
-  id: string;
-  title: string;
+  _id: string;
+  challengeCategoryName: string;
   description: string;
+  __v: number;
   createdAt: string;
+  updatedAt: string;
 }
 
-export interface IProject {
-  id: string;
-  challengeTitle: string;
-  description: string;
-  projectBrief: string;
-  startDate: Date;
-  deadline: Date;
-  moneyPrize: string;
-  seniority: string[];
-  categoryId: string;
-  skills: string[];
-  submissionLink: string;
-  contactEmail: string;
+
+export interface ISkill {
+  _id: string;
+  skillName: string;
   createdAt: string;
-  category: ICategory;
+  updatedAt: string;
+  __v: number;
 }
 
-export interface ISkill{
-  id:string;
-  name:string;
-  createdAt:string;
-}
 
   
   export interface IAdvert {
@@ -37,4 +26,54 @@ export interface ISkill{
     link: string;
     otherImage: StaticImageData;
   }
+
+  export interface IProject {
+    _id: string;
+    challengeName: string;
+    challengeCategory: string;
+    startDate: string;
+    endDate: string;
+    submissionDate: string;
+    duration: number;
+    moneyPrize: {
+      categoryPrize: string;
+      prize: string;
+      _id?: string;
+    }[];
+    contactEmail: string;
+    projectDescription: string;
+    teamSize: string;
+    skills: string[];
+    levels: string[];
+    status: string
+    createdAt: string;
+    updatedAt: string;
+    __v?: number;
+  }
+  
+
+  export interface ChallengeAggregates {
+    totalChallenges: number;
+    totalCompletedChallenges: number;
+    totalOpenChallenges: number;
+    totalOngoingChallenges: number;
+  }
+  
+  export interface ChallengePagination {
+    currentPage: number;
+    totalPages: number;
+    pageSize: number;
+    totalItems: number;
+  }
+  
+  export interface IGetChallengesResponse {
+    status: string;
+    message: string;
+    data: {
+      aggregates: ChallengeAggregates;
+      challenges: IProject[];
+      pagination: ChallengePagination;
+    };
+  }
+  
   

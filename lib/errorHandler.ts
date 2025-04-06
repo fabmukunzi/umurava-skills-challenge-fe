@@ -7,10 +7,7 @@ interface ErrorData {
 }
 
 export const handleError = (error: unknown) => {
-  console.error('Error:', error);
-  if (isCustomError(error)) {
-    console.error('Error: reached', error);
-    const message = error.data.message || 'An unknown error occurred';
+  if (isCustomError(error)) {    const message = error.data.message || 'An unknown error occurred';
 
     toast({
       title: 'Something went wrong',

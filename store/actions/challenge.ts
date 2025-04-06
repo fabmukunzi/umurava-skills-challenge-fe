@@ -1,7 +1,11 @@
-import { IProject } from '@/lib/types/project';
+import { IGetChallengesResponse, IProject } from '@/lib/types/project';
 import { baseAPI } from '@/store/api';
 
-export type CreateChallengeDto = Omit<IProject, 'id' | 'createdAt' | 'category'>;
+export type CreateChallengeDto = Omit<
+  IProject,
+  '_id' | 'createdAt' | 'updatedAt' | 'status' | 'duration' | 'submissionDate' | '__v' |'duration' | 'submissionDate'
+>;
+
 
 interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
@@ -10,58 +14,50 @@ interface ChallengeQueryParams {
   limit: number;
   page: number;
 }
-interface IStatusCount {
-  Open: number;
-  Ongoing: number;
-  Completed: number;
-}
 
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
-    getChallenges: builder.query<
-      { challenges: IProject[]; statusCounts: IStatusCount; total: number,totalPages: number},
-      ChallengeQueryParams
-    >({
+    getChallenges: builder.query<IGetChallengesResponse, ChallengeQueryParams>({
       query: ({ limit, page }) => ({
         url: `/public/challenges`,
         method: 'GET',
         params: { limit, page },
       }),
-      providesTags:['challenges'],
+      providesTags: ['challenges'],
     }),
 
-    getChallengeById: builder.query<{ challenge: IProject }, string>({
+    getChallengeById: builder.query<{ data: IProject }, string>({
       query: (id) => ({
-        url: `/challenges/${id}`,
+        url: `/public/challenges/${id}`,
         method: 'GET',
       }),
-      providesTags:['challenge'],
+      providesTags: ['challenge'],
     }),
 
     createChallenge: builder.mutation<IProject, CreateChallengeDto>({
       query: (challengeData) => ({
-        url: `/challenges`,
+        url: `/admin/challenge`,
         method: 'POST',
         body: challengeData,
       }),
-      invalidatesTags:['challenges'],
+      invalidatesTags: ['challenges'],
     }),
 
     updateChallenge: builder.mutation<IProject, UpdateChallengeDto>({
       query: ({ id, ...challengeData }) => ({
-        url: `/challenges/${id}`,
-        method: 'PATCH',
+        url: `/admin/challenge/${id}`,
+        method: 'PUT',
         body: challengeData,
       }),
-      invalidatesTags:['challenge','challenges'],
+      invalidatesTags: ['challenge', 'challenges'],
     }),
 
     deleteChallenge: builder.mutation<{ message: string }, string>({
       query: (id) => ({
-        url: `/challenges/${id}`,
+        url: `/admin/challenge/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags:['challenge','challenges'],
+      invalidatesTags: ['challenge', 'challenges'],
     }),
   }),
 });

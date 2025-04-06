@@ -1,7 +1,5 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
 import { UmuravaWhiteLogo } from '@/lib/images';
@@ -17,15 +15,12 @@ import MailIcon from '@/components/common/svg/mail-icon';
 import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
 import DollarIcon from '@/components/common/svg/dollar-icon';
 import CalendarIcon from '@/components/common/svg/calendar-icon';
-import { useSelector } from 'react-redux';
-import { AppState } from '@/lib/types/user';
 import {
   useDeleteChallengeMutation,
   useGetChallengeByIdQuery,
 } from '@/store/actions/challenge';
 import { getChallengeDuration } from '@/lib/get-challenge-duration';
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,6 +33,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
+import { useSession } from 'next-auth/react';
+import { handleError } from '@/lib/errorHandler';
 
 const SingleChallengePage = () => {
   const participants = [
@@ -87,16 +84,17 @@ const SingleChallengePage = () => {
 
   const router = useRouter();
   const params = useParams();
-  const { toast } = useToast();
   const challengeId = params?.challengeId as string;
 
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
 
-  const project = data?.challenge;
+  const project = data?.data;
 
-  const user = useSelector((state: AppState) => state?.userReducer?.user);
+  const session = useSession();
+  const user = session.data?.user;
+
   const [deleteChallenge] = useDeleteChallengeMutation();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -105,19 +103,21 @@ const SingleChallengePage = () => {
     try {
       await deleteChallenge(challengeId).unwrap();
       router.push(dashboardRoutes.challengeHackathons.path);
-    } catch (error: any) {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: error?.data?.message,
-      });
+    } catch (error) {
+      handleError(error);
     } finally {
       setIsDeleting(false);
     }
   };
 
   if (isLoading)
-    return <SingleChallengeSkeleton isAdmin={user.role === 'ADMIN'} />;
+    return (
+      <SingleChallengeSkeleton
+        isAdmin={['admin', 'super admin'].includes(
+          user?.role?.toLocaleLowerCase() || ''
+        )}
+      />
+    );
 
   return (
     <div>
@@ -129,7 +129,7 @@ const SingleChallengePage = () => {
             href: dashboardRoutes.challengeHackathons.path,
           },
           {
-            label: project?.challengeTitle ?? '',
+            label: project?.challengeName ?? '',
           },
         ]}
       />
@@ -139,16 +139,16 @@ const SingleChallengePage = () => {
           <div className="relative bg-primary h-80 flex items-center justify-center rounded-lg mb-6">
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           </div>
-          <h1 className="text-2xl font-semibold my-1">
-            {project?.challengeTitle}
+          {/* <h1 className="text-2xl font-semibold my-1">
+            {project?.challengeName}
           </h1>
-          <p className="text-gray-700 mb-6">{project?.projectBrief}</p>
+          <p className="text-gray-700 mb-6">{project?.projectDescription}</p> */}
 
-          <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2>
-          {project?.description && (
+          {/* <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2> */}
+          {project?.projectDescription && (
             <div
               className="prose prose-blue max-w-none prose-li:my-0 prose-a:no-underline"
-              dangerouslySetInnerHTML={{ __html: project.description }}
+              dangerouslySetInnerHTML={{ __html: project.projectDescription }}
             />
           )}
         </Card>
@@ -170,27 +170,56 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
                 title="Challenge Category"
-                value={project?.category?.title ?? ''}
+                value={project?.challengeCategory ?? ''}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
                 value={
-                  project?.startDate && project?.deadline
+                  project?.startDate && project?.endDate
                     ? `${getChallengeDuration(
                         new Date(project.startDate),
-                        new Date(project.deadline)
+                        new Date(project.endDate)
                       )} Days`
                     : 'N/A'
                 }
               />
-              <KeyInstruction
-                icon={<SVGIcon height={23} width={23} Icon={DollarIcon} />}
-                title="Money Prize"
-                value={project?.moneyPrize ?? ''}
-              />
+              {Array.isArray(project?.moneyPrize) &&
+                project.moneyPrize.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4">
+                      🏆 Prize Pool
+                    </h2>
+                    <div className="space-y-4">
+                      {project?.moneyPrize.map((prize) => (
+                        <Card
+                          key={prize._id}
+                          className="flex justify-between items-center px-3 py-2 border border-dashed border-primary bg-muted/30 rounded-xl"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="bg-primary/20 text-primary flex justify-center items-center h-9 w-9 rounded-full">
+                              <SVGIcon
+                                height={20}
+                                width={20}
+                                Icon={DollarIcon}
+                              />
+                            </div>
+                            <span className="font-medium text-sm text-muted-foreground">
+                              {prize.categoryPrize}
+                            </span>
+                          </div>
+                          <span className="font-semibold text-primary">
+                            {prize.prize.toLocaleString()} $
+                          </span>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
-            {user.role === 'ADMIN' ? (
+            {['admin', 'super admin'].includes(
+              user?.role?.toLocaleLowerCase() || ''
+            ) ? (
               <div className="flex w-full mt-5 gap-6">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -228,19 +257,13 @@ const SingleChallengePage = () => {
                 </Link>
               </div>
             ) : (
-              <Link
-                className="w-full"
-                href={project?.submissionLink ?? ''}
-                target="blank"
-              >
-                <Button className="w-full h-12">Submit Your Work</Button>
-              </Link>
+              <Button className="w-full h-12">Submit Your Work</Button>
             )}
           </Card>
 
-          {user.role === 'ADMIN' && (
-            <ParticipantsCard participants={participants} />
-          )}
+          {['admin', 'super admin'].includes(
+            user?.role?.toLocaleLowerCase() || ''
+          ) && <ParticipantsCard participants={participants} />}
         </div>
       </div>
     </div>

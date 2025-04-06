@@ -19,7 +19,6 @@ export const rtkQueryErrorLogger: Middleware = () => (next) => async (action) =>
     const payload = action.payload as ErrorPayload;
 
     if (payload?.data?.message === 'Invalid token') {
-      console.warn('Token expired, logging out...');
       await signOut({ redirect: false });
     }
   }
