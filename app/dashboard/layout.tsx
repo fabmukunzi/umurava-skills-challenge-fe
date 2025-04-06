@@ -4,14 +4,20 @@ import { AppSidebar } from '@/components/common/dashboard/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { dashboardRoutes } from '@/lib/routes';
 import { Bell, Search } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
 });
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const session = useSession();
+  const user = session.data?.user;
   return (
     <main
       className={`${workSans.className} text-primary antialiased overflow-hidden`}
@@ -36,15 +42,22 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   <Bell className="text-gray-500 hover:text-primary" />
                 </Button>
 
-                <div className="flex items-center space-x-3">
-                  <Image
-                    src="https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg"
-                    alt="Profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                </div>
+                <Link
+                  href={dashboardRoutes.profile.path}
+                  className="flex items-center space-x-3"
+                >
+                  {user?.profileUrl ? (
+                    <Image
+                      src={user?.profileUrl || ''}
+                      alt="Profile"
+                      width={40}
+                      height={40}
+                      className="rounded-full border p-1"
+                    />
+                  ) : (
+                    <Skeleton className="w-full" />
+                  )}
+                </Link>
               </div>
             </header>
 

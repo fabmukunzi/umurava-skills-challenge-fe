@@ -71,7 +71,7 @@ const DashboardPage = () => {
       <div className="flex flex-wrap max-w-screen-md:text-center justify-between items-center my-6">
         <div>
           <h1 className="text-2xl text-black font-semibold">
-            Welcome back Hilaire,
+            Welcome back {user?.name?.split(' ')[0]},
           </h1>
           <p className="text-primary_grey">
             Build Work Experience through Skills Challenges
@@ -84,9 +84,9 @@ const DashboardPage = () => {
           </Button>
         </Link>
       </div>
-      {['admin', 'super admin'].includes(
+      {!(['admin', 'super admin'].includes(
         user?.role?.toLocaleLowerCase() || ''
-      ) ? (
+      )) ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard

@@ -1,11 +1,22 @@
-import { IGetChallengesResponse, IProject } from '@/lib/types/project';
+import {
+  IGetChallengesResponse,
+  IProject,
+  ParticipantChallengesResponse,
+} from '@/lib/types/project';
 import { baseAPI } from '@/store/api';
 
 export type CreateChallengeDto = Omit<
   IProject,
-  '_id' | 'createdAt' | 'updatedAt' | 'status' | 'duration' | 'submissionDate' | '__v' |'duration' | 'submissionDate'
+  | '_id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'status'
+  | 'duration'
+  | 'submissionDate'
+  | '__v'
+  | 'duration'
+  | 'submissionDate'
 >;
-
 
 interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
@@ -59,6 +70,15 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ['challenge', 'challenges'],
     }),
+    getParticipantsByChallengeId: builder.query<
+      ParticipantChallengesResponse,
+      { challengeId: string; page?: number; limit?: number }
+    >({
+      query: ({ challengeId, ...params }) => ({
+        url: `/participant/${challengeId}/all`,
+        params,
+      }),
+    }),
   }),
 });
 
@@ -68,4 +88,5 @@ export const {
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
   useDeleteChallengeMutation,
+  useGetParticipantsByChallengeIdQuery,
 } = challengeEndpoints;

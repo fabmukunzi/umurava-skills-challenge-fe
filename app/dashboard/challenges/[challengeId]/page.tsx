@@ -18,6 +18,7 @@ import CalendarIcon from '@/components/common/svg/calendar-icon';
 import {
   useDeleteChallengeMutation,
   useGetChallengeByIdQuery,
+  useGetParticipantsByChallengeIdQuery,
 } from '@/store/actions/challenge';
 import { getChallengeDuration } from '@/lib/get-challenge-duration';
 import { useState } from 'react';
@@ -37,51 +38,6 @@ import { useSession } from 'next-auth/react';
 import { handleError } from '@/lib/errorHandler';
 
 const SingleChallengePage = () => {
-  const participants = [
-    {
-      id: 1,
-      profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'John Doe',
-      occupation: 'Product Designer',
-    },
-    {
-      id: 2,
-      profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
-    },
-    {
-      id: 3,
-      profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
-    },
-    {
-      id: 4,
-      profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
-    },
-    {
-      id: 5,
-      profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
-    },
-    {
-      id: 6,
-      profileImage:
-        'https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg',
-      fullName: 'Jane Smith',
-      occupation: 'UX Researcher',
-    },
-  ];
-
   const router = useRouter();
   const params = useParams();
   const challengeId = params?.challengeId as string;
@@ -91,6 +47,11 @@ const SingleChallengePage = () => {
   });
 
   const project = data?.data;
+
+  const { data: partcipantsData, isLoading: partcipantsLoading } =
+    useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
+
+  const participants = partcipantsData?.data.participantChallenges || [];
 
   const session = useSession();
   const user = session.data?.user;
@@ -263,7 +224,10 @@ const SingleChallengePage = () => {
 
           {['admin', 'super admin'].includes(
             user?.role?.toLocaleLowerCase() || ''
-          ) && <ParticipantsCard participants={participants} />}
+          ) &&
+            !partcipantsLoading && (
+              <ParticipantsCard participants={participants} />
+            )}
         </div>
       </div>
     </div>
