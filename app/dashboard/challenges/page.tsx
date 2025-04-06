@@ -14,6 +14,8 @@ import { useSession } from 'next-auth/react';
 
 const ITEMS_PER_PAGE = 6;
 const ChallengesPage = () => {
+  const session = useSession();
+  const user = session.data?.user
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isLoading, isFetching } = useGetChallengesQuery({
@@ -24,7 +26,6 @@ const ChallengesPage = () => {
 
   const totalPages = data?.data.pagination.totalPages || 0;
 
-  console.log(challengesData, 'challenge data');
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -34,8 +35,6 @@ const ChallengesPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
-  const session = useSession();
-  const user = session.data?.user;
   return (
     <div className="md:px-4">
       <div className="my-4">
@@ -86,15 +85,15 @@ const ChallengesPage = () => {
           </span>
         </Button>
         {['admin', 'super admin'].includes(
-        user?.role?.toLocaleLowerCase() || ''
-      ) && (
-          <Link href={dashboardRoutes.challengeHackathons.new.path}>
-            <Button size="lg" className="col-span-2 md:col-span-1">
-              <Plus />
-              Create New Challenge
-            </Button>
-          </Link>
-        )}
+          user?.role?.toLocaleLowerCase() || ''
+        ) && (
+            <Link href={dashboardRoutes.challengeHackathons.new.path}>
+              <Button size="lg" className="col-span-2 md:col-span-1">
+                <Plus />
+                Create New Challenge
+              </Button>
+            </Link>
+          )}
       </div>
       {isLoading || isFetching ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
@@ -104,7 +103,7 @@ const ChallengesPage = () => {
         </div>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 mx-auto">
-          {challengesData?.map((challenge) => (
+          {data?.challenges?.map((challenge) => (
             <Projectcard
               usage="dashboard"
               key={challenge._id}

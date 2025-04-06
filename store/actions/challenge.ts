@@ -90,6 +90,22 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         params,
       }),
     }),
+    submitChallenge: builder.mutation<{ message: string }, { id: string; data: SubmitChallengeDto }>({
+      query: ({ id, data }) => ({
+        url: `/participant/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['challenge'],
+    }),
+    giveChallengeFeedback: builder.mutation<{ message: string }, ChallengeFeedbackDto>({
+      query: (data) => ({
+        url: `/challenges/${data.challengeId}/submissions/${data.submissionId}/feedback`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['challenge'],
+    }),
   }),
 });
 
@@ -100,4 +116,6 @@ export const {
   useUpdateChallengeMutation,
   useDeleteChallengeMutation,
   useGetParticipantsByChallengeIdQuery,
+  useSubmitChallengeMutation,
+  useGiveChallengeFeedbackMutation,
 } = challengeEndpoints;

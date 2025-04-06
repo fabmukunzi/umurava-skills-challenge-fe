@@ -12,6 +12,7 @@ const Projectcard: FC<{
   className?: string;
   usage?: 'dashboard' | 'homepage';
 }> = ({ project, className, usage = 'homepage' }) => {
+  console.log(project, 'project');
   return (
     <Card className={`text-black ${className}`}>
       <CardContent className="p-4">
@@ -54,11 +55,10 @@ const Projectcard: FC<{
       </CardContent>
       <CardFooter className="border-t items-center px-5 py-3">
         <Link
-          href={`${
-            usage === 'homepage'
+          href={`${usage === 'homepage'
               ? `/challenges/${project._id}`
               : `/dashboard/challenges/${project._id}`
-          }`}
+            }`}
         >
           <Button size="sm">View Challenge</Button>
         </Link>

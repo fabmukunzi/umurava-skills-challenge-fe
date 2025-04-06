@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { LogOut } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +19,6 @@ import Link from "next/link";
 import SVGIcon from "@/components/common/svg";
 import HomeIcon from "@/components/common/svg/home-icon";
 import PaperIcon from "@/components/common/svg/paper-icon";
-import SubmissionIcon from "../svg/submission-icon";
 import PersonPlusIcon from "@/components/common/svg/person-plus-icon";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -53,6 +52,7 @@ const footerItems = [
   { title: "Settings", icon: GearIcon, url: "/settings" },
   { title: "Help Center", icon: HeadsetIcon, url: "/help" },
   { title: "Refer Family & Friends", icon: GiftBoxIcon, url: "/refer" },
+  { title: "Notifications", icon: Bell, url: "/dashboard/notifications" },
 ];
 
 declare module "next-auth" {
@@ -122,8 +122,8 @@ export function AppSidebar() {
                     <SidebarMenuItem
                       key={index}
                       className={`rounded group py-0 ${selectedItem === item.title
-                          ? "bg-white text-primary"
-                          : "hover:bg-white hover:text-primary text-white"
+                        ? "bg-white text-primary"
+                        : "hover:bg-white hover:text-primary text-white"
                         }`}
                       onClick={() => {
                         if (item.isDialog) {
@@ -187,8 +187,8 @@ export function AppSidebar() {
                       <SidebarMenuItem
                         key={index}
                         className={`rounded group py-0 ${isHovered || isSelected
-                            ? "bg-white text-primary"
-                            : " text-white"
+                          ? "bg-white text-primary"
+                          : " text-white"
                           }`}
                         onClick={() => setSelectedItem(item.title)}
                         onMouseEnter={() => setHoveredItem(item.title)}

@@ -38,9 +38,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               </div>
 
               <div className="flex items-center space-x-6">
-                <Button className="w-5 h-5 bg-secondary_bg hover:bg-slate-100 transition-all relative p-5 rounded-full">
+                {user?.role === 'admin' && (<Button className="w-5 h-5 bg-secondary_bg hover:bg-slate-100 transition-all relative p-5 rounded-full" onClick={() => router.push('/dashboard/notifications')}>
                   <Bell className="text-gray-500 hover:text-primary" />
-                </Button>
+                </Button>)}
 
                 <Link
                   href={dashboardRoutes.profile.path}

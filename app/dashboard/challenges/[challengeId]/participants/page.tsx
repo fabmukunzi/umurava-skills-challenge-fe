@@ -34,6 +34,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "next-auth/react";
 
 const Participants = () => {
   const form = useForm<ChallengeFeedbackDto>({
@@ -89,14 +90,16 @@ const Participants = () => {
   const params = useParams();
   const { toast } = useToast();
   const challengeId = params?.challengeId as string;
+  const session = useSession();
+  const user = session.data?.user;
 
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
-
+  console.log(data)
   const project = data?.challenge;
 
-  const user = useSelector((state: AppState) => state?.userReducer?.user);
+  // const user = useSelector((state: AppState) => state?.userReducer?.user);
   const [openSubmission, setOpenSubmission] = useState(false);
   const [editFeedback, setEditFeedback] = useState(false);
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
@@ -124,7 +127,7 @@ const Participants = () => {
   };
 
   if (isLoading)
-    return <SingleChallengeSkeleton isAdmin={user.role === "ADMIN"} />;
+    return <SingleChallengeSkeleton isAdmin={user?.role === "admin"} />;
 
   return (
     <div>
@@ -146,7 +149,7 @@ const Participants = () => {
 
       <div className="lg:mx-10 flex md:flex-row flex-col  lg:gap-8 gap-5 my-10">
         <Card className="md:w-full p-6">
-          {user.role === "ADMIN" && (
+          {user?.role === "admin" && (
             <Card className="py-6">
               <h2 className="text-xl px-6 font-semibold mb-4">
                 Participants{" "}

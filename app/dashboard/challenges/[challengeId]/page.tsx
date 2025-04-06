@@ -20,6 +20,7 @@ import {
   useDeleteChallengeMutation,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
+  useSubmitChallengeMutation,
 } from '@/store/actions/challenge';
 import { getChallengeDuration } from '@/lib/get-challenge-duration';
 import { useState } from 'react';
@@ -49,8 +50,11 @@ import { useForm } from "react-hook-form";
 import { challengeSubmissionSchema } from "@/lib/challenge-form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "next-auth/react";
 
 const SingleChallengePage = () => {
+  const session = useSession();
+  const userRole = session.data?.user?.role;
   const form = useForm<SubmitChallengeDto>({
     resolver: zodResolver(challengeSubmissionSchema),
     defaultValues: {},
@@ -119,6 +123,9 @@ const SingleChallengePage = () => {
   const session = useSession();
   const user = session.data?.user;
 
+  const [submitChallenge, { isLoading: isCreating }] = useSubmitChallengeMutation();
+
+  // const user = useSelector((state: AppState) => state?.userReducer?.user);
   const [deleteChallenge] = useDeleteChallengeMutation();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -136,10 +143,14 @@ const SingleChallengePage = () => {
     }
   };
 
-  const onSubmit = async (data: SubmitChallengeDto) => {
+  const onSubmit = async (values: SubmitChallengeDto) => {
     setIsSubmitting(true);
-    console.log("data", data);
+    console.log("data", values);
     try {
+      await submitChallenge({
+        id: challengeId,
+        data: values,
+      }).unwrap();
       toast({
         title: "Success",
         description: "Your submission has been sent successfully.",
