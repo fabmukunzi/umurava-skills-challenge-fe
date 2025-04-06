@@ -21,7 +21,6 @@ import HomeIcon from '@/components/common/svg/home-icon';
 import PaperIcon from '@/components/common/svg/paper-icon';
 import PersonPlusIcon from '@/components/common/svg/person-plus-icon';
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import GearIcon from '@/components/common/svg/gear-icon';
 import HeadsetIcon from '@/components/common/svg/headset-icon';
@@ -253,7 +252,12 @@ export function AppSidebar() {
           <p className="text-primary_grey text-lg mb-5">
             Get notified on the latest projects and hackathons
           </p>
-          <Button className="px-10">Join</Button>
+          <Link
+            href="https://chat.whatsapp.com/LnPqNZ2kSj3AvqUTTluSNE"
+            className="px-10 bg-primary text-white py-2 rounded-lg text-lg font-medium hover:bg-primary/80 transition-colors duration-200"
+          >
+            Join
+          </Link>
         </DialogContent>
       </Dialog>
     </>

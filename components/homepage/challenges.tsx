@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import SkeletonCard from '@/components/common/challenge-skeleton-card';
+import NoChallengeFound from '../common/no-challenge-found';
 
 const Challenges = () => {
   const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1 });
@@ -34,7 +35,7 @@ const Challenges = () => {
             <SkeletonCard className="w-full" key={index} />
           ))}
         </div>
-      ) : (
+      ) : challengesData && challengesData.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -43,13 +44,11 @@ const Challenges = () => {
           className="grid lg:grid-cols-3 gap-6 flex-wrap lg:w-[80%] w-full justify-center mx-auto"
         >
           {challengesData?.map((challenge, index) => (
-            <Projectcard
-              className="w-full"
-              key={index}
-              project={challenge}
-            />
+            <Projectcard className="w-full" key={index} project={challenge} />
           ))}
         </motion.div>
+      ) : (
+        <NoChallengeFound isAdmin={false} />
       )}
       <div>
         <Link className="flex justify-center my-10" href="/challenges">
