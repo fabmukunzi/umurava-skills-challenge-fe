@@ -37,12 +37,11 @@ export default function LoginPage() {
         callbackUrl: '/dashboard',
       });
 
+      if (result?.ok && result?.url) {
+        router.push(result.url || '/dashboard');
+      }
       if (result?.error) {
         setError(result.error);
-      } else {
-        // Directly navigate to dashboard without the intermediate redirect
-        // This ensures consistent behavior in all environments
-        router.push('/dashboard');
       }
     } catch (error: unknown) {
       setError(
