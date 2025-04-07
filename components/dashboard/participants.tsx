@@ -18,21 +18,24 @@ const ParticipantsCard = ({
         <>
           {participants.map(({ _id, teamLead }) => (
             <div
-              key={_id}
-              className="flex items-center gap-4 p-4 border rounded-xl shadow-sm hover:shadow-md"
-            >
+            key={_id}
+            className="flex items-center space-x-4 border-b py-2 px-6"
+          >
+            <div className="w-10 h-10 relative rounded-full overflow-hidden  border-2 border-primary/20">
               <Image
                 src={teamLead.profile_url}
                 alt={`${teamLead.names}'s profile`}
-                width={48}
-                height={48}
-                className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
+                className="w-full h-full object-cover"
+                width={50}
+                height={50}
+                objectFit="cover"
               />
-              <div>
-                <p className="font-semibold text-gray-800">{teamLead.names}</p>
-                <p className="text-sm text-gray-500">{teamLead.email}</p>
-              </div>
             </div>
+            <div className="flex flex-col">
+              <p className="font-medium">{teamLead.names}</p>
+              <p className="text-sm text-gray-500">{teamLead.email}</p>
+            </div>
+          </div>
           ))}
           {participants.length > 5 && (
             <Button className="w-full h-12 text-base font-medium">

@@ -34,16 +34,17 @@ export type ChallengeFeedbackDto = {
 interface ChallengeQueryParams {
   limit: number;
   page: number;
+  status?: string;
 }
 
 
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getChallenges: builder.query<IGetChallengesResponse, ChallengeQueryParams>({
-      query: ({ limit, page }) => ({
+      query: ({ limit, page, status }) => ({
         url: `/public/challenges`,
         method: 'GET',
-        params: { limit, page },
+        params: { limit, page, status },
       }),
       providesTags: ['challenges'],
     }),

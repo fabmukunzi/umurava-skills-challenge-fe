@@ -8,6 +8,7 @@ import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import NoChallengeFound from '@/components/common/no-challenge-found';
 
 const ITEMS_PER_PAGE = 9;
 const ChallengesPage = () => {
@@ -46,7 +47,7 @@ const ChallengesPage = () => {
             <SkeletonCard key={index} />
           ))}
         </div>
-      ) : (
+      ) : challengesData && challengesData.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -55,12 +56,11 @@ const ChallengesPage = () => {
           className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 w-11/12 mx-auto"
         >
           {challengesData.map((challenge) => (
-            <ProjectCard
-              key={challenge._id}
-              project={challenge}
-            />
+            <ProjectCard key={challenge._id} project={challenge} />
           ))}
         </motion.div>
+      ) : (
+        <NoChallengeFound isAdmin={false} />
       )}
       <div className="flex justify-between md:mx-20 my-10 pb-10">
         <Button

@@ -2,6 +2,7 @@
 
 import SkeletonCard from '@/components/common/challenge-skeleton-card';
 import Projectcard from '@/components/common/homepage/project-card';
+import NoChallengeFound from '@/components/common/no-challenge-found';
 import SVGIcon from '@/components/common/svg';
 import FlatPaperIcon from '@/components/common/svg/flatpaper-icon';
 import UserGroupIcon from '@/components/common/svg/user-group-icon';
@@ -84,9 +85,9 @@ const DashboardPage = () => {
           </Button>
         </Link>
       </div>
-      {!(['admin', 'super admin'].includes(
+      {!['admin', 'super admin'].includes(
         user?.role?.toLocaleLowerCase() || ''
-      )) ? (
+      ) ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard
@@ -109,29 +110,37 @@ const DashboardPage = () => {
         </div>
       )}
 
-      <div className="flex justify-between">
-        <p className="text-lg font-semibold text-black my-6">
-          Recent Challenges
-        </p>
-        <Link
-          className="flex items-center gap-4"
-          href={dashboardRoutes.challengeHackathons.path}
-        >
-          See all <ChevronRight />
-        </Link>
-      </div>
       {isLoading ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(3)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
           ))}
         </div>
+      ) : challengesData && challengesData.length > 0 ? (
+        <>
+          <div className="flex justify-between">
+            <p className="text-lg font-semibold text-black my-6">
+              Recent Challenges
+            </p>
+            <Link
+              className="flex items-center gap-4"
+              href={dashboardRoutes.challengeHackathons.path}
+            >
+              See all <ChevronRight />
+            </Link>
+          </div>
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
+            {challengesData.map((challenge, index) => (
+              <Projectcard key={index} project={challenge} usage="dashboard" />
+            ))}
+          </div>
+        </>
       ) : (
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 pb-20 mx-auto">
-          {challengesData?.map((challenge, index) => (
-            <Projectcard key={index} project={challenge} usage="dashboard" />
-          ))}
-        </div>
+        <NoChallengeFound
+          isAdmin={['admin', 'super admin'].includes(
+            user?.role?.toLowerCase() || ''
+          )}
+        />
       )}
     </div>
   );
