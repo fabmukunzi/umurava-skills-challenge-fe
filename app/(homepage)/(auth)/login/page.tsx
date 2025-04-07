@@ -36,16 +36,13 @@ export default function LoginPage() {
         password: data.password,
         callbackUrl: '/dashboard',
       });
-      console.log('result', result);
+
       if (result?.error) {
         setError(result.error);
       } else {
-        const url = result?.url ? new URL(result.url).pathname : '/dashboard';
-
-        router.replace('/');
-        setTimeout(() => {
-          router.replace(url);
-        }, 0);
+        // Directly navigate to dashboard without the intermediate redirect
+        // This ensures consistent behavior in all environments
+        router.push('/dashboard');
       }
     } catch (error: unknown) {
       setError(
