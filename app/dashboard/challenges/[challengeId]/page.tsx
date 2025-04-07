@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
@@ -22,7 +22,6 @@ import {
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
 } from '@/store/actions/challenge';
-import { getChallengeDuration } from '@/lib/get-challenge-duration';
 import { useState } from 'react';
 import {
   AlertDialog,
@@ -34,10 +33,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/alert-dialog';
+import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -45,12 +44,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { challengeSubmissionSchema } from "@/lib/challenge-form-validation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "next-auth/react";
+} from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Textarea } from '@/components/ui/textarea';
+import { useSession } from 'next-auth/react';
+import { handleError } from '@/lib/errorHandler';
+import { toast } from '@/hooks/use-toast';
 
 const SingleChallengePage = () => {
   // const session = useSession();
@@ -78,12 +79,11 @@ const SingleChallengePage = () => {
   const session = useSession();
   const user = session.data?.user;
 
-  const [submitChallenge, { isLoading: isCreating }] = useSubmitChallengeMutation();
+  const [submitChallenge, { isLoading: isCreating }] =
+    useSubmitChallengeMutation();
 
-  // const user = useSelector((state: AppState) => state?.userReducer?.user);
   const [deleteChallenge] = useDeleteChallengeMutation();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
 
   const handleDelete = async () => {
@@ -99,26 +99,19 @@ const SingleChallengePage = () => {
   };
 
   const onSubmit = async (values: SubmitChallengeDto) => {
-    setIsSubmitting(true);
-    console.log("data", values);
     try {
       await submitChallenge({
         id: challengeId,
         data: values,
       }).unwrap();
       toast({
-        title: "Success",
-        description: "Your submission has been sent successfully.",
+        title: 'Success',
+        description: 'Your submission has been sent successfully.',
       });
       setOpenSubmitDialog(false);
-    } catch (error: any) {
-      toast({
-        title: "Something went wrong",
-        variant: "destructive",
-        description: error?.data?.message,
-      });
+    } catch (error) {
+      handleError(error);
     } finally {
-      setIsSubmitting(false);
       form.reset();
     }
   };
@@ -138,7 +131,7 @@ const SingleChallengePage = () => {
         className="md:mx-10 py-4"
         items={[
           {
-            label: "Challenges & Hackathons",
+            label: 'Challenges & Hackathons',
             href: dashboardRoutes.challengeHackathons.path,
           },
           {
@@ -178,7 +171,7 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={MailIcon} />}
                 title="Contact Email"
-                value={project?.contactEmail ?? ""}
+                value={project?.contactEmail ?? ''}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
@@ -188,14 +181,7 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={
-                  project?.startDate && project?.endDate
-                    ? `${getChallengeDuration(
-                      new Date(project.startDate),
-                      new Date(project.deadline)
-                    )} Days`
-                    : "N/A"
-                }
+                value={project?.duration + ' Days'}
               />
               {Array.isArray(project?.moneyPrize) &&
                 project.moneyPrize.length > 0 && (
@@ -240,7 +226,7 @@ const SingleChallengePage = () => {
                       className="w-full h-12 bg-red-500"
                       disabled={isDeleting}
                     >
-                      {isDeleting ? "Deleting..." : "Delete"}
+                      {isDeleting ? 'Deleting...' : 'Delete'}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -309,7 +295,7 @@ const SingleChallengePage = () => {
               access.
             </li>
             <li>
-              Share the file/folder with{" "}
+              Share the file/folder with{' '}
               <span className="font-semibold">team@umurava.africa</span> (Note:
               Ensure <span className="font-semibold">Viewer</span> access is
               granted).
@@ -355,9 +341,9 @@ const SingleChallengePage = () => {
               />
               <Button
                 className="w-full h-12 flex items-center justify-center"
-                disabled={isSubmitting}
+                disabled={isCreating}
               >
-                {isSubmitting ? "Submitting..." : "Submit"}
+                {isCreating ? 'Submitting...' : 'Submit'}
               </Button>
             </form>
           </Form>

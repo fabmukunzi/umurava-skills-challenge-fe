@@ -27,7 +27,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const notificationsCount = notificationsData
     .filter((notif) => {
       if (user?.role === 'admin') return notif.status === 'unread';
-      return notif.status === 'unread' && notif.userId === user?.id;
+      return notif.status === 'unread' && notif.userId === user?.name;
     })
     .length;
   const hasNotifications = notificationsCount > 0;
@@ -92,7 +92,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     >
       <Dropdown
         icon={<NotificationIcon />}
-        items={[<NotificationContainer />]}
+        items={[<NotificationContainer key="notification-container" />]}
       />
     </Button>
   );
