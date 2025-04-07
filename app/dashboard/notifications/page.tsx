@@ -33,7 +33,7 @@ const NotificationPage = () => {
     }
 
     if (isLoading) {
-        return <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        return <div className="flex flex-col gap-4 items-center justify-start pt-6">
             <Skeleton className="h-32 w-full bg-gray-300" />
         </div>
     }

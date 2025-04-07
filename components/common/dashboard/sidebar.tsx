@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import { Bell, LogOut } from "lucide-react";
+import { LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -10,24 +10,23 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import Image from "next/image";
-import { CollapsedUmuravaLogo, MessageIcon } from "@/lib/images";
-import { dashboardRoutes, homepageRoutes } from "@/lib/routes";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import SVGIcon from "@/components/common/svg";
-import HomeIcon from "@/components/common/svg/home-icon";
-import PaperIcon from "@/components/common/svg/paper-icon";
-import PersonPlusIcon from "@/components/common/svg/person-plus-icon";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
-import GearIcon from "@/components/common/svg/gear-icon";
-import HeadsetIcon from "@/components/common/svg/headset-icon";
-import GiftBoxIcon from "@/components/common/svg/giftbox-icon";
-import { signOut, useSession } from "next-auth/react";
-import SidebarSkeleton from "../sidebar-skeleton";
+} from '@/components/ui/sidebar';
+import Image from 'next/image';
+import { CollapsedUmuravaLogo, MessageIcon } from '@/lib/images';
+import { dashboardRoutes, homepageRoutes } from '@/lib/routes';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import SVGIcon from '@/components/common/svg';
+import HomeIcon from '@/components/common/svg/home-icon';
+import PaperIcon from '@/components/common/svg/paper-icon';
+import PersonPlusIcon from '@/components/common/svg/person-plus-icon';
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
+import { usePathname } from 'next/navigation';
+import GearIcon from '@/components/common/svg/gear-icon';
+import HeadsetIcon from '@/components/common/svg/headset-icon';
+import GiftBoxIcon from '@/components/common/svg/giftbox-icon';
+import { signOut, useSession } from 'next-auth/react';
+import SidebarSkeleton from '../sidebar-skeleton';
 
 const items = [
   {
@@ -49,13 +48,12 @@ const items = [
 ];
 
 const footerItems = [
-  { title: "Settings", icon: GearIcon, url: "/settings" },
-  { title: "Help Center", icon: HeadsetIcon, url: "/help" },
-  { title: "Refer Family & Friends", icon: GiftBoxIcon, url: "/refer" },
-  { title: "Notifications", icon: Bell, url: "/dashboard/notifications" },
+  { title: 'Settings', icon: GearIcon, url: dashboardRoutes.settings.path },
+  { title: 'Help Center', icon: HeadsetIcon, url: '/help' },
+  { title: 'Refer Family & Friends', icon: GiftBoxIcon, url: '/refer' },
 ];
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       name?: string | null;
@@ -99,7 +97,7 @@ export function AppSidebar() {
   const handleLogout = async () => {
     await signOut({
       redirect: true,
-      callbackUrl: "/",
+      callbackUrl: '/',
     });
   };
 
@@ -122,8 +120,8 @@ export function AppSidebar() {
                     <SidebarMenuItem
                       key={index}
                       className={`rounded group py-0 ${selectedItem === item.title
-                        ? "bg-white text-primary"
-                        : "hover:bg-white hover:text-primary text-white"
+                        ? 'bg-white text-primary'
+                        : 'hover:bg-white hover:text-primary text-white'
                         }`}
                       onClick={() => {
                         if (item.isDialog) {
@@ -141,7 +139,7 @@ export function AppSidebar() {
                             <button className="flex items-center space-x-2 h-11 px-2 w-full">
                               <SVGIcon
                                 color={
-                                  isHovered || isSelected ? "#2B71F0" : "white"
+                                  isHovered || isSelected ? '#2B71F0' : 'white'
                                 }
                                 className="!h-5 !w-5 transition-colors duration-200"
                                 Icon={item.icon}
@@ -159,7 +157,7 @@ export function AppSidebar() {
                         >
                           <SVGIcon
                             color={
-                              isHovered || isSelected ? "#2B71F0" : "white"
+                              isHovered || isSelected ? '#2B71F0' : 'white'
                             }
                             className="!h-5 !w-5 transition-colors duration-200"
                             Icon={item.icon}
@@ -187,8 +185,8 @@ export function AppSidebar() {
                       <SidebarMenuItem
                         key={index}
                         className={`rounded group py-0 ${isHovered || isSelected
-                          ? "bg-white text-primary"
-                          : " text-white"
+                          ? 'bg-white text-primary'
+                          : ' text-white'
                           }`}
                         onClick={() => setSelectedItem(item.title)}
                         onMouseEnter={() => setHoveredItem(item.title)}
@@ -200,7 +198,7 @@ export function AppSidebar() {
                         >
                           <SVGIcon
                             color={
-                              isHovered || isSelected ? "#2B71F0" : "white"
+                              isHovered || isSelected ? '#2B71F0' : 'white'
                             }
                             className="!h-5 !w-5 transition-colors duration-200"
                             Icon={item.icon}
@@ -219,7 +217,7 @@ export function AppSidebar() {
             <div className="py-6 mt-4 px-2 flex items-center gap-4">
               <div className="flex items-center space-x-1">
                 <Image
-                  src={user?.profileUrl || ""}
+                  src={user?.profileUrl || ''}
                   alt="Profile"
                   width={30}
                   height={30}
@@ -252,7 +250,12 @@ export function AppSidebar() {
           <p className="text-primary_grey text-lg mb-5">
             Get notified on the latest projects and hackathons
           </p>
-          <Button className="px-10">Join</Button>
+          <Link
+            href="https://chat.whatsapp.com/LnPqNZ2kSj3AvqUTTluSNE"
+            className="px-10 bg-primary text-white py-2 rounded-lg text-lg font-medium hover:bg-primary/80 transition-colors duration-200"
+          >
+            Join
+          </Link>
         </DialogContent>
       </Dialog>
     </>
