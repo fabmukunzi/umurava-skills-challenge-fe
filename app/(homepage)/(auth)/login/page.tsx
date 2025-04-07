@@ -26,7 +26,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     setError('');
-  
+
     try {
       const result = await signIn('credentials', {
         redirect: false,
@@ -34,7 +34,7 @@ export default function LoginPage() {
         password: data.password,
         callbackUrl: '/dashboard',
       });
-  
+
       if (result?.error) {
         setError(result.error);
       } else {
@@ -46,7 +46,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-  
+
 
   const handleOAuthSignIn = async () => {
     setLoading(true);

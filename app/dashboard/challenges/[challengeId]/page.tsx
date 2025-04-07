@@ -51,6 +51,8 @@ import { challengeSubmissionSchema } from "@/lib/challenge-form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
+import { handleError } from '@/lib/errorHandler';
+import { toast } from '@/hooks/use-toast';
 
 const SingleChallengePage = () => {
   // const session = useSession();
@@ -91,7 +93,7 @@ const SingleChallengePage = () => {
     try {
       await deleteChallenge(challengeId).unwrap();
       router.push(dashboardRoutes.challengeHackathons.path);
-    } catch (error) {
+    } catch (error: any) {
       handleError(error);
     } finally {
       setIsDeleting(false);
@@ -192,11 +194,12 @@ const SingleChallengePage = () => {
                   project?.startDate && project?.endDate
                     ? `${getChallengeDuration(
                       new Date(project.startDate),
-                      new Date(project.deadline)
+                      new Date(project.endDate)
                     )} Days`
                     : "N/A"
                 }
               />
+
               {Array.isArray(project?.moneyPrize) &&
                 project.moneyPrize.length > 0 && (
                   <div className="mb-6">
@@ -288,6 +291,7 @@ const SingleChallengePage = () => {
         </div>
       </div>
 
+      {/* Submit your work dialog */}
       <Dialog open={openSubmitDialog} onOpenChange={setOpenSubmitDialog}>
         <DialogContent
           hideCloseButton={false}

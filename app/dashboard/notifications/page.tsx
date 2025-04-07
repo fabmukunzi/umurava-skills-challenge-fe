@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useSession } from 'next-auth/react';
 import { INotification } from '@/lib/types/notification';
 import { Button } from '@/components/ui/button';
+import { LucideCheckCheck, LucideEllipsis } from 'lucide-react';
 
 const NotificationPage = () => {
     const session = useSession();
@@ -14,7 +15,7 @@ const NotificationPage = () => {
     const isAdmin = useMemo(() => ['admin', 'super admin'].includes(user?.role?.toLowerCase() || ''), [user?.role]);
 
     const { data, isLoading, isError } = useGetNotificationsQuery({});
-    const notificationsData = Array.isArray(data) ? data : [];
+    const notificationsData = Array.isArray(data) ? data : (data?.data || []);
 
     const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
     const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
@@ -52,13 +53,13 @@ const NotificationPage = () => {
                 {notificationsData?.length > 0 && isAdmin && (<div className="flex justify-end gap-4 mb-4">
                     <Button
                         onClick={handleMarkAllAsRead}
-                        className="h-12 text-white bg-primary font-medium"
+                        className="text-white bg-primary font-medium"
                     >
                         Mark All as Read
                     </Button>
                     <Button
                         onClick={handleDeleteAllNotifications}
-                        className="h-12 text-white font-medium bg-red-500 hover:bg-red-600 rounded"
+                        className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                     >
                         Delete All
                     </Button>
@@ -76,22 +77,27 @@ const NotificationPage = () => {
                         >
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h2 className="text-lg font-semibold">New Message</h2>
-                                    <Badge className="text-white capitalize">{item.status}</Badge>
+                                    <h2 className="text-lg font-semibold">{item.title}</h2>
+                                    <Badge className="text-white capitalize flex items-center gap-1">
+                                        {item.status === 'unread'
+                                            ? <LucideEllipsis className="size-3 text-gray-500" />
+                                            : <LucideCheckCheck className="size-3 text-primary" />}
+                                        {item.status}
+                                    </Badge>
                                     <p className="text-sm text-gray-600 mt-2">{item.message}</p>
                                 </div>
                                 {isAdmin && (<div className="flex gap-2">
                                     {item.status === 'unread' && (
                                         <Button
                                             onClick={() => handleMarkAsRead(item._id)}
-                                            className="h-12 text-white bg-primary font-medium"
+                                            className="text-white bg-primary font-medium"
                                         >
                                             Mark as Read
                                         </Button>
                                     )}
                                     <Button
                                         onClick={() => handleDeleteNotification(item._id)}
-                                        className="h-12 text-white font-medium bg-red-500 hover:bg-red-600 rounded"
+                                        className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                                     >
                                         Delete
                                     </Button>
