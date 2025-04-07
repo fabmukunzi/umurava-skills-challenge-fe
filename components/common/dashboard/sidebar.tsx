@@ -119,11 +119,10 @@ export function AppSidebar() {
                   return (
                     <SidebarMenuItem
                       key={index}
-                      className={`rounded group py-0 ${
-                        selectedItem === item.title
-                          ? 'bg-white text-primary'
-                          : 'hover:bg-white hover:text-primary text-white'
-                      }`}
+                      className={`rounded group py-0 ${selectedItem === item.title
+                        ? 'bg-white text-primary'
+                        : 'hover:bg-white hover:text-primary text-white'
+                        }`}
                       onClick={() => {
                         if (item.isDialog) {
                           setIsDialogOpen(true);
@@ -185,11 +184,10 @@ export function AppSidebar() {
                     return (
                       <SidebarMenuItem
                         key={index}
-                        className={`rounded group py-0 ${
-                          isHovered || isSelected
-                            ? 'bg-white text-primary'
-                            : ' text-white'
-                        }`}
+                        className={`rounded group py-0 ${isHovered || isSelected
+                          ? 'bg-white text-primary'
+                          : ' text-white'
+                          }`}
                         onClick={() => setSelectedItem(item.title)}
                         onMouseEnter={() => setHoveredItem(item.title)}
                         onMouseLeave={() => setHoveredItem(undefined)}

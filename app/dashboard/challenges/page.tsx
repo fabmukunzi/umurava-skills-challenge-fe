@@ -82,7 +82,7 @@ const ChallengesPage = () => {
             className={clsx(
               'flex items-center justify-between gap-2 bg-secondary_bg w-full text-sm font-normal border-[#98A2B3] text-black px-4 py-3',
               status === value &&
-                'bg-blue-200 hover:bg-blue-200 border-primary text-black'
+              'bg-blue-200 hover:bg-blue-200 border-primary text-black'
             )}
           >
             <div className="flex items-center gap-2">

@@ -54,11 +54,10 @@ const Projectcard: FC<{
       </CardContent>
       <CardFooter className="border-t items-center px-5 py-3">
         <Link
-          href={`${
-            usage === 'homepage'
-              ? `/challenges/${project._id}`
-              : `/dashboard/challenges/${project._id}`
-          }`}
+          href={`${usage === 'homepage'
+            ? `/challenges/${project._id}`
+            : `/dashboard/challenges/${project._id}`
+            }`}
         >
           <Button size="sm">View Challenge</Button>
         </Link>

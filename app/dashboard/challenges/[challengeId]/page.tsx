@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import CustomBreadcrumb from '@/components/common/bread-crumb';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
@@ -16,9 +16,11 @@ import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
 import DollarIcon from '@/components/common/svg/dollar-icon';
 import CalendarIcon from '@/components/common/svg/calendar-icon';
 import {
+  SubmitChallengeDto,
   useDeleteChallengeMutation,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
+  useSubmitChallengeMutation,
 } from '@/store/actions/challenge';
 import { getChallengeDuration } from '@/lib/get-challenge-duration';
 import { useState } from 'react';
@@ -32,12 +34,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
-import { useSession } from 'next-auth/react';
-import { handleError } from '@/lib/errorHandler';
+} from "@/components/ui/alert-dialog";
+import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { challengeSubmissionSchema } from "@/lib/challenge-form-validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "next-auth/react";
 
 const SingleChallengePage = () => {
+  // const session = useSession();
+  // const userRole = session.data?.user?.role;
+  const form = useForm<SubmitChallengeDto>({
+    resolver: zodResolver(challengeSubmissionSchema),
+    defaultValues: {},
+  });
+
   const router = useRouter();
   const params = useParams();
   const challengeId = params?.challengeId as string;
@@ -56,8 +78,13 @@ const SingleChallengePage = () => {
   const session = useSession();
   const user = session.data?.user;
 
+  const [submitChallenge, { isLoading: isCreating }] = useSubmitChallengeMutation();
+
+  // const user = useSelector((state: AppState) => state?.userReducer?.user);
   const [deleteChallenge] = useDeleteChallengeMutation();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -68,6 +95,31 @@ const SingleChallengePage = () => {
       handleError(error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const onSubmit = async (values: SubmitChallengeDto) => {
+    setIsSubmitting(true);
+    console.log("data", values);
+    try {
+      await submitChallenge({
+        id: challengeId,
+        data: values,
+      }).unwrap();
+      toast({
+        title: "Success",
+        description: "Your submission has been sent successfully.",
+      });
+      setOpenSubmitDialog(false);
+    } catch (error: any) {
+      toast({
+        title: "Something went wrong",
+        variant: "destructive",
+        description: error?.data?.message,
+      });
+    } finally {
+      setIsSubmitting(false);
+      form.reset();
     }
   };
 
@@ -86,7 +138,7 @@ const SingleChallengePage = () => {
         className="md:mx-10 py-4"
         items={[
           {
-            label: 'Challenges & Hackathons',
+            label: "Challenges & Hackathons",
             href: dashboardRoutes.challengeHackathons.path,
           },
           {
@@ -126,7 +178,7 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={MailIcon} />}
                 title="Contact Email"
-                value={project?.contactEmail ?? ''}
+                value={project?.contactEmail ?? ""}
               />
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={GiftBoxIcon2} />}
@@ -139,10 +191,10 @@ const SingleChallengePage = () => {
                 value={
                   project?.startDate && project?.endDate
                     ? `${getChallengeDuration(
-                        new Date(project.startDate),
-                        new Date(project.endDate)
-                      )} Days`
-                    : 'N/A'
+                      new Date(project.startDate),
+                      new Date(project.deadline)
+                    )} Days`
+                    : "N/A"
                 }
               />
               {Array.isArray(project?.moneyPrize) &&
@@ -188,7 +240,7 @@ const SingleChallengePage = () => {
                       className="w-full h-12 bg-red-500"
                       disabled={isDeleting}
                     >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? "Deleting..." : "Delete"}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -218,7 +270,12 @@ const SingleChallengePage = () => {
                 </Link>
               </div>
             ) : (
-              <Button className="w-full h-12">Submit Your Work</Button>
+              <Button
+                className="w-full h-12"
+                onClick={() => setOpenSubmitDialog(!openSubmitDialog)}
+              >
+                Submit Your Work
+              </Button>
             )}
           </Card>
 
@@ -230,6 +287,82 @@ const SingleChallengePage = () => {
             )}
         </div>
       </div>
+
+      <Dialog open={openSubmitDialog} onOpenChange={setOpenSubmitDialog}>
+        <DialogContent
+          hideCloseButton={false}
+          className="flex flex-col mx-auto"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-black text-lg font-semibold">
+              Submit Your Work
+            </h1>
+          </div>
+          <h2 className="text-primary_grey text-base">
+            Submit your work and provide either a Github repository URL or
+            Google drive link.
+          </h2>
+          <ul className="list-disc text-left text-primary_grey *:text-base px-4 md:px-8">
+            <li>For public reposities: Share the Github URL</li>
+            <li>
+              For private repositories: provide a Googlr drive link with view
+              access.
+            </li>
+            <li>
+              Share the file/folder with{" "}
+              <span className="font-semibold">team@umurava.africa</span> (Note:
+              Ensure <span className="font-semibold">Viewer</span> access is
+              granted).
+            </li>
+          </ul>
+          <Form {...form}>
+            <form
+              className="space-y-2 md:space-y-4"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="submissionLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-12"
+                        placeholder="Enter your project URL"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Notes</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Add any additional notes or comments here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                className="w-full h-12 flex items-center justify-center"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

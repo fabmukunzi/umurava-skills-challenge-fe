@@ -29,12 +29,12 @@ export const homepageRoutes = {
     path: '/login',
     name: 'login',
   },
-  signup:{
+  signup: {
     label: 'Signup',
     path: '/signup',
     name: 'signup',
   },
-  forgotPassword:{
+  forgotPassword: {
     label: 'Forgot Password',
     path: '/forgot-password',
     name: 'forgot-password',

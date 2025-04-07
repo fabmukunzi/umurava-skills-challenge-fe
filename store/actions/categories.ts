@@ -10,12 +10,12 @@ const categoryEndpoints = baseAPI.injectEndpoints({
       }),
     }),
     getSkills: builder.query<{ data: ISkill[] }, void>({
-        query: () => ({
-          url: `/public/skills`,
-          method: 'GET',
-        }),
+      query: () => ({
+        url: `/public/skills`,
+        method: 'GET',
       }),
+    }),
   }),
 });
 
-export const { useGetCategoriesQuery,useGetSkillsQuery } = categoryEndpoints;
+export const { useGetCategoriesQuery, useGetSkillsQuery } = categoryEndpoints;

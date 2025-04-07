@@ -66,7 +66,7 @@ const DashboardPage = () => {
     },
   ];
   const session = useSession();
-  const user = session.data?.user;
+  const user = session.data?.user
   return (
     <div className="px-2">
       <div className="flex flex-wrap max-w-screen-md:text-center justify-between items-center my-6">
