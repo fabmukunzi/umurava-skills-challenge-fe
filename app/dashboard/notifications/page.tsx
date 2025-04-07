@@ -12,10 +12,7 @@ const NotificationPage = () => {
     const session = useSession();
     const user = session?.data?.user;
     const { data, isLoading, isError } = useGetNotificationsQuery({});
-    const { data: notificationsData } = data || {};
-
-    console.log('first render notifications', notificationsData);
-
+    const notificationsData = Array.isArray(data) ? data : [];
 
     const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
     const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
