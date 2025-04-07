@@ -6,7 +6,7 @@ const MailIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
       fill="none"
       strokeWidth="1.16667"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       fillRule="evenodd"
@@ -16,7 +16,7 @@ const MailIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
       fill="none"
       strokeWidth="1.16667"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

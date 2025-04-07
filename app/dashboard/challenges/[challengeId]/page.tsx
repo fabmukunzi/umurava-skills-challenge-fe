@@ -35,27 +35,17 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import SingleChallengeSkeleton from '@/components/common/single-project-skeleton';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Textarea } from '@/components/ui/textarea';
 import { useSession } from 'next-auth/react';
 import { handleError } from '@/lib/errorHandler';
 import { toast } from '@/hooks/use-toast';
+import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialog';
+import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
+import dayjs from 'dayjs';
 
 const SingleChallengePage = () => {
-  // const session = useSession();
-  // const userRole = session.data?.user?.role;
   const form = useForm<SubmitChallengeDto>({
     resolver: zodResolver(challengeSubmissionSchema),
     defaultValues: {},
@@ -71,20 +61,24 @@ const SingleChallengePage = () => {
 
   const project = data?.data;
 
-  const { data: partcipantsData, isLoading: partcipantsLoading } =
+  const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
 
-  const participants = partcipantsData?.data.participantChallenges || [];
+  const participants = participantsData?.data?.participantChallenges || [];
 
   const session = useSession();
   const user = session.data?.user;
 
-  const [submitChallenge, { isLoading: isCreating }] =
+  const [submitChallenge, { isLoading: isSubmitting }] =
     useSubmitChallengeMutation();
 
   const [deleteChallenge] = useDeleteChallengeMutation();
   const [isDeleting, setIsDeleting] = useState(false);
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
+  const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const isProjectNotStarted = dayjs().isBefore(
+    dayjs(project?.startDate || dayjs())
+  );
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -145,12 +139,7 @@ const SingleChallengePage = () => {
           <div className="relative bg-primary h-80 flex items-center justify-center rounded-lg mb-6">
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           </div>
-          {/* <h1 className="text-2xl font-semibold my-1">
-            {project?.challengeName}
-          </h1>
-          <p className="text-gray-700 mb-6">{project?.projectDescription}</p> */}
 
-          {/* <h2 className="text-xl font-semibold mt-6 mb-4">Tasks:</h2> */}
           {project?.projectDescription && (
             <div
               className="prose prose-blue max-w-none prose-li:my-0 prose-a:no-underline"
@@ -258,9 +247,15 @@ const SingleChallengePage = () => {
             ) : (
               <Button
                 className="w-full h-12"
-                onClick={() => setOpenSubmitDialog(!openSubmitDialog)}
+                onClick={() => {
+                  if (isProjectNotStarted) {
+                    setOpenJoinDialog(!openJoinDialog);
+                  } else {
+                    setOpenSubmitDialog(!openSubmitDialog);
+                  }
+                }}
               >
-                Submit Your Work
+                {isProjectNotStarted ? 'Join Challenge' : 'Submit Your Work'}
               </Button>
             )}
           </Card>
@@ -268,87 +263,25 @@ const SingleChallengePage = () => {
           {['admin', 'super admin'].includes(
             user?.role?.toLocaleLowerCase() || ''
           ) &&
-            !partcipantsLoading && (
+            !participantsLoading && (
               <ParticipantsCard participants={participants} />
             )}
         </div>
       </div>
 
-      <Dialog open={openSubmitDialog} onOpenChange={setOpenSubmitDialog}>
-        <DialogContent
-          hideCloseButton={false}
-          className="flex flex-col mx-auto"
-        >
-          <div className="flex items-center justify-between gap-2">
-            <h1 className="text-black text-lg font-semibold">
-              Submit Your Work
-            </h1>
-          </div>
-          <h2 className="text-primary_grey text-base">
-            Submit your work and provide either a Github repository URL or
-            Google drive link.
-          </h2>
-          <ul className="list-disc text-left text-primary_grey *:text-base px-4 md:px-8">
-            <li>For public reposities: Share the Github URL</li>
-            <li>
-              For private repositories: provide a Googlr drive link with view
-              access.
-            </li>
-            <li>
-              Share the file/folder with{' '}
-              <span className="font-semibold">team@umurava.africa</span> (Note:
-              Ensure <span className="font-semibold">Viewer</span> access is
-              granted).
-            </li>
-          </ul>
-          <Form {...form}>
-            <form
-              className="space-y-2 md:space-y-4"
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
-              <FormField
-                control={form.control}
-                name="submissionLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project URL</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-12"
-                        placeholder="Enter your project URL"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Notes</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Add any additional notes or comments here"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                className="w-full h-12 flex items-center justify-center"
-                disabled={isCreating}
-              >
-                {isCreating ? 'Submitting...' : 'Submit'}
-              </Button>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+      <SubmitChallengeDialog
+        isSubmitting={isSubmitting}
+        onSubmit={onSubmit}
+        open={openSubmitDialog}
+        onOpenChange={setOpenSubmitDialog}
+      />
+      {project && (
+        <JoinChallengeDialog
+          open={openJoinDialog}
+          onOpenChange={setOpenJoinDialog}
+          challenge={project}
+        />
+      )}
     </div>
   );
 };

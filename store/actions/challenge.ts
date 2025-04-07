@@ -99,6 +99,13 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ['challenge'],
     }),
+    joinChallenge: builder.mutation({
+      query: ({ challengeId, payload }) => ({
+        url: `participant/join/challenge/${challengeId}`,
+        method: 'POST',
+        body: payload,
+      }),
+    }),
     giveChallengeFeedback: builder.mutation<{ message: string }, ChallengeFeedbackDto>({
       query: (data) => ({
         url: `/challenges/${data.challengeId}/submissions/${data.submissionId}/feedback`,
@@ -119,4 +126,5 @@ export const {
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
   useGiveChallengeFeedbackMutation,
+  useJoinChallengeMutation
 } = challengeEndpoints;

@@ -14,15 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Provider store={store}>
-      <SessionProvider>
-        <html lang="en">
-          <body>
-            <Suspense>{children}</Suspense>
+    <html lang="en">
+      <body suppressHydrationWarning >
+        <Provider store={store}>
+          <SessionProvider>
+            <Suspense fallback={null}>{children}</Suspense>
             <Toaster />
-          </body>
-        </html>
-      </SessionProvider>
-    </Provider>
+          </SessionProvider>
+        </Provider>
+      </body>
+    </html>
   );
 }

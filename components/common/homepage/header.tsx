@@ -58,14 +58,11 @@ const HeaderComponent = () => {
             })}
           </nav>
 
-          <Link
-            href={dashboardRoutes.dashboard.path}
-            className="hidden lg:block"
-          >
-            <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
-            {user ? 'Go to dashboard' : 'Join the Program'}
-            </Button>
-          </Link>
+          <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
+            <Link href={dashboardRoutes.dashboard.path}>
+              {user ? 'Go to dashboard' : 'Join the Program'}
+            </Link>
+          </Button>
 
           <div className="block lg:hidden">
             <div
@@ -106,11 +103,11 @@ const HeaderComponent = () => {
               );
             })}
           </nav>
-          <Link href={dashboardRoutes.dashboard.path} className="px-6 pb-4">
-            <Button className="w-fit bg-[#041738] hover:bg-[#041738]/50 text-white">
+          <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
+            <Link href={dashboardRoutes.dashboard.path}>
               {user ? 'Go to dashboard' : 'Join the Program'}
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </header>
 
