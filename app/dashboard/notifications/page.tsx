@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGetNotificationsQuery, useMarkAllNotificationsAsReadMutation, useMarkNotificationAsReadMutation } from '@/store/actions/notification';
@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 const NotificationPage = () => {
     const session = useSession();
     const user = session?.data?.user;
+    const isAdmin = useMemo(() => ['admin', 'super admin'].includes(user?.role?.toLowerCase() || ''), [user?.role]);
+
     const { data, isLoading, isError } = useGetNotificationsQuery({});
     const notificationsData = Array.isArray(data) ? data : [];
 
@@ -47,7 +49,7 @@ const NotificationPage = () => {
         <main className="p-4">
             <h1 className="text-2xl font-bold mb-4">Notifications</h1>
             <div className="space-y-4">
-                {notificationsData?.length > 0 && (<div className="flex justify-end gap-4 mb-4">
+                {notificationsData?.length > 0 && isAdmin && (<div className="flex justify-end gap-4 mb-4">
                     <Button
                         onClick={handleMarkAllAsRead}
                         className="h-12 text-white bg-primary font-medium"
@@ -78,7 +80,7 @@ const NotificationPage = () => {
                                     <Badge className="text-white capitalize">{item.status}</Badge>
                                     <p className="text-sm text-gray-600 mt-2">{item.message}</p>
                                 </div>
-                                <div className="flex gap-2">
+                                {isAdmin && (<div className="flex gap-2">
                                     {item.status === 'unread' && (
                                         <Button
                                             onClick={() => handleMarkAsRead(item._id)}
@@ -93,7 +95,7 @@ const NotificationPage = () => {
                                     >
                                         Delete
                                     </Button>
-                                </div>
+                                </div>)}
                             </div>
                         </motion.div>
                     ))

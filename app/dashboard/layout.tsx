@@ -117,7 +117,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               </div>
 
               <div className="flex items-center space-x-6">
-                {user?.role === 'admin' && (
+                {['admin', 'super admin'].includes(user?.role?.toLowerCase() || '') && (
                   <div className="relative">
                     <NotificationButton />
                   </div>
