@@ -8,8 +8,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import SVGIcon from "@/components/common/svg";
-import { useSelector } from "react-redux";
-import { AppState } from "@/lib/types/user";
 import {
   ChallengeFeedbackDto,
   useGetChallengeByIdQuery,
@@ -96,8 +94,7 @@ const Participants = () => {
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
-  console.log(data)
-  const project = data?.challenge;
+  const project = data?.data;
 
   // const user = useSelector((state: AppState) => state?.userReducer?.user);
   const [openSubmission, setOpenSubmission] = useState(false);
@@ -139,7 +136,7 @@ const Participants = () => {
             href: dashboardRoutes.challengeHackathons.path,
           },
           {
-            label: project?.challengeTitle ?? "",
+            label: project?.challengeName ?? "",
           },
           {
             label: "Participants",

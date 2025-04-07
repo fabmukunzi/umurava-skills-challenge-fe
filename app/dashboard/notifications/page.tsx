@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGetNotificationsQuery, useMarkAllNotificationsAsReadMutation, useMarkNotificationAsReadMutation } from '@/store/actions/notification';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useSession } from 'next-auth/react';
 import { INotification } from '@/lib/types/notification';
 import { Button } from '@/components/ui/button';
 import { LucideCheckCheck, LucideEllipsis } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 const NotificationPage = () => {
     const session = useSession();

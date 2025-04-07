@@ -12,6 +12,15 @@ const Projectcard: FC<{
   className?: string;
   usage?: 'dashboard' | 'homepage';
 }> = ({ project, className, usage = 'homepage' }) => {
+  
+  const statusStyles: Record<string, string> = {
+    draft: 'bg-gray-300 text-gray-700 border border-gray-300',
+    open: 'bg-blue-100 text-blue-600 border border-blue-500',
+    ongoing: 'bg-yellow-200 text-yellow-800 border border-yellow-300',
+    closed: 'bg-red-200 text-red-800 border border-red-300',
+    completed: 'bg-green-200 text-green-800 border border-green-300',
+  };
+
   return (
     <Card className={`text-black ${className}`}>
       <CardContent className="p-4">
@@ -19,7 +28,10 @@ const Projectcard: FC<{
           <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           <Badge
             variant="secondary"
-            className="absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl bg-[#0F973D] text-white"
+            className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl ${
+              statusStyles[project?.status?.toLowerCase()] ||
+              'bg-gray-200 text-black'
+            }`}
           >
             {project?.status}
           </Badge>
@@ -54,10 +66,11 @@ const Projectcard: FC<{
       </CardContent>
       <CardFooter className="border-t items-center px-5 py-3">
         <Link
-          href={`${usage === 'homepage'
-            ? `/challenges/${project._id}`
-            : `/dashboard/challenges/${project._id}`
-            }`}
+          href={`${
+            usage === 'homepage'
+              ? `/challenges/${project._id}`
+              : `/dashboard/challenges/${project._id}`
+          }`}
         >
           <Button size="sm">View Challenge</Button>
         </Link>

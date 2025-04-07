@@ -7,24 +7,64 @@ import CalendarIcon from '@/components/common/svg/calendar-icon';
 import DollarIcon from '@/components/common/svg/dollar-icon';
 import GiftBoxIcon2 from '@/components/common/svg/giftbox-icon2';
 import MailIcon from '@/components/common/svg/mail-icon';
+import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
+import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { toast } from '@/hooks/use-toast';
+import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
+import { handleError } from '@/lib/errorHandler';
 import { UmuravaWhiteLogo } from '@/lib/images';
 import { homepageRoutes } from '@/lib/routes';
-import { useGetChallengeByIdQuery } from '@/store/actions/challenge';
+import { SubmitChallengeDto, useGetChallengeByIdQuery, useSubmitChallengeMutation } from '@/store/actions/challenge';
+import { zodResolver } from '@hookform/resolvers/zod';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const HomeSingleProjectView = () => {
+
+    const form = useForm<SubmitChallengeDto>({
+      resolver: zodResolver(challengeSubmissionSchema),
+      defaultValues: {},
+    });
+
   const params = useParams();
   const challengeId = params?.challengeId as string;
 
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
-
+  const [submitChallenge, { isLoading: isSubmitting }] =
+    useSubmitChallengeMutation();
   const project = data?.data;
+
+    const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
+    const [openJoinDialog, setOpenJoinDialog] = useState(false);
+    const isProjectNotStarted = dayjs().isBefore(
+      dayjs(project?.startDate || dayjs())
+    );
+
+      const onSubmit = async (values: SubmitChallengeDto) => {
+        try {
+          await submitChallenge({
+            id: challengeId,
+            data: values,
+          }).unwrap();
+          toast({
+            title: 'Success',
+            description: 'Your submission has been sent successfully.',
+          });
+          setOpenSubmitDialog(false);
+        } catch (error) {
+          handleError(error);
+        } finally {
+          form.reset();
+        }
+      };
 
   if (isLoading) return <SingleChallengeSkeleton />;
 
@@ -84,7 +124,7 @@ const HomeSingleProjectView = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={project?.duration?.toString() || ''}
+                value={project?.duration?.toString() + ' Days' || ''}
               />
               {Array.isArray(project?.moneyPrize) &&
                 project.moneyPrize.length > 0 && (
@@ -119,10 +159,34 @@ const HomeSingleProjectView = () => {
                   </div>
                 )}
             </div>
-            <Button className="w-full h-12">Submit Your Work</Button>
+            <Button
+              className="w-full h-12"
+              onClick={() => {
+                if (isProjectNotStarted) {
+                  setOpenJoinDialog(!openJoinDialog);
+                } else {
+                  setOpenSubmitDialog(!openSubmitDialog);
+                }
+              }}
+            >
+              {isProjectNotStarted ? 'Join Challenge' : 'Submit Your Work'}
+            </Button>
           </Card>
         </div>
       </div>
+      <SubmitChallengeDialog
+        isSubmitting={isSubmitting}
+        onSubmit={onSubmit}
+        open={openSubmitDialog}
+        onOpenChange={setOpenSubmitDialog}
+      />
+      {project && (
+        <JoinChallengeDialog
+          open={openJoinDialog}
+          onOpenChange={setOpenJoinDialog}
+          challenge={project}
+        />
+      )}
     </div>
   );
 };

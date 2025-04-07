@@ -23,12 +23,12 @@ const SkeletonCard: FC<{ className?: string }> = ({ className }) => {
             <Skeleton key={i} className="h-5 w-16 rounded-xl" />
           ))}
         </div>
-        <p className="font-semibold text-[13px] my-3">
+        <div className="font-semibold text-[13px] my-3">
           Seniority Level: <Skeleton className="w-1/2 h-4 inline-block" />
-        </p>
-        <p className="font-semibold text-[13px]">
+        </div>
+        <div className="font-semibold text-[13px]">
           Timeline: <Skeleton className="w-1/4 h-4 inline-block" />
-        </p>
+        </div>
       </CardContent>
       <CardFooter className="border-t items-center px-5 py-3">
         <Skeleton className="w-24 h-8 rounded" />

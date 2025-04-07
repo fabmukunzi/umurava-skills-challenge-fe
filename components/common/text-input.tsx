@@ -22,6 +22,8 @@ interface TextInputProps<T extends FieldValues> {
   placeholder?: string;
   className?: string;
   hideLabel?: boolean;
+  defaultValue?: number;
+  min?: number;
 }
 
 const TextInput = <T extends FieldValues>({
@@ -31,6 +33,8 @@ const TextInput = <T extends FieldValues>({
   type = 'text',
   placeholder,
   className,
+  defaultValue,
+  min,
   hideLabel = false,
 }: TextInputProps<T>) => {
   return (
@@ -45,6 +49,8 @@ const TextInput = <T extends FieldValues>({
               className={cn('h-12', className)}
               type={type}
               placeholder={placeholder}
+              defaultValue={defaultValue}
+              min={min}
               {...field}
             />
           </FormControl>

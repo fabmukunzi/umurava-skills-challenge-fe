@@ -14,12 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
-        <body className={`${workSans.className} text-primary antialiased`}>
-          <HeaderComponent />
-          <main className="overflow-x-hidden">{children}</main>
-          <FooterComponent />
-        </body>
-      </html>
+    <div className={`${workSans.className} text-primary antialiased`}>
+      <HeaderComponent />
+      <main className="overflow-x-hidden">{children}</main>
+      <FooterComponent />
+    </div>
   );
 }

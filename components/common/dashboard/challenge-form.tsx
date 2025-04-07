@@ -25,6 +25,8 @@ import {
   useGetSkillsQuery,
 } from '@/store/actions/categories';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { dashboardRoutes } from '@/lib/routes';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -54,7 +56,7 @@ const ChallengeForm = ({
         : [{ categoryPrize: '', prize: '' }],
     },
   });
-  
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'moneyPrize',
@@ -79,6 +81,12 @@ const ChallengeForm = ({
   ];
 
   const today = dayjs().startOf('day').toDate();
+
+  const router = useRouter();
+
+  const handleCancel = () => {
+    router.push(dashboardRoutes.challengeHackathons.path);
+  };
 
   return (
     <Card className="md:w-3/5 mx-auto p-6 my-10">
@@ -180,6 +188,8 @@ const ChallengeForm = ({
             name="teamSize"
             label="Team Size"
             type="number"
+            defaultValue={1}
+            min={1}
             placeholder="Enter max team size"
           />
 
@@ -238,6 +248,7 @@ const ChallengeForm = ({
           <div className="w-full flex gap-5 py-5">
             <Button
               disabled={isSubmitting}
+              onClick={handleCancel}
               className="w-5/12 h-12"
               variant="outline"
               type="button"

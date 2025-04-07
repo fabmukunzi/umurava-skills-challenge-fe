@@ -37,7 +37,7 @@ const FooterComponent = () => {
     },
   ];
   return (
-    <footer className="bg-[#041738] px-5 md:px-20 py-4 text-white">
+    <footer id='contact-us' className="bg-[#041738] px-5 md:px-20 py-4 text-white">
       <div className="flex items-center justify-between py-8">
         <Image src={CareerTicketLogo} alt="Career Ticket Logo" width={70} />
         <div className="flex gap-2">
