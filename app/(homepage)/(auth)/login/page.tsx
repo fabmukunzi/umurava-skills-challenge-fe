@@ -17,6 +17,8 @@ interface LoginForm {
   password: string;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginForm>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +28,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     setError('');
-  
+
     try {
       const result = await signIn('credentials', {
         redirect: false,
@@ -34,28 +36,35 @@ export default function LoginPage() {
         password: data.password,
         callbackUrl: '/dashboard',
       });
-  
+      console.log('result', result);
       if (result?.error) {
         setError(result.error);
       } else {
-        router.push(result?.url || '/dashboard');
+        const url = result?.url ? new URL(result.url).pathname : '/dashboard';
+
+        router.replace('/');
+        setTimeout(() => {
+          router.replace(url);
+        }, 0);
       }
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      setError(
+        error instanceof Error ? error.message : 'An unknown error occurred'
+      );
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleOAuthSignIn = async () => {
     setLoading(true);
     setError('');
     try {
-      // Google OAuth login
       await signIn('google', { callbackUrl: '/dashboard' });
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      setError(
+        error instanceof Error ? error.message : 'An unknown error occurred'
+      );
     } finally {
       setLoading(false);
     }
@@ -71,7 +80,9 @@ export default function LoginPage() {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <Input
               {...register('email')}
               type="email"
@@ -81,7 +92,9 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <Input
               {...register('password')}
               type="password"
@@ -91,7 +104,10 @@ export default function LoginPage() {
             />
           </div>
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          <Link href={homepageRoutes.forgotPassword.path} className="text-primary text-sm float-right">
+          <Link
+            href={homepageRoutes.forgotPassword.path}
+            className="text-primary text-sm float-right"
+          >
             Forgot password?
           </Link>
           <Button type="submit" className="w-full" disabled={loading}>
@@ -108,7 +124,11 @@ export default function LoginPage() {
             onClick={handleOAuthSignIn}
             className="w-full bg-primary/20 hover:bg-primary/30 text-black rounded-full flex items-center justify-center gap-2"
           >
-            <Image className="w-5 h-5 mr-2" src={GoogleIcon2} alt="Google Icon" />
+            <Image
+              className="w-5 h-5 mr-2"
+              src={GoogleIcon2}
+              alt="Google Icon"
+            />
             Sign in with Google
           </Button>
         </div>

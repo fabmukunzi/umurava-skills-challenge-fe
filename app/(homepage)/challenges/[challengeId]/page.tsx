@@ -84,7 +84,7 @@ const HomeSingleProjectView = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={project?.duration?.toString() || ''}
+                value={project?.duration?.toString()+" Days" || ''}
               />
               {Array.isArray(project?.moneyPrize) &&
                 project.moneyPrize.length > 0 && (

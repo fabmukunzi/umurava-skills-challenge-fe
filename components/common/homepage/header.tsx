@@ -9,6 +9,7 @@ import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
 import { dashboardRoutes, homepageRoutes } from '@/lib/routes';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 const HeaderComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,6 +27,9 @@ const HeaderComponent = () => {
     { name: homepageRoutes.about.label, path: homepageRoutes.about.path },
     { name: homepageRoutes.contact.label, path: homepageRoutes.contact.path },
   ];
+
+  const session = useSession();
+  const user = session.data?.user;
 
   return (
     <Fragment>
@@ -54,9 +58,12 @@ const HeaderComponent = () => {
             })}
           </nav>
 
-          <Link href={dashboardRoutes.dashboard.path} className="hidden lg:block">
+          <Link
+            href={dashboardRoutes.dashboard.path}
+            className="hidden lg:block"
+          >
             <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
-              Join the Program
+            {user ? 'Go to dashboard' : 'Join the Program'}
             </Button>
           </Link>
 
@@ -101,7 +108,7 @@ const HeaderComponent = () => {
           </nav>
           <Link href={dashboardRoutes.dashboard.path} className="px-6 pb-4">
             <Button className="w-fit bg-[#041738] hover:bg-[#041738]/50 text-white">
-              Join the Program
+              {user ? 'Go to dashboard' : 'Join the Program'}
             </Button>
           </Link>
         </div>
