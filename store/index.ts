@@ -21,6 +21,9 @@ export const rtkQueryErrorLogger: Middleware = () => (next) => async (action) =>
     if (payload?.data?.message === 'Invalid token') {
       await signOut({ redirect: false });
     }
+    if (payload?.data?.message === 'Access denied') {
+      location.href = '/dashboard';
+    }
   }
 
   return next(action);
