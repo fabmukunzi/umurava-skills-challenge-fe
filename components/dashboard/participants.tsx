@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
 import { ParticipantChallenge } from '@/lib/types/project';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 const ParticipantsCard = ({
   participants,
@@ -11,6 +11,7 @@ const ParticipantsCard = ({
   participants: ParticipantChallenge[];
 }) => {
   const router = useRouter();
+  const { challengeId } = useParams();
   return (
     <Card className="py-6">
       <h2 className="text-xl px-6 font-semibold mb-4">
@@ -41,7 +42,7 @@ const ParticipantsCard = ({
               </div>
             ))}
             {participants.length > 0 && (
-              <Button className="w-full h-12 text-base font-medium" onClick={() => router.push('/dashboard/challenges/')}>
+              <Button className="w-full h-12 text-base font-medium" onClick={() => router.push(`/dashboard/challenges/${challengeId}/participants`)}>
                 View All
               </Button>
             )}

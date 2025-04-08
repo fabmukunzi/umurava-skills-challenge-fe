@@ -40,7 +40,7 @@ const SubmitChallengeDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent hideCloseButton={false} className="flex flex-col mx-auto">
+      <DialogContent hideCloseButton={true} className="flex flex-col mx-auto">
         <div className="flex items-center justify-between gap-2">
           <h1 className="text-black text-lg font-semibold">Submit Your Work</h1>
         </div>

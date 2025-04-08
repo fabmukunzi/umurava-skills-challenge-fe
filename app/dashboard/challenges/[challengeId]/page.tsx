@@ -22,7 +22,7 @@ import {
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
 } from '@/store/actions/challenge';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -79,6 +79,11 @@ const SingleChallengePage = () => {
   const isProjectNotStarted = dayjs().isBefore(
     dayjs(project?.startDate || dayjs())
   );
+  const hasJoinedAlready = useMemo(() => {
+    return participants.some(
+      (participant) => participant.challengeId === challengeId && participant?.teamLead?.email === user?.email);
+  }
+    , [participants, user, challengeId]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -245,20 +250,21 @@ const SingleChallengePage = () => {
                   <Button className="w-full h-12">Edit</Button>
                 </Link>
               </div>
-            ) : (
+            ) : hasJoinedAlready ? (
               <Button
                 className="w-full h-12"
-                onClick={() => {
-                  if (isProjectNotStarted) {
-                    setOpenJoinDialog(!openJoinDialog);
-                  } else {
-                    setOpenSubmitDialog(!openSubmitDialog);
-                  }
-                }}
+                onClick={() => { setOpenSubmitDialog(!openSubmitDialog) }}
               >
-                {isProjectNotStarted ? 'Join Challenge' : 'Submit Your Work'}
+                {'Submit Your Work'}
               </Button>
-            )}
+            ) : isProjectNotStarted ? (
+              <Button
+                className="w-full h-12"
+                onClick={() => { setOpenJoinDialog(!openJoinDialog) }}
+              >
+                {'Join Challenge'}
+              </Button>
+            ) : ''}
           </Card>
 
           {['admin', 'super admin'].includes(
