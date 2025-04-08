@@ -22,12 +22,11 @@ interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
 }
 
-export type SubmissionLinkDto = {
-  link: string;
-  description: string;
-}
 export type SubmitChallengeDto = {
-  links: SubmissionLinkDto[];
+  links: {
+    link: string;
+    description: string;
+  }[];
   details_message: string;
 }
 export type ChallengeFeedbackDto = {
