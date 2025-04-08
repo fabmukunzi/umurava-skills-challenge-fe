@@ -47,13 +47,13 @@ const DashboardPage = () => {
       percentage: 8,
     },
     {
-      title: 'Reports Generated',
+      title: 'Submissions',
       number: 300,
       icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 5,
     },
     {
-      title: 'New Clients',
+      title: 'Subscribed Clients',
       number: 75,
       icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 12,
