@@ -93,7 +93,6 @@ const SingleChallengePage = () => {
   };
 
   const onSubmit = async (values: SubmitChallengeDto) => {
-    console.log('values first', values);
     try {
       await submitChallenge({
         id: challengeId,
