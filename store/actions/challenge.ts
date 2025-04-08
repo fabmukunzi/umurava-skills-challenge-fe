@@ -22,9 +22,13 @@ interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
 }
 
-export type SubmitChallengeDto = {
-  submissionLink: string;
+export type SubmissionLinkDto = {
+  link: string;
   description: string;
+}
+export type SubmitChallengeDto = {
+  links: SubmissionLinkDto[];
+  details_message: string;
 }
 export type ChallengeFeedbackDto = {
   feedback: string;
@@ -93,7 +97,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
     }),
     submitChallenge: builder.mutation<{ message: string }, { id: string; data: SubmitChallengeDto }>({
       query: ({ id, data }) => ({
-        url: `/participant/${id}`,
+        url: `/participant/${id}/submit`,
         method: 'POST',
         body: data,
       }),
