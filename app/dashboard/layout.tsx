@@ -34,6 +34,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const hasNotifications = notificationsCount > 0;
 
   const router = useRouter();
+  const currentPath = window.location.pathname;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value.toLowerCase();
+
+    if (!searchTerm || searchTerm.trim() === '') {
+      router.push(currentPath);
+      return;
+    }
+    router.push(`${currentPath}?search=${searchTerm}`);
+  };
 
   const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
     <div className="py-2 px-3 border-b border-gray-100">
@@ -112,8 +123,20 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <Search className="text-gray-400 absolute w-5 h-5 left-3" />
                 <Input
                   type="text"
-                  placeholder="Search here..."
+                  placeholder="Search here... "
                   className="pl-10 text-black bg-secondary_bg"
+                  onChange={handleSearch}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+                      if (!searchTerm || searchTerm.trim() === '') {
+                        router.push(currentPath);
+                        return;
+                      }
+                      router.push(`${currentPath}?search=${searchTerm}`);
+                    }
+                  }
+                  }
                 />
               </div>
 
