@@ -15,15 +15,21 @@ import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+import { NotificationResponse } from './notifications/page';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
 });
+
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const user = session?.data?.user;
-  const { data, isLoading, isError } = useGetNotificationsQuery({});
-  const notificationsData = Array.isArray(data) ? data : (data?.data || []);
+  const { data, isLoading, isError } = useGetNotificationsQuery<NotificationResponse>({});
+  const notificationsData = useMemo(() => {
+    if (Array.isArray(data)) return data;
+    return (data && 'data' in data) ? (data.data) : [];
+  }, [data]);
 
   const notificationsCount = notificationsData
     .filter((notif: INotification) => {

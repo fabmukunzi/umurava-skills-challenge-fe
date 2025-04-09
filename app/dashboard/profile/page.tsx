@@ -17,8 +17,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { handleError } from '@/lib/errorHandler';
 import Link from 'next/link';
-import { FieldError, useForm } from 'react-hook-form';
-import { error } from 'console';
+import { useForm } from 'react-hook-form';
 
 interface ChangePwdDto {
   currentPassword: string;
