@@ -64,7 +64,10 @@ const SingleChallengePage = () => {
   const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
 
-  const participants = participantsData?.data?.participantChallenges || [];
+  const participants = useMemo(() =>
+    participantsData?.data?.participantChallenges || [],
+    [participantsData?.data?.participantChallenges]
+  );
 
   const session = useSession();
   const user = session.data?.user;
@@ -79,11 +82,17 @@ const SingleChallengePage = () => {
   const isProjectNotStarted = dayjs().isBefore(
     dayjs(project?.startDate || dayjs())
   );
-  const hasJoinedAlready = useMemo(() => {
-    return participants.some(
-      (participant) => participant.challengeId === challengeId && participant?.teamLead?.email === user?.email);
+  const isProjectStarted = useMemo(() => {
+    return dayjs().isAfter(
+      dayjs(project?.startDate || dayjs())
+    ) &&
+      dayjs().isBefore(
+        dayjs(project?.endDate || dayjs())
+      );
   }
-    , [participants, user, challengeId]);
+    , [project?.startDate, project?.endDate]);
+
+  console.log('isProjectStarted', isProjectStarted, project?.startDate, project?.endDate, project);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -250,7 +259,7 @@ const SingleChallengePage = () => {
                   <Button className="w-full h-12">Edit</Button>
                 </Link>
               </div>
-            ) : hasJoinedAlready ? (
+            ) : isProjectStarted ? (
               <Button
                 className="w-full h-12"
                 onClick={() => { setOpenSubmitDialog(!openSubmitDialog) }}

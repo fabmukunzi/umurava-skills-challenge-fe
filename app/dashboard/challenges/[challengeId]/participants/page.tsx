@@ -13,7 +13,7 @@ import {
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
 } from "@/store/actions/challenge";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -55,13 +55,14 @@ const Participants = () => {
   const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
 
-  const participants = participantsData?.data?.participantChallenges || [];
+  const participants = useMemo(() =>
+    participantsData?.data?.participantChallenges || [],
+    [participantsData?.data?.participantChallenges]
+  );
 
-  console.log('first', participants);
-
-  // const user = useSelector((state: AppState) => state?.userReducer?.user);
   const [openSubmission, setOpenSubmission] = useState(false);
-  const [editFeedback, setEditFeedback] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<any>(null);
+
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   const handleEditFeedback = async (data: ChallengeFeedbackDto) => {
@@ -83,8 +84,9 @@ const Participants = () => {
     } finally {
       setIsSubmittingFeedback(false);
     }
-    setEditFeedback(false);
   };
+
+  console.log(project)
 
   if (participantsLoading)
     return <SingleChallengeSkeleton isAdmin={user?.role === "admin"} />;
@@ -112,7 +114,7 @@ const Participants = () => {
           {user?.role === "admin" && (
             <Card className="py-6">
               <h2 className="text-xl px-6 font-semibold mb-4">
-                Participants{" "}
+                {project?.challengeName} Participants{" "}
                 <Badge className="text-white">{participants.length}</Badge>
               </h2>
               <div className="space-y-2">
@@ -143,10 +145,13 @@ const Participants = () => {
                       <Badge className="text-white bg-[#2B71F0] capitalize">
                         {participant?.submissionStatus}
                       </Badge>
-                      {participant.submissionDate && participant?.submissionStatus !== "not submitted" && (<Button
+                      {(<Button
                         className="h-8 text-sm "
                         variant={"outline"}
-                        onClick={() => setOpenSubmission(true)}
+                        onClick={() => {
+                          setSelectedParticipant(participant);
+                          setOpenSubmission(true)
+                        }}
                       >
                         View Submission
                       </Button>)}
@@ -168,13 +173,13 @@ const Participants = () => {
                 Submission details
               </h1>
               <h2 className="text-primary_grey text-base">
-                View participant&apos;s submission for this Challenge.{" "}
+                View participant&apos;s submission {project?.challengeName} Challenge.{" "}
               </h2>
             </div>
           </div>
           <div className="flex items-end justify-between ">
             <h2 className="text-primary_grey text-base">
-              Submitted on 3/8/2025{" "}
+              Submitted on {project?.submissionDate}
             </h2>
             <Badge className="text-white bg-[#2B71F0] mt-4">{"Reviewed"}</Badge>
           </div>
@@ -216,7 +221,7 @@ const Participants = () => {
                 name="feedback"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Leave Feedback </FormLabel>
+                    <FormLabel> Feedback </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Add any submission feedback or comments here"
@@ -227,22 +232,22 @@ const Participants = () => {
                   </FormItem>
                 )}
               />
+              <div className="flex items-center justify-end gap-2">
+                <Button
+                  className="flex items-center justify-center bg-red-600 hover:bg-red-500"
+                  disabled={isSubmittingFeedback}
+                >
+                  {isSubmittingFeedback ? "Rejecting..." : "Reject"}
+                </Button>
 
-              <div className="space-y-1">
-                <label htmlFor="additionalNotes" className="font-semibold">
-                  Feedback
-                </label>
-                <p className="text-primary_grey text-base" id="feedback">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </p>
+                <Button
+                  className=" flex items-center justify-center"
+                  disabled={isSubmittingFeedback}
+                >
+                  {isSubmittingFeedback ? "Promoting..." : "Promote"}
+                </Button>
               </div>
 
-              <Button
-                className="w-full h-12 flex items-center justify-center"
-                disabled={isSubmittingFeedback}
-              >
-                {isSubmittingFeedback ? "Saving..." : "Save"}
-              </Button>
             </form>
           </Form>
 
