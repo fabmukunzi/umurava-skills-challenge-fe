@@ -17,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSubscribeToNewsletterMutation } from '@/store/actions/users';
 import { toast } from '@/hooks/use-toast';
+import { handleError } from '@/lib/errorHandler';
 
 interface SubscribeDto {
   email: string;
@@ -40,17 +41,11 @@ const FooterComponent = () => {
     try {
       setIsSubmitting(true);
       await subscribeToNewsletter({ email: data.email }).unwrap();
-      setIsSubmitting(false);
       toast({
-        title: 'Success',
-        description: 'You have successfully subscribed to our newsletter.',
+        title: 'You have successfully subscribed to our newsletter.',
       });
     } catch (error: any) {
-      setIsSubmitting(false);
-      toast({
-        title: 'Error',
-        description: error?.data?.message || 'Something went wrong',
-      });
+      handleError(error);
     } finally {
       setIsSubmitting(false);
     }
