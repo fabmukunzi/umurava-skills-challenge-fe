@@ -53,6 +53,16 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body,
       }),
     }),
+    updateProfilePicture: builder.mutation<
+      void,
+      FormData
+    >({
+      query: (body) => ({
+        url: '/auth/profile/upload-picture',
+        method: 'POST',
+        body,
+      }),
+    }),
     changePassword: builder.mutation<
       void,
       { currentPassword: string; newPassword: string }
@@ -83,6 +93,7 @@ export const {
   useResetPasswordMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useUpdateProfilePictureMutation,
   useChangePasswordMutation,
   useSubscribeToNewsletterMutation
 } = usersEndpoints;

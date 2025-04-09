@@ -9,8 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { dashboardRoutes } from '@/lib/routes';
 import { INotification } from '@/lib/types/notification';
 import { useGetNotificationsQuery } from '@/store/actions/notification';
-import { Bell, LucideLoader, Search } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { Bell, LucideLoader, LucideLogOut, LucideUser, Search } from 'lucide-react';
+import { signOut, useSession } from 'next-auth/react';
 import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -34,7 +34,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const hasNotifications = notificationsCount > 0;
 
   const router = useRouter();
-  const currentPath = window.location.pathname;
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const currentPath = pathname;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase();
@@ -44,6 +45,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       return;
     }
     router.push(`${currentPath}?search=${searchTerm}`);
+  };
+
+  const handleLogout = async () => {
+    await signOut({
+      redirect: true,
+      callbackUrl: '/',
+    });
   };
 
   const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
@@ -82,6 +90,34 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       </button>
     </div>)}
   </div>)
+
+  const ProfileContainer = () => (
+    <div className="absolute right-0 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+      <div className="flex items-center gap-2 py-2 px-3 border-b border-gray-100">
+        <Image
+          src={user?.profileUrl || ''}
+          alt="Profile"
+          width={40}
+          height={40}
+          className="rounded-full border p-1"
+        />
+        <div>
+          <p className="text-sm font-medium">{user?.name}</p>
+          <p className="text-xs text-gray-500">{user?.email}</p>
+        </div>
+      </div>
+      <div className="py-1">
+        <Link href={dashboardRoutes.profile.path} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          <LucideUser className='size-4' /> View Profile
+        </Link>
+        <div onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100">
+          <LucideLogOut className='size-4' /> Log out
+        </div>
+      </div>
+    </div>
+  );
+
+
 
   const NotificationIcon = () => (
     <div className="relative">
@@ -147,22 +183,21 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   </div>
                 )}
 
-                <Link
-                  href={dashboardRoutes.profile.path}
-                  className="flex items-center space-x-3"
-                >
-                  {user?.profileUrl ? (
-                    <Image
+
+                {user?.profileUrl ? (
+                  <Dropdown
+                    icon={<Image
                       src={user?.profileUrl || ''}
                       alt="Profile"
                       width={40}
                       height={40}
                       className="rounded-full border p-1"
-                    />
-                  ) : (
-                    <Skeleton className="w-full" />
-                  )}
-                </Link>
+                    />}
+                    items={[<ProfileContainer key="profile-container" />]}
+                  />
+                ) : (
+                  <Skeleton className="w-full" />
+                )}
               </div>
             </header>
 

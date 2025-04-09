@@ -111,7 +111,7 @@ const DashboardPage = () => {
           ))}
         </div>
       ) : (
-        <div className="grid md:grid-cols-6 gap-6 my-10">
+        <div className="grid md:grid-cols-6 gap-6 my-10 z-0">
           {adminStatData.map((card, index) => (
             <div
               key={index}
