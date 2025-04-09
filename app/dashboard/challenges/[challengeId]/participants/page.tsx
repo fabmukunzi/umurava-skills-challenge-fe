@@ -16,7 +16,7 @@ import {
 import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { feedbackSubmissionSchema } from "@/lib/feedback-form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -86,7 +86,7 @@ const Participants = () => {
     }
   };
 
-  console.log(project)
+  console.log('selectedParticipant', selectedParticipant)
 
   if (participantsLoading)
     return <SingleChallengeSkeleton isAdmin={user?.role === "admin"} />;
@@ -120,7 +120,7 @@ const Participants = () => {
               <div className="space-y-2">
                 {participants.slice(0, 5).map((participant) => (
                   <div
-                    key={participant.id}
+                    key={participant?._id}
                     className="flex items-center justify-between space-x-4 border-b py-2 px-6"
                   >
                     <div className="flex items-center gap-4">

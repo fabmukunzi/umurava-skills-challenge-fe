@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +24,7 @@ import { usePathname } from 'next/navigation';
 import GearIcon from '@/components/common/svg/gear-icon';
 import HeadsetIcon from '@/components/common/svg/headset-icon';
 import GiftBoxIcon from '@/components/common/svg/giftbox-icon';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import SidebarSkeleton from '../sidebar-skeleton';
 
 const items = [
@@ -77,7 +76,6 @@ export function AppSidebar() {
   });
 
   const session = useSession();
-  const user = session.data?.user;
 
   useEffect(() => {
     const matchingItem = items.find(
@@ -93,13 +91,6 @@ export function AppSidebar() {
   if (!session?.data) {
     return <SidebarSkeleton />;
   }
-
-  const handleLogout = async () => {
-    await signOut({
-      redirect: true,
-      callbackUrl: '/',
-    });
-  };
 
   return (
     <>

@@ -9,13 +9,27 @@ import { Button } from '@/components/ui/button';
 import { LucideCheckCheck, LucideEllipsis } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
+export interface NotificationResponse {
+    data: {
+        data: INotification[],
+        message: string,
+        status: string,
+    };
+    isLoading: boolean;
+    isError: boolean;
+}
+
 const NotificationPage = () => {
     const session = useSession();
     const user = session?.data?.user;
     const isAdmin = useMemo(() => ['admin', 'super admin'].includes(user?.role?.toLowerCase() || ''), [user?.role]);
 
-    const { data, isLoading, isError } = useGetNotificationsQuery({});
-    const notificationsData = Array.isArray(data) ? data : (data?.data || []);
+    const { data, isLoading, isError } = useGetNotificationsQuery<NotificationResponse>({});
+    const notificationsData = useMemo(() => {
+        if (Array.isArray(data)) return data;
+        return (data && 'data' in data) ? (data.data) : [];
+    }, [data]);
+
 
     const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
     const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
