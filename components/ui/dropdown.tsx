@@ -10,9 +10,9 @@ const Dropdown = ({
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <span className="p-2 text-white rounded-full flex items-center justify-center cursor-pointer">
+        <div className="p-2 text-white rounded-full flex items-center justify-center cursor-pointer">
           {icon}
-        </span>
+        </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className="p-2 bg-white shadow-lg rounded-md">
         {items.map((item, index) => (

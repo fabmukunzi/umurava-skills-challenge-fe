@@ -214,7 +214,7 @@ export function AppSidebar() {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            <div className="py-6 mt-4 px-2 flex items-center gap-4">
+            {/* <div className="py-6 mt-4 px-2 flex items-center gap-4">
               <div className="flex items-center space-x-1">
                 <Image
                   src={user?.profileUrl || ''}
@@ -231,7 +231,7 @@ export function AppSidebar() {
               <div className="cursor-pointer">
                 <LogOut onClick={handleLogout} className="w-5 h-5 text-white" />
               </div>
-            </div>
+            </div> */}
           </div>
         </SidebarContent>
       </Sidebar>
