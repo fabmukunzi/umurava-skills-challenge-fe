@@ -9,20 +9,32 @@ import { dashboardRoutes } from '@/lib/routes';
 import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import clsx from 'clsx';
 import NoChallengeFound from '@/components/common/no-challenge-found';
+import { useSearchParams } from 'next/navigation';
 
 const ITEMS_PER_PAGE = 6;
 const ChallengesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('');
+  const [searchParam, setSearchParam] = useState('');
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const search = searchParams.get('search');
+    if (search) {
+      setSearchParam(search);
+    }
+  }, [searchParams]);
 
   const { data, isLoading, isFetching } = useGetChallengesQuery({
     limit: ITEMS_PER_PAGE,
     page: currentPage,
     status,
+    search: searchParam
   });
   const challengesData = data?.data?.challenges;
 

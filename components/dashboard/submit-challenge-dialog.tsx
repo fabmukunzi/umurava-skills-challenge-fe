@@ -8,12 +8,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { SubmitChallengeDto } from '@/store/actions/challenge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
+import TextInput from '../common/text-input';
 
 interface SubmitChallengeDialogProps {
   open: boolean;
@@ -33,9 +33,14 @@ const SubmitChallengeDialog = ({
     defaultValues: {},
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'links',
+  });
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent hideCloseButton={false} className="flex flex-col mx-auto">
+      <DialogContent hideCloseButton={true} className="flex flex-col mx-auto">
         <div className="flex items-center justify-between gap-2">
           <h1 className="text-black text-lg font-semibold">Submit Your Work</h1>
         </div>
@@ -56,31 +61,58 @@ const SubmitChallengeDialog = ({
             granted).
           </li>
         </ul>
+
         <Form {...form}>
           <form
             className="space-y-2 md:space-y-4"
             onSubmit={form.handleSubmit(onSubmit)}
           >
+            <FormLabel>Project URls</FormLabel>
+            <div className="space-y-4">
+              {fields?.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="flex gap-4 items-center justify-center w-full"
+                >
+                  <TextInput
+                    form={form}
+                    hideLabel={true}
+                    name={`links.${index}.link` as keyof SubmitChallengeDto}
+                    label="Link"
+                    placeholder="e.g. linktree.com/yourname"
+                  />
+                  <TextInput
+                    form={form}
+                    hideLabel={true}
+                    name={`links.${index}.description` as keyof SubmitChallengeDto}
+                    label="Description"
+                    placeholder="e.g. Github URL or Google Drive link"
+                  />
+
+                  {fields?.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-dashed border-red-600 text-red-600"
+                      onClick={() => remove(index)}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button
+                className="border-dashed"
+                type="button"
+                onClick={() => append({ link: '', description: '' })}
+                variant="outline"
+              >
+                + Add Link
+              </Button>
+            </div>
             <FormField
               control={form.control}
-              name="submissionLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="h-12"
-                      placeholder="Enter your project URL"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
+              name="details_message"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Additional Notes</FormLabel>

@@ -12,8 +12,45 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { homepageRoutes } from '@/lib/routes';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useSubscribeToNewsletterMutation } from '@/store/actions/users';
+import { toast } from '@/hooks/use-toast';
+import { handleError } from '@/lib/errorHandler';
+
+interface SubscribeDto {
+  email: string;
+}
 
 const FooterComponent = () => {
+  const { register, handleSubmit } = useForm<SubscribeDto>({
+    resolver: zodResolver(
+      z.object({
+        email: z.string().email('Invalid email address'),
+      })
+    ),
+    defaultValues: {
+      email: '',
+    },
+  });
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [subscribeToNewsletter] = useSubscribeToNewsletterMutation();
+
+  const Suscribe = async (data: SubscribeDto) => {
+    try {
+      setIsSubmitting(true);
+      await subscribeToNewsletter({ email: data.email }).unwrap();
+      toast({
+        title: 'You have successfully subscribed to our newsletter.',
+      });
+    } catch (error: any) {
+      handleError(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const socialLinks = [
     {
       icon: FacebookIcon,
@@ -91,15 +128,16 @@ const FooterComponent = () => {
           <h1 className="text-white font-bold text-2xl">
             Join our newsletter to keep up to date with us!
           </h1>
-          <div className="relative">
-            <Input className="md:h-auto lg:h-14 h-14" placeholder="Email" />
+          <form className="relative" onSubmit={handleSubmit(Suscribe)}>
+            <Input className="md:h-auto lg:h-14 h-14" placeholder="Email" {...register('email')} />
             <Button
               size="lg"
               className="absolute right-2 lg:top-1.5 top-1.5 md:top-[0.126rem] md:px-2 lg:px-7 px-7 md:h-8 lg:h-11 md:text-sm lg:text-base md:font-normal lg:font-semibold font-semibold"
+              disabled={isSubmitting}
             >
-              Subscribe
+              {isSubmitting ? 'is Subscribing...' : 'Subscribe'}
             </Button>
-          </div>
+          </form>
         </div>
       </div>
       <div className="flex md:flex-row flex-col-reverse gap-4 text-center justify-between pt-8">

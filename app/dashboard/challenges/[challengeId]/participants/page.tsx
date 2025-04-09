@@ -11,8 +11,9 @@ import SVGIcon from "@/components/common/svg";
 import {
   ChallengeFeedbackDto,
   useGetChallengeByIdQuery,
+  useGetParticipantsByChallengeIdQuery,
 } from "@/store/actions/challenge";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -40,51 +41,6 @@ const Participants = () => {
     defaultValues: {},
   });
 
-  const participants = [
-    {
-      id: 1,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "John Doe",
-      occupation: "Product Designer",
-    },
-    {
-      id: 2,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 3,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 4,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 5,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-    {
-      id: 6,
-      profileImage:
-        "https://res.cloudinary.com/dagurahkl/image/upload/v1677431165/syxnnttrcpijmnuuon46.jpg",
-      fullName: "Jane Smith",
-      occupation: "UX Researcher",
-    },
-  ];
-
   const params = useParams();
   const { toast } = useToast();
   const challengeId = params?.challengeId as string;
@@ -96,9 +52,17 @@ const Participants = () => {
   });
   const project = data?.data;
 
-  // const user = useSelector((state: AppState) => state?.userReducer?.user);
+  const { data: participantsData, isLoading: participantsLoading } =
+    useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
+
+  const participants = useMemo(() =>
+    participantsData?.data?.participantChallenges || [],
+    [participantsData?.data?.participantChallenges]
+  );
+
   const [openSubmission, setOpenSubmission] = useState(false);
-  const [editFeedback, setEditFeedback] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<any>(null);
+
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   const handleEditFeedback = async (data: ChallengeFeedbackDto) => {
@@ -120,10 +84,11 @@ const Participants = () => {
     } finally {
       setIsSubmittingFeedback(false);
     }
-    setEditFeedback(false);
   };
 
-  if (isLoading)
+  console.log(project)
+
+  if (participantsLoading)
     return <SingleChallengeSkeleton isAdmin={user?.role === "admin"} />;
 
   return (
@@ -149,7 +114,7 @@ const Participants = () => {
           {user?.role === "admin" && (
             <Card className="py-6">
               <h2 className="text-xl px-6 font-semibold mb-4">
-                Participants{" "}
+                {project?.challengeName} Participants{" "}
                 <Badge className="text-white">{participants.length}</Badge>
               </h2>
               <div className="space-y-2">
@@ -161,8 +126,8 @@ const Participants = () => {
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 relative rounded-full overflow-hidden">
                         <Image
-                          src={participant.profileImage}
-                          alt={`${participant.fullName}'s profile`}
+                          src={participant.teamLead?.profile_url ?? ""}
+                          alt={`${participant?.teamLead?.names}'s profile`}
                           className="w-full h-full"
                           width={50}
                           height={50}
@@ -170,20 +135,26 @@ const Participants = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <p className="font-medium">{participant.fullName}</p>
+                        <p className="font-medium">{participant?.teamLead?.names}</p>
                         <p className="text-sm text-gray-500">
-                          {participant.occupation}
+                          {participant?.teamLead?.email}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button
-                        className="h-8 px-4 text-xs text-primary border-primary"
+                      <Badge className="text-white bg-[#2B71F0] capitalize">
+                        {participant?.submissionStatus}
+                      </Badge>
+                      {(<Button
+                        className="h-8 text-sm "
                         variant={"outline"}
-                        onClick={() => setOpenSubmission(true)}
+                        onClick={() => {
+                          setSelectedParticipant(participant);
+                          setOpenSubmission(true)
+                        }}
                       >
                         View Submission
-                      </Button>
+                      </Button>)}
                     </div>
                   </div>
                 ))}
@@ -194,6 +165,7 @@ const Participants = () => {
       </div>
 
       <Dialog open={openSubmission} onOpenChange={setOpenSubmission}>
+        {isLoading && <SingleChallengeSkeleton isAdmin={user?.role === "admin"} />}
         <DialogContent hideCloseButton={true} className="flex flex-col mx-auto">
           <div className="flex items-center justify-between gap-2">
             <div>
@@ -201,13 +173,13 @@ const Participants = () => {
                 Submission details
               </h1>
               <h2 className="text-primary_grey text-base">
-                View participant&apos;s submission for this Challenge.{" "}
+                View participant&apos;s submission {project?.challengeName} Challenge.{" "}
               </h2>
             </div>
           </div>
           <div className="flex items-end justify-between ">
             <h2 className="text-primary_grey text-base">
-              Submitted on 3/8/2025{" "}
+              Submitted on {project?.submissionDate}
             </h2>
             <Badge className="text-white bg-[#2B71F0] mt-4">{"Reviewed"}</Badge>
           </div>
@@ -239,57 +211,46 @@ const Participants = () => {
             </p>
           </div>
 
-          {editFeedback ? (
-            <Form {...form}>
-              <form
-                className="space-y-2 md:space-y-4"
-                onSubmit={form.handleSubmit(handleEditFeedback)}
-              >
-                <FormField
-                  control={form.control}
-                  name="feedback"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Leave Feedback </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Add any submission feedback or comments here"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <Form {...form}>
+            <form
+              className="space-y-2 md:space-y-4"
+              onSubmit={form.handleSubmit(handleEditFeedback)}
+            >
+              <FormField
+                control={form.control}
+                name="feedback"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel> Feedback </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Add any submission feedback or comments here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center justify-end gap-2">
                 <Button
-                  className="w-full h-12 flex items-center justify-center"
+                  className="flex items-center justify-center bg-red-600 hover:bg-red-500"
                   disabled={isSubmittingFeedback}
                 >
-                  {isSubmittingFeedback ? "Saving..." : "Save"}
+                  {isSubmittingFeedback ? "Rejecting..." : "Reject"}
                 </Button>
-              </form>
-            </Form>
-          ) : (
-            <div className="space-y-1">
-              <label htmlFor="additionalNotes" className="font-semibold">
-                Feedback
-              </label>
-              <p className="text-primary_grey text-base" id="feedback">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </p>
-            </div>
-          )}
-          {!editFeedback && (
-            <DialogFooter className="flex justify-end">
-              <Button
-                variant="outline"
-                className="text-primary_grey border-primary_grey hover:bg-primary_grey hover:text-white"
-                onClick={() => setEditFeedback(!editFeedback)}
-              >
-                Edit Feedback
-              </Button>
-            </DialogFooter>
-          )}
+
+                <Button
+                  className=" flex items-center justify-center"
+                  disabled={isSubmittingFeedback}
+                >
+                  {isSubmittingFeedback ? "Promoting..." : "Promote"}
+                </Button>
+              </div>
+
+            </form>
+          </Form>
+
         </DialogContent>
       </Dialog>
     </div>

@@ -22,7 +22,7 @@ import {
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
 } from '@/store/actions/challenge';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,7 +64,10 @@ const SingleChallengePage = () => {
   const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
 
-  const participants = participantsData?.data?.participantChallenges || [];
+  const participants = useMemo(() =>
+    participantsData?.data?.participantChallenges || [],
+    [participantsData?.data?.participantChallenges]
+  );
 
   const session = useSession();
   const user = session.data?.user;
@@ -79,13 +82,24 @@ const SingleChallengePage = () => {
   const isProjectNotStarted = dayjs().isBefore(
     dayjs(project?.startDate || dayjs())
   );
+  const isProjectStarted = useMemo(() => {
+    return dayjs().isAfter(
+      dayjs(project?.startDate || dayjs())
+    ) &&
+      dayjs().isBefore(
+        dayjs(project?.endDate || dayjs())
+      );
+  }
+    , [project?.startDate, project?.endDate]);
+
+  console.log('isProjectStarted', isProjectStarted, project?.startDate, project?.endDate, project);
 
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
       await deleteChallenge(challengeId).unwrap();
       router.push(dashboardRoutes.challengeHackathons.path);
-    } catch (error) {
+    } catch (error: any) {
       handleError(error);
     } finally {
       setIsDeleting(false);
@@ -172,6 +186,7 @@ const SingleChallengePage = () => {
                 title="Duration"
                 value={project?.duration + ' Days'}
               />
+
               {Array.isArray(project?.moneyPrize) &&
                 project.moneyPrize.length > 0 && (
                   <div className="mb-6">
@@ -244,20 +259,21 @@ const SingleChallengePage = () => {
                   <Button className="w-full h-12">Edit</Button>
                 </Link>
               </div>
-            ) : (
+            ) : isProjectStarted ? (
               <Button
                 className="w-full h-12"
-                onClick={() => {
-                  if (isProjectNotStarted) {
-                    setOpenJoinDialog(!openJoinDialog);
-                  } else {
-                    setOpenSubmitDialog(!openSubmitDialog);
-                  }
-                }}
+                onClick={() => { setOpenSubmitDialog(!openSubmitDialog) }}
               >
-                {isProjectNotStarted ? 'Join Challenge' : 'Submit Your Work'}
+                {'Submit Your Work'}
               </Button>
-            )}
+            ) : isProjectNotStarted ? (
+              <Button
+                className="w-full h-12"
+                onClick={() => { setOpenJoinDialog(!openJoinDialog) }}
+              >
+                {'Join Challenge'}
+              </Button>
+            ) : ''}
           </Card>
 
           {['admin', 'super admin'].includes(

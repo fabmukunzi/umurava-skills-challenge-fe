@@ -23,8 +23,11 @@ interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
 }
 
 export type SubmitChallengeDto = {
-  submissionLink: string;
-  description: string;
+  links: {
+    link: string;
+    description: string;
+  }[];
+  details_message: string;
 }
 export type ChallengeFeedbackDto = {
   feedback: string;
@@ -35,16 +38,17 @@ interface ChallengeQueryParams {
   limit: number;
   page: number;
   status?: string;
+  search?: string;
 }
 
 
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getChallenges: builder.query<IGetChallengesResponse, ChallengeQueryParams>({
-      query: ({ limit, page, status }) => ({
+      query: ({ limit, page, status, search }) => ({
         url: `/public/challenges`,
         method: 'GET',
-        params: { limit, page, status },
+        params: { limit, page, status, search },
       }),
       providesTags: ['challenges'],
     }),
@@ -93,7 +97,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
     }),
     submitChallenge: builder.mutation<{ message: string }, { id: string; data: SubmitChallengeDto }>({
       query: ({ id, data }) => ({
-        url: `/participant/${id}`,
+        url: `/participant/${id}/submit`,
         method: 'POST',
         body: data,
       }),

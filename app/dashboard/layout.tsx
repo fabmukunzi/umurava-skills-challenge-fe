@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { dashboardRoutes } from '@/lib/routes';
+import { INotification } from '@/lib/types/notification';
 import { useGetNotificationsQuery } from '@/store/actions/notification';
 import { Bell, LucideLoader, Search } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -22,10 +23,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const user = session?.data?.user;
   const { data, isLoading, isError } = useGetNotificationsQuery({});
-  const notificationsData = Array.isArray(data) ? data : [];
-  console.log(user)
+  const notificationsData = Array.isArray(data) ? data : (data?.data || []);
+
   const notificationsCount = notificationsData
-    .filter((notif) => {
+    .filter((notif: INotification) => {
       if (user?.role === 'admin') return notif.status === 'unread';
       return notif.status === 'unread' && notif.userId === user?.name;
     })
@@ -33,10 +34,21 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const hasNotifications = notificationsCount > 0;
 
   const router = useRouter();
+  const currentPath = window.location.pathname;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value.toLowerCase();
+
+    if (!searchTerm || searchTerm.trim() === '') {
+      router.push(currentPath);
+      return;
+    }
+    router.push(`${currentPath}?search=${searchTerm}`);
+  };
 
   const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
     <div className="py-2 px-3 border-b border-gray-100">
-      <h3 className="text-sm font-medium">Notifications</h3>
+      <h3 className="text-sm font-medium">Notifications {notificationsCount > 0 && `(${notificationsCount})`} </h3>
     </div>
     <div className="max-h-64 overflow-y-auto py-1">
       {isLoading && (
@@ -54,8 +66,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="text-gray-500 tex-sm">No notifications</div>
         </div>
       )}
-      {notificationsData.map((notif, index) => (
-        <div key={index} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
+      {notificationsData.map((notif: INotification) => (
+        <div key={notif._id} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
           <p className="text-sm">{notif.message}</p>
           <span className="text-xs text-gray-500">{notif.timestamp}</span>
         </div>
@@ -111,13 +123,25 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <Search className="text-gray-400 absolute w-5 h-5 left-3" />
                 <Input
                   type="text"
-                  placeholder="Search here..."
+                  placeholder="Search here... "
                   className="pl-10 text-black bg-secondary_bg"
+                  onChange={handleSearch}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+                      if (!searchTerm || searchTerm.trim() === '') {
+                        router.push(currentPath);
+                        return;
+                      }
+                      router.push(`${currentPath}?search=${searchTerm}`);
+                    }
+                  }
+                  }
                 />
               </div>
 
               <div className="flex items-center space-x-6">
-                {user?.role === 'admin' && (
+                {['admin', 'super admin'].includes(user?.role?.toLowerCase() || '') && (
                   <div className="relative">
                     <NotificationButton />
                   </div>

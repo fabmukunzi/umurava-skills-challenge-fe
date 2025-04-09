@@ -14,9 +14,22 @@ import { useGetChallengesQuery } from '@/store/actions/challenge';
 import { ChevronRight, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const DashboardPage = () => {
-  const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1 });
+  const [searchParam, setSearchParam] = useState('');
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const search = searchParams.get('search');
+    if (search) {
+      setSearchParam(search);
+    }
+  }, [searchParams]);
+
+  const { data, isLoading, isFetching } = useGetChallengesQuery({ limit: 3, page: 1, search: searchParam }, { refetchOnMountOrArgChange: true });
+
   const challengesData = data?.data.challenges;
 
   const statistics = [
@@ -47,13 +60,13 @@ const DashboardPage = () => {
       percentage: 8,
     },
     {
-      title: 'Reports Generated',
+      title: 'Submissions',
       number: 300,
       icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 5,
     },
     {
-      title: 'New Clients',
+      title: 'Subscribed Clients',
       number: 75,
       icon: <SVGIcon height={20} width={20} Icon={FlatPaperIcon} />,
       percentage: 12,
@@ -110,7 +123,7 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(3)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />

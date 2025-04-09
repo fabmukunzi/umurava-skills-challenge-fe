@@ -1,15 +1,21 @@
 'use client'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGetNotificationsQuery, useMarkAllNotificationsAsReadMutation, useMarkNotificationAsReadMutation } from '@/store/actions/notification';
 import { Skeleton } from '@/components/ui/skeleton';
 import { INotification } from '@/lib/types/notification';
 import { Button } from '@/components/ui/button';
+import { LucideCheckCheck, LucideEllipsis } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 const NotificationPage = () => {
+    const session = useSession();
+    const user = session?.data?.user;
+    const isAdmin = useMemo(() => ['admin', 'super admin'].includes(user?.role?.toLowerCase() || ''), [user?.role]);
+
     const { data, isLoading, isError } = useGetNotificationsQuery({});
-    const notificationsData = Array.isArray(data) ? data : [];
+    const notificationsData = Array.isArray(data) ? data : (data?.data || []);
 
     const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
     const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
@@ -44,16 +50,16 @@ const NotificationPage = () => {
         <main className="p-4">
             <h1 className="text-2xl font-bold mb-4">Notifications</h1>
             <div className="space-y-4">
-                {notificationsData?.length > 0 && (<div className="flex justify-end gap-4 mb-4">
+                {notificationsData?.length > 0 && isAdmin && (<div className="flex justify-end gap-4 mb-4">
                     <Button
                         onClick={handleMarkAllAsRead}
-                        className="h-12 text-white bg-primary font-medium"
+                        className="text-white bg-primary font-medium"
                     >
                         Mark All as Read
                     </Button>
                     <Button
                         onClick={handleDeleteAllNotifications}
-                        className="h-12 text-white font-medium bg-red-500 hover:bg-red-600 rounded"
+                        className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                     >
                         Delete All
                     </Button>
@@ -71,26 +77,31 @@ const NotificationPage = () => {
                         >
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h2 className="text-lg font-semibold">New Message</h2>
-                                    <Badge className="text-white capitalize">{item.status}</Badge>
+                                    <h2 className="text-lg font-semibold">{item.title}</h2>
+                                    <Badge className="text-white capitalize flex items-center gap-1">
+                                        {item.status === 'unread'
+                                            ? <LucideEllipsis className="size-3 text-gray-500" />
+                                            : <LucideCheckCheck className="size-3 text-primary" />}
+                                        {item.status}
+                                    </Badge>
                                     <p className="text-sm text-gray-600 mt-2">{item.message}</p>
                                 </div>
-                                <div className="flex gap-2">
+                                {isAdmin && (<div className="flex gap-2">
                                     {item.status === 'unread' && (
                                         <Button
                                             onClick={() => handleMarkAsRead(item._id)}
-                                            className="h-12 text-white bg-primary font-medium"
+                                            className="text-white bg-primary font-medium"
                                         >
                                             Mark as Read
                                         </Button>
                                     )}
                                     <Button
                                         onClick={() => handleDeleteNotification(item._id)}
-                                        className="h-12 text-white font-medium bg-red-500 hover:bg-red-600 rounded"
+                                        className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                                     >
                                         Delete
                                     </Button>
-                                </div>
+                                </div>)}
                             </div>
                         </motion.div>
                     ))

@@ -36,16 +36,12 @@ export default function LoginPage() {
         password: data.password,
         callbackUrl: '/dashboard',
       });
-      console.log('result', result);
+
+      if (result?.ok && result?.url) {
+        router.push(result.url || '/dashboard');
+      }
       if (result?.error) {
         setError(result.error);
-      } else {
-        const url = result?.url ? new URL(result.url).pathname : '/dashboard';
-
-        router.replace('/');
-        setTimeout(() => {
-          router.replace(url);
-        }, 0);
       }
     } catch (error: unknown) {
       setError(

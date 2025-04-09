@@ -1,7 +1,7 @@
 import { SignupRequest, UserSchema } from '@/lib/types/user';
 import { baseAPI } from '@/store/api';
 
-interface SignupResponse {
+export interface SignupResponse {
   id: string;
   email: string;
   role: string;
@@ -63,6 +63,16 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body,
       }),
     }),
+    subscribeToNewsletter: builder.mutation<
+      void,
+      { email: string; }
+    >({
+      query: (body) => ({
+        url: '/public/subscribe-newsletter',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
@@ -74,4 +84,5 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useChangePasswordMutation,
+  useSubscribeToNewsletterMutation
 } = usersEndpoints;
