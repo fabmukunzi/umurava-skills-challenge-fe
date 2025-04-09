@@ -38,16 +38,17 @@ interface ChallengeQueryParams {
   limit: number;
   page: number;
   status?: string;
+  search?: string;
 }
 
 
 const challengeEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getChallenges: builder.query<IGetChallengesResponse, ChallengeQueryParams>({
-      query: ({ limit, page, status }) => ({
+      query: ({ limit, page, status, search }) => ({
         url: `/public/challenges`,
         method: 'GET',
-        params: { limit, page, status },
+        params: { limit, page, status, search },
       }),
       providesTags: ['challenges'],
     }),
