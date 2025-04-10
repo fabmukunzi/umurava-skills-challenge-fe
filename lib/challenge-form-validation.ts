@@ -35,6 +35,7 @@ export const challengeFormSchema = z.object({
           z.string().min(1, { message: 'Enter a valid prize amount.' }),
           z.number().min(1, { message: 'Enter a valid prize amount.' }),
         ]),
+        currency: z.string().min(1, { message: 'Select a currency.' }),
       })
     )
     .min(1, { message: 'At least one prize is required.' }),

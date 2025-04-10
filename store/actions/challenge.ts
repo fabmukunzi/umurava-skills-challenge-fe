@@ -22,6 +22,11 @@ interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
   id: string;
 }
 
+interface UpdateChallengeStatusDto {
+  id: string;
+  status: string;
+}
+
 export type SubmitChallengeDto = {
   links: {
     link: string;
@@ -79,6 +84,15 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       invalidatesTags: ['challenge', 'challenges'],
     }),
 
+    updateChallengeStatus: builder.mutation<IProject, UpdateChallengeStatusDto>({
+      query: ({ id, ...challengeData }) => ({
+        url: `/admin/challenge/update/status/${id}`,
+        method: 'PUT',
+        body: challengeData,
+      }),
+      invalidatesTags: ['challenge', 'challenges'],
+    }),
+
     deleteChallenge: builder.mutation<{ message: string }, string>({
       query: (id) => ({
         url: `/admin/challenge/${id}`,
@@ -126,6 +140,7 @@ export const {
   useGetChallengeByIdQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
+  useUpdateChallengeStatusMutation,
   useDeleteChallengeMutation,
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,

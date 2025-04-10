@@ -145,7 +145,7 @@ const Participants = () => {
                       <Badge className="text-white bg-[#2B71F0] capitalize">
                         {participant?.submissionStatus}
                       </Badge>
-                      {(<Button
+                      {participant?.submissionData && (<Button
                         className="h-8 text-sm "
                         variant={"outline"}
                         onClick={() => {
