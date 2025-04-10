@@ -6,7 +6,7 @@ import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGe
 import { Skeleton } from '@/components/ui/skeleton';
 import { INotification } from '@/lib/types/notification';
 import { Button } from '@/components/ui/button';
-import { LucideCheckCheck, LucideEllipsis } from 'lucide-react';
+import { LucideCheckCheck, LucideEllipsis, LucideEye, LucideLoader2, LucideTrash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 export interface NotificationResponse {
@@ -31,10 +31,10 @@ const NotificationPage = () => {
     }, [data]);
 
 
-    const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
-    const [markAllNotificationsAsRead] = useMarkAllNotificationsAsReadMutation();
-    const [deleteNotification] = useDeleteNotificationMutation();
-    const [deleteAllNotifications] = useDeleteAllNotificationsMutation();
+    const [markNotificationAsRead, { isLoading: markReadLoading }] = useMarkNotificationAsReadMutation();
+    const [markAllNotificationsAsRead, { isLoading: markAllReadLoading }] = useMarkAllNotificationsAsReadMutation();
+    const [deleteNotification, { isLoading: deleteOneLoading }] = useDeleteNotificationMutation();
+    const [deleteAllNotifications, { isLoading: deleteAllLoading }] = useDeleteAllNotificationsMutation();
 
     const handleMarkAsRead = (notificationId: string) => {
         markNotificationAsRead(notificationId)
@@ -65,17 +65,18 @@ const NotificationPage = () => {
             <h1 className="text-2xl font-bold mb-4">Notifications</h1>
             <div className="space-y-4">
                 {notificationsData?.length > 0 && isAdmin && (<div className="flex justify-end gap-4 mb-4">
-                    <Button
+                    {notificationsData.some(item => item.status === 'unread') && (<Button
                         onClick={handleMarkAllAsRead}
                         className="text-white bg-primary font-medium"
+                        disabled={markAllReadLoading}
                     >
-                        Mark All as Read
-                    </Button>
+                        {markAllReadLoading ? <LucideLoader2 className='animate-spin' /> : 'Mark All as Read'}
+                    </Button>)}
                     <Button
                         onClick={handleDeleteAllNotifications}
                         className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                     >
-                        Delete All
+                        {deleteAllLoading ? <LucideLoader2 className='animate-spin' /> : 'Delete All'}
                     </Button>
                 </div>)}
 
@@ -89,31 +90,32 @@ const NotificationPage = () => {
                             transition={{ duration: 0.5, ease: 'easeInOut' }}
                             viewport={{ once: true }}
                         >
-                            <div className="flex justify-between items-start">
+                            <div className="flex justify-between items-end">
                                 <div>
                                     <h2 className="text-lg font-semibold">{item.title}</h2>
-                                    <Badge className="text-white capitalize flex items-center gap-1">
+                                    <p className="text-sm text-gray-600 mt-2">{item.message}</p>
+                                    <Badge className={`${item.status === 'unread' ? 'text-white' : 'text-green-500 bg-green-50 border-green-500'} w-fit capitalize flex items-center gap-2 mt-2`}>
                                         {item.status === 'unread'
-                                            ? <LucideEllipsis className="size-3 text-gray-500" />
-                                            : <LucideCheckCheck className="size-3 text-primary" />}
+                                            ? <LucideEllipsis className="size-3 text-white" />
+                                            : <LucideCheckCheck className="size-3 text-green-500" />}
                                         {item.status}
                                     </Badge>
-                                    <p className="text-sm text-gray-600 mt-2">{item.message}</p>
                                 </div>
                                 {isAdmin && (<div className="flex gap-2">
                                     {item.status === 'unread' && (
                                         <Button
                                             onClick={() => handleMarkAsRead(item._id)}
                                             className="text-white bg-primary font-medium"
+                                            disabled={markReadLoading}
                                         >
-                                            Mark as Read
+                                            {markReadLoading ? <LucideLoader2 className='animate-spin' /> : <LucideEye className='size-5' />}
                                         </Button>
                                     )}
                                     <Button
                                         onClick={() => handleDeleteNotification(item._id)}
                                         className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
                                     >
-                                        Delete
+                                        {deleteOneLoading ? <LucideLoader2 className='animate-spin' /> : <LucideTrash2 className='size-5' />}
                                     </Button>
                                 </div>)}
                             </div>
