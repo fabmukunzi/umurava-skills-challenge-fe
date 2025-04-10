@@ -135,7 +135,7 @@ const ChallengesPage = () => {
           </Link>
         )}
       </div>
-      {isAdmin ? (isLoading || isFetching) : (participantChallengesLoading || particpantChallengeFetching) ? (
+      {((isAdmin && (isLoading || isFetching)) || (!isAdmin && (participantChallengesLoading || particpantChallengeFetching))) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(6)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
