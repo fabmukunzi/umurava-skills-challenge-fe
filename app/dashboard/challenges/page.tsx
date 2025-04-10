@@ -6,7 +6,7 @@ import SVGIcon from '@/components/common/svg';
 import PaperIcon from '@/components/common/svg/paper-icon';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { useGetChallengesQuery } from '@/store/actions/challenge';
+import { useGetChallengesQuery, useGetParticipantChallengesQuery } from '@/store/actions/challenge';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -17,6 +17,9 @@ import { useSearchParams } from 'next/navigation';
 
 const ITEMS_PER_PAGE = 6;
 const ChallengesPage = () => {
+  const session = useSession();
+  const user = session.data?.user;
+  const isAdmin = ['admin', 'super admin'].includes(user?.role?.toLowerCase() || '');
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('');
   const [searchParam, setSearchParam] = useState('');
@@ -36,9 +39,19 @@ const ChallengesPage = () => {
     status,
     search: searchParam
   });
-  const challengesData = data?.data?.challenges;
+  const { data: participantChallenges, isLoading: participantChallengesLoading, isFetching: particpantChallengeFetching } = useGetParticipantChallengesQuery(
+    {
+      limit: ITEMS_PER_PAGE,
+      page: currentPage,
+      status,
+      search: searchParam
+    },
+    { skip: isAdmin }
+  );
 
-  const totalPages = data?.data.pagination.totalPages || 0;
+  const challengesData = isAdmin ? data?.data?.challenges : participantChallenges?.data?.challenges;
+
+  const totalPages = isAdmin ? data?.data.pagination.totalPages || 0 : participantChallenges?.data.pagination.totalPages || 0;
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -48,8 +61,6 @@ const ChallengesPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
-  const session = useSession();
-  const user = session.data?.user;
   const handleSetStatus = (status: string) => {
     setStatus(status);
     setCurrentPage(1);
@@ -59,22 +70,22 @@ const ChallengesPage = () => {
     {
       label: 'All Challenges',
       value: '',
-      count: data?.data.aggregates.totalChallenges,
+      count: isAdmin ? data?.data.aggregates.totalChallenges : participantChallenges?.data.aggregates.totalChallenges,
     },
     {
       label: 'Completed Challenges',
       value: 'completed',
-      count: data?.data.aggregates.totalCompletedChallenges,
+      count: isAdmin ? data?.data.aggregates.totalCompletedChallenges : participantChallenges?.data.aggregates.totalCompletedChallenges,
     },
     {
       label: 'Open Challenges',
       value: 'open',
-      count: data?.data.aggregates.totalOpenChallenges,
+      count: isAdmin ? data?.data.aggregates.totalOpenChallenges : participantChallenges?.data.aggregates.totalOpenChallenges,
     },
     {
       label: 'Ongoing Challenges',
       value: 'ongoing',
-      count: data?.data.aggregates.totalOngoingChallenges,
+      count: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
     },
   ];
   return (
@@ -124,7 +135,7 @@ const ChallengesPage = () => {
           </Link>
         )}
       </div>
-      {isLoading || isFetching ? (
+      {isAdmin ? (isLoading || isFetching) : (participantChallengesLoading || particpantChallengeFetching) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(6)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
@@ -150,7 +161,7 @@ const ChallengesPage = () => {
 
       <div className="flex justify-between md:mx-20 my-10 pb-10">
         <Button
-          disabled={isLoading || isFetching || currentPage === 1}
+          disabled={(isAdmin ? (isLoading || isFetching) : (participantChallengesLoading || particpantChallengeFetching)) || currentPage === 1}
           variant="outline"
           className="w-24"
           onClick={handlePrev}
@@ -158,7 +169,7 @@ const ChallengesPage = () => {
           Previous
         </Button>
         <Button
-          disabled={isLoading || isFetching || currentPage === totalPages}
+          disabled={(isAdmin ? (isLoading || isFetching) : (participantChallengesLoading || particpantChallengeFetching)) || currentPage === totalPages}
           className="w-24"
           onClick={handleNext}
         >

@@ -57,6 +57,14 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       providesTags: ['challenges'],
     }),
+    getParticipantChallenges: builder.query<IGetChallengesResponse, ChallengeQueryParams>({
+      query: ({ limit, page, status, search }) => ({
+        url: `/participant/all/joined/challenges`,
+        method: 'GET',
+        params: { limit, page, status, search },
+      }),
+      providesTags: ['challenges'],
+    }),
 
     getChallengeById: builder.query<{ data: IProject }, string>({
       query: (id) => ({
@@ -137,6 +145,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
 
 export const {
   useGetChallengesQuery,
+  useGetParticipantChallengesQuery,
   useGetChallengeByIdQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
