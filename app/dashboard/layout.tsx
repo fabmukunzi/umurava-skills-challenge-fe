@@ -60,9 +60,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+  const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white text-left shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
     <div className="py-2 px-3 border-b border-gray-100">
-      <h3 className="text-sm font-medium">Notifications {notificationsCount > 0 && `(${notificationsCount})`} </h3>
+      <h3 className="text-sm font-medium">All Notifications {notificationsCount > 0 && `(${notificationsCount})`} </h3>
     </div>
     <div className="max-h-64 overflow-y-auto py-1">
       {isLoading && (
@@ -75,21 +75,21 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="text-red-500 tex-sm">Error loading notifications</div>
         </div>
       )}
-      {notificationsData.length === 0 && (
-        <div className="flex items-center justify-center">
+      {notificationsData.filter(item => item.status === 'unread').length === 0 && (
+        <div className="flex items-center justify-start ml-3">
           <div className="text-gray-500 tex-sm">No notifications</div>
         </div>
       )}
-      {notificationsData.map((notif: INotification) => (
+      {notificationsData.filter(item => item.status === 'unread').map((notif: INotification) => (
         <div key={notif._id} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
-          <p className="text-sm">{notif.message}</p>
+          <p className="text-sm">{notif.title}</p>
           <span className="text-xs text-gray-500">{notif.timestamp}</span>
         </div>
       ))}
     </div>
     {notificationsData.length > 0 && (<div className="border-t border-gray-100 py-2 px-3">
       <button
-        className="text-primary text-xs font-medium w-full text-center"
+        className="text-primary text-xs font-medium w-full text-start"
         onClick={() => router.push("/dashboard/notifications")}
       >
         View all notifications
