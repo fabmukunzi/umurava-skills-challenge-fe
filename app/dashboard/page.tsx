@@ -10,7 +10,7 @@ import AdminStatCard from '@/components/dashboard/admin-statistics-card';
 import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { useGetChallengesQuery } from '@/store/actions/challenge';
+import { useGetChallengesQuery, useGetParticipantChallengesQuery } from '@/store/actions/challenge';
 import { ChevronRight, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -18,6 +18,9 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const DashboardPage = () => {
+  const session = useSession();
+  const user = session.data?.user;
+  const isAdmin = ['admin', 'super admin'].includes(user?.role?.toLowerCase() || '');
   const [searchParam, setSearchParam] = useState('');
   const searchParams = useSearchParams();
 
@@ -29,21 +32,29 @@ const DashboardPage = () => {
   }, [searchParams]);
 
   const { data, isLoading, isFetching } = useGetChallengesQuery({ limit: 3, page: 1, search: searchParam }, { refetchOnMountOrArgChange: true });
+  const { data: participantChallenges, isLoading: participantChallengesLoading, isFetching: particpantChallengeFetching } = useGetParticipantChallengesQuery(
+    {
+      limit: 3,
+      page: 1,
+      search: searchParam
+    },
+    { skip: isAdmin }
+  );
 
-  const challengesData = data?.data.challenges;
+  const challengesData = isAdmin ? data?.data?.challenges : participantChallenges?.data?.challenges;
 
   const statistics = [
     {
       title: 'Completed Challenges',
-      value: data?.data.aggregates.totalCompletedChallenges || 0,
+      value: isAdmin ? data?.data.aggregates.totalCompletedChallenges : participantChallenges?.data.aggregates.totalCompletedChallenges,
     },
     {
       title: 'Open Challenges',
-      value: data?.data.aggregates.totalOpenChallenges || 0,
+      value: isAdmin ? data?.data.aggregates.totalOpenChallenges : participantChallenges?.data.aggregates.totalOpenChallenges,
     },
     {
       title: 'Ongoing Challenges',
-      value: data?.data.aggregates.totalOngoingChallenges || 0,
+      value: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
     },
   ];
   const adminStatData = [
@@ -78,8 +89,7 @@ const DashboardPage = () => {
       percentage: 20,
     },
   ];
-  const session = useSession();
-  const user = session.data?.user
+
   return (
     <div className="px-2">
       <div className="flex flex-wrap max-w-screen-md:text-center justify-between items-center my-6">
@@ -98,14 +108,12 @@ const DashboardPage = () => {
           </Button>
         </Link>
       </div>
-      {!['admin', 'super admin'].includes(
-        user?.role?.toLocaleLowerCase() || ''
-      ) ? (
+      {!isAdmin ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard
               title={stat.title}
-              value={stat?.value?.toString()}
+              value={stat?.value?.toString() || '0'}
               key={index}
             />
           ))}
@@ -123,7 +131,7 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {isLoading || isFetching ? (
+      {((isLoading || isFetching)) || (!isAdmin && (participantChallengesLoading || particpantChallengeFetching)) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(3)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
@@ -150,9 +158,7 @@ const DashboardPage = () => {
         </>
       ) : (
         <NoChallengeFound
-          isAdmin={['admin', 'super admin'].includes(
-            user?.role?.toLowerCase() || ''
-          )}
+          isAdmin={isAdmin}
         />
       )}
     </div>

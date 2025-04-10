@@ -126,7 +126,7 @@ const ChallengesPage = () => {
           </Button>
         ))}
 
-        {['admin', 'super admin'].includes(user?.role?.toLowerCase() || '') && (
+        {isAdmin && (
           <Link href={dashboardRoutes.challengeHackathons.new.path}>
             <Button size="lg" className="col-span-2 md:col-span-1">
               <Plus />
@@ -135,7 +135,7 @@ const ChallengesPage = () => {
           </Link>
         )}
       </div>
-      {((isAdmin && (isLoading || isFetching)) || (!isAdmin && (participantChallengesLoading || particpantChallengeFetching))) ? (
+      {((isLoading || isFetching)) || (!isAdmin && (participantChallengesLoading || particpantChallengeFetching)) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(6)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
