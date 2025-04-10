@@ -53,7 +53,7 @@ const ChallengeForm = ({
       endDate: dayjs(defaultValues.endDate || new Date()).format('DD-MM-YYYY'),
       moneyPrize: defaultValues.moneyPrize?.length
         ? defaultValues.moneyPrize
-        : [{ categoryPrize: '', prize: '' }],
+        : [{ categoryPrize: '', prize: '', currency: 'RWF' }],
     },
   });
 
@@ -74,6 +74,12 @@ const ChallengeForm = ({
     label: skill.skillName,
   }));
 
+  const currencies = [
+    { value: 'RWF', label: 'RWF' },
+    { value: 'KSH', label: 'KSH' },
+    { value: 'UGX', label: 'UGX' },
+    { value: 'USD', label: 'USD' },
+  ]
   const seniorityLevels = [
     { value: 'Junior', label: 'Junior' },
     { value: 'Intermediate', label: 'Intermediate' },
@@ -161,6 +167,14 @@ const ChallengeForm = ({
                   label="Amount ($)"
                   placeholder="500"
                 />
+                <SelectInput
+                  form={form}
+                  hideLabel={true}
+                  name={`moneyPrize.${index}.currency` as keyof CreateChallengeDto}
+                  label="Currency"
+                  options={currencies ?? []}
+                  multi={false}
+                />
                 {fields?.length > 1 && (
                   <Button
                     type="button"
@@ -176,7 +190,7 @@ const ChallengeForm = ({
             <Button
               className="border-dashed"
               type="button"
-              onClick={() => append({ categoryPrize: '', prize: '' })}
+              onClick={() => append({ categoryPrize: '', prize: '', currency: 'RWF' })}
               variant="outline"
             >
               + Add Prize

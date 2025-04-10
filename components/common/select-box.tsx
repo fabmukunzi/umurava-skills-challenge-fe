@@ -30,6 +30,7 @@ interface SelectInputProps<T extends FieldValues> {
   multi?: boolean;
   placeholder?: string;
   className?: string;
+  hideLabel?: boolean;
 }
 
 const SelectInput = <T extends FieldValues>({
@@ -40,6 +41,7 @@ const SelectInput = <T extends FieldValues>({
   multi = false,
   placeholder = 'Select...',
   className,
+  hideLabel = false
 }: SelectInputProps<T>) => {
   return (
     <FormField
@@ -47,7 +49,7 @@ const SelectInput = <T extends FieldValues>({
       name={name as string}
       render={({ field }: { field: ControllerRenderProps<T, any> }) => (
         <FormItem className="w-full">
-          <FormLabel>{label}</FormLabel>
+          {!hideLabel && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Select
               isMulti={multi}
@@ -83,7 +85,7 @@ const SelectInput = <T extends FieldValues>({
               value={options.filter((option) =>
                 multi
                   ? Array.isArray(field.value) &&
-                    field.value.includes(option.value)
+                  field.value.includes(option.value)
                   : option.value === field.value
               )}
               onChange={(selected) => {

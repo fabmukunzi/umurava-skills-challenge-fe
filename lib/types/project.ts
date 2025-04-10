@@ -36,6 +36,7 @@ export interface IProject {
   moneyPrize: {
     categoryPrize: string;
     prize: string;
+    currency: string;
     _id?: string;
   }[];
   contactEmail: string;
