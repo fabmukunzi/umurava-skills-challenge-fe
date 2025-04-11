@@ -57,6 +57,20 @@ export interface ChallengeAggregates {
   totalOngoingChallenges: number;
 }
 
+export interface IStatistics extends Partial<ChallengeAggregates> {
+  totalChallengesThisWeek: number,
+  totalChallengesThisWeekChange: number,
+  totalChallengesThisWeekChangeDirection: string,
+  totalParticipantsThisWeek: number,
+  totalParticipantsThisWeekChange: number,
+  totalParticipantsThisWeekChangeDirection: string,
+  totalCompletedChallengesChange: number,
+  totalCompletedChallengesChangeDirection: string,
+  totalOngoingChallengesChange: number,
+  totalOngoingChallengesChangeDirection: string,
+  totalOpenChallengesChange: number,
+}
+
 export interface ChallengePagination {
   currentPage: number;
   totalPages: number;

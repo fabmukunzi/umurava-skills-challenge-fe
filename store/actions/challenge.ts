@@ -1,6 +1,7 @@
 import {
   IGetChallengesResponse,
   IProject,
+  IStatistics,
   ParticipantChallengesResponse,
 } from '@/lib/types/project';
 import { baseAPI } from '@/store/api';
@@ -140,6 +141,12 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ['challenge'],
     }),
+    giveChallengeStatistics: builder.query<{ data: IStatistics }, void>({
+      query: () => ({
+        url: `admin/challenge/statistics`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -154,5 +161,6 @@ export const {
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
   useGiveChallengeFeedbackMutation,
-  useJoinChallengeMutation
+  useJoinChallengeMutation,
+  useGiveChallengeStatisticsQuery,
 } = challengeEndpoints;
