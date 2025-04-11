@@ -14,6 +14,6 @@ export const baseAPI = createApi({
       return headers;
     },
   }),
-  tagTypes: ['challenges', 'challenge', 'notifications', 'notification'],
+  tagTypes: ['challenges', 'challenge', 'aggregates', 'notifications', 'notification'],
   endpoints: () => ({}),
 });

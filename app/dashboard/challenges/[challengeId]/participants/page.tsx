@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import SVGIcon from "@/components/common/svg";
 import {
   ChallengeFeedbackDto,
+  SubmitChallengeDto,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
 } from "@/store/actions/challenge";
@@ -34,6 +35,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
+import dayjs from "dayjs";
 
 const Participants = () => {
   const form = useForm<ChallengeFeedbackDto>({
@@ -59,9 +61,10 @@ const Participants = () => {
     participantsData?.data?.participantChallenges || [],
     [participantsData?.data?.participantChallenges]
   );
+  console.log(participants, 'participants');
 
   const [openSubmission, setOpenSubmission] = useState(false);
-  const [selectedParticipant, setSelectedParticipant] = useState<any>(null);
+  const [selectedParticipant, setSelectedParticipant] = useState<SubmitChallengeDto | null>(null);
 
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
@@ -85,8 +88,6 @@ const Participants = () => {
       setIsSubmittingFeedback(false);
     }
   };
-
-  console.log('selectedParticipant', selectedParticipant)
 
   if (participantsLoading)
     return <SingleChallengeSkeleton isAdmin={user?.role === "admin"} />;
@@ -135,7 +136,7 @@ const Participants = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <p className="font-medium">{participant?.teamLead?.names}</p>
+                        <p className="font-medium capitalize">{participant?.teamLead?.names}</p>
                         <p className="text-sm text-gray-500">
                           {participant?.teamLead?.email}
                         </p>
@@ -145,11 +146,18 @@ const Participants = () => {
                       <Badge className="text-white bg-[#2B71F0] capitalize">
                         {participant?.submissionStatus}
                       </Badge>
+
+                      <div className="flex items-center gap-2 my-4">
+                        <h2 className="text-primary_grey text-base">
+                          {dayjs(participant?.submissionDate).format("YYYY-MM-DD HH:mm A")}
+                        </h2>
+                      </div>
                       {participant?.submissionData && (<Button
                         className="h-8 text-sm "
                         variant={"outline"}
                         onClick={() => {
-                          setSelectedParticipant(participant);
+                          // Parse the submission data correctly based on its actual structure
+                          setSelectedParticipant(participant?.submissionData as unknown as SubmitChallengeDto);
                           setOpenSubmission(true)
                         }}
                       >
@@ -177,38 +185,33 @@ const Participants = () => {
               </h2>
             </div>
           </div>
-          <div className="flex items-end justify-between ">
-            <h2 className="text-primary_grey text-base">
-              Submitted on {project?.submissionDate}
-            </h2>
-            <Badge className="text-white bg-[#2B71F0] mt-4">{"Reviewed"}</Badge>
-          </div>
 
           <div className="space-y-1">
             <label htmlFor="projectUrl" className="font-semibold">
               Project URL
             </label>
-            <div className="flex items-center gap-2" id="projectUrl">
-              <SVGIcon color="#2B71F0" Icon={LinkIcon} />
-              <Link
-                href="#"
-                className="text-primary text-base hover:underline hover:text-[#2B71F0]"
-              >
-                Sign up
-              </Link>
-            </div>
+            {selectedParticipant?.links?.map((item, index: number) => (
+              <div key={index} className="flex items-center gap-2" id="projectUrl">
+                <SVGIcon color="#2B71F0" Icon={LinkIcon} />
+                <Link
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary text-base hover:underline hover:text-[#2B71F0]"
+                >
+                  {item.description}
+                </Link>
+              </div>
+            ))}
           </div>
 
           <div className="space-y-1">
             <label htmlFor="additionalNotes" className="font-semibold">
               Additional Notes
+              <p className="text-primary_grey text-base font-normal" id="additionalNotes">
+                {selectedParticipant?.details_message || "No additional notes provided."}
+              </p>
             </label>
-            <p className="text-primary_grey text-base" id="additionalNotes">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima
-              cumque sunt adipisci praesentium, porro maxime quasi reiciendis
-              beatae nemo minus natus deleniti odit autem nostrum neque
-              consectetur velit iure harum!
-            </p>
           </div>
 
           <Form {...form}>

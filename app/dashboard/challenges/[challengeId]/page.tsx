@@ -93,8 +93,6 @@ const SingleChallengePage = () => {
   }
     , [project?.startDate, project?.endDate]);
 
-  console.log('isProjectStarted', isProjectStarted, project?.startDate, project?.endDate, project);
-
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
@@ -133,6 +131,8 @@ const SingleChallengePage = () => {
         )}
       />
     );
+
+  console.log(project, 'project perfect');
 
   return (
     <div>

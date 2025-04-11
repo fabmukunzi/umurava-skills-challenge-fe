@@ -88,6 +88,8 @@ const ChallengesPage = () => {
       count: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
     },
   ];
+
+  console.log(challengesData, 'challengesData');
   return (
     <div className="md:px-4">
       <div className="my-4">

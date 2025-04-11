@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { NotificationResponse } from './notifications/page';
+import dayjs from 'dayjs';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
@@ -60,7 +61,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white text-left shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+  const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white text-left shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none !z-50">
     <div className="py-2 px-3 border-b border-gray-100">
       <h3 className="text-sm font-medium">All Notifications {notificationsCount > 0 && `(${notificationsCount})`} </h3>
     </div>
@@ -80,10 +81,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="text-gray-500 tex-sm">No notifications</div>
         </div>
       )}
-      {notificationsData.filter(item => item.status === 'unread').map((notif: INotification) => (
+      {notificationsData.slice(0, 1).filter(item => item.status === 'unread').map((notif: INotification) => (
         <div key={notif._id} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
           <p className="text-sm">{notif.title}</p>
-          <span className="text-xs text-gray-500">{notif.timestamp}</span>
+          <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
         </div>
       ))}
     </div>
@@ -122,8 +123,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
-
-
 
   const NotificationIcon = () => (
     <div className="relative">
