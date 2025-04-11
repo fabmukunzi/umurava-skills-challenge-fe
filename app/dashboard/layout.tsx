@@ -106,7 +106,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           alt="Profile"
           width={40}
           height={40}
-          className="rounded-full border p-1"
+          className="rounded-full border p-1 object-contain h-10 w-10"
         />
         <div>
           <p className="text-sm font-medium">{user?.name}</p>
@@ -196,7 +196,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                       alt="Profile"
                       width={40}
                       height={40}
-                      className="rounded-full border p-1"
+                      className="rounded-full border p-1 object-contain h-10 w-10"
                     />}
                     items={[<ProfileContainer key="profile-container" />]}
                   />
