@@ -9,7 +9,7 @@ import SkeletonCard from '@/components/common/challenge-skeleton-card';
 import NoChallengeFound from '../common/no-challenge-found';
 
 const Challenges = () => {
-  const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1, status:'open' });
+  const { data, isLoading } = useGetChallengesQuery({ limit: 3, page: 1, status: 'no-draft' });
   const challengesData = data?.data.challenges;
 
   return (

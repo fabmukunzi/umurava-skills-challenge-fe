@@ -16,7 +16,7 @@ const ChallengesPage = () => {
   const { data, isLoading, isFetching } = useGetChallengesQuery({
     limit: ITEMS_PER_PAGE,
     page: currentPage,
-    status: 'open',
+    status: 'no-draft',
   });
   const challengesData = data?.data.challenges || [];
 
