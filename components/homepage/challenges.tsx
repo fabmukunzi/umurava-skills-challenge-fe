@@ -22,11 +22,11 @@ const Challenges = () => {
         className="text-center text-black py-20 xl:w-1/2 md:w-2/3 mx-auto"
       >
         <h1 className="text-2xl md:text-3xl xl:text-4xl font-bold">
-          Explore Challenges & Hackathons 
+          Explore Challenges & Hackathons
         </h1>
         <p className="my-4 text-primary_grey">
           Join Skills Challenges Program to accelerate your career growth and
-          become part of Africa’s largest workforce of digital professionals. 
+          become part of Africa’s largest workforce of digital professionals.
         </p>
       </motion.div>{' '}
       {isLoading ? (
