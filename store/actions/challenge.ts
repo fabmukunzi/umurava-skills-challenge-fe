@@ -1,5 +1,6 @@
 import {
   IGetChallengesResponse,
+  IParticipantsSubmissions,
   IProject,
   IStatistics,
   ParticipantChallengesResponse,
@@ -36,9 +37,8 @@ export type SubmitChallengeDto = {
   details_message: string;
 }
 export type ChallengeFeedbackDto = {
-  feedback: string;
   submissionId: string;
-  challengeId: string;
+  status: string;
 }
 interface ChallengeQueryParams {
   limit: number;
@@ -101,6 +101,14 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ['challenge', 'challenges'],
     }),
+    rejectApproveSubmission: builder.mutation<IParticipantsSubmissions, ChallengeFeedbackDto>({
+      query: ({ submissionId, ...challengeData }) => ({
+        url: `/participant/${submissionId}/approve-reject`,
+        method: 'PUT',
+        body: challengeData,
+      }),
+      invalidatesTags: ['challenge', 'challenges'],
+    }),
 
     deleteChallenge: builder.mutation<{ message: string }, string>({
       query: (id) => ({
@@ -133,14 +141,6 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         body: payload,
       }),
     }),
-    giveChallengeFeedback: builder.mutation<{ message: string }, ChallengeFeedbackDto>({
-      query: (data) => ({
-        url: `/challenges/${data.challengeId}/submissions/${data.submissionId}/feedback`,
-        method: 'POST',
-        body: data,
-      }),
-      invalidatesTags: ['challenge'],
-    }),
     giveChallengeStatistics: builder.query<{ data: IStatistics }, void>({
       query: () => ({
         url: `admin/challenge/statistics`,
@@ -156,11 +156,11 @@ export const {
   useGetChallengeByIdQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
+  useRejectApproveSubmissionMutation,
   useUpdateChallengeStatusMutation,
   useDeleteChallengeMutation,
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
-  useGiveChallengeFeedbackMutation,
   useJoinChallengeMutation,
   useGiveChallengeStatisticsQuery,
 } = challengeEndpoints;

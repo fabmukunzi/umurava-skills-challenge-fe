@@ -44,7 +44,7 @@ import { handleError } from '@/lib/errorHandler';
 import { toast } from '@/hooks/use-toast';
 import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialog';
 import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
-import dayjs from 'dayjs';
+import { LucideLoader2 } from 'lucide-react';
 
 const SingleChallengePage = () => {
   const form = useForm<SubmitChallengeDto>({
@@ -80,18 +80,6 @@ const SingleChallengePage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
-  const isProjectNotStarted = dayjs().isBefore(
-    dayjs(project?.startDate || dayjs())
-  );
-  const isProjectStarted = useMemo(() => {
-    return dayjs().isAfter(
-      dayjs(project?.startDate || dayjs())
-    ) &&
-      dayjs().isBefore(
-        dayjs(project?.endDate || dayjs())
-      );
-  }
-    , [project?.startDate, project?.endDate]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -131,8 +119,6 @@ const SingleChallengePage = () => {
         )}
       />
     );
-
-  console.log(project, 'project perfect');
 
   return (
     <div>
@@ -231,7 +217,7 @@ const SingleChallengePage = () => {
                       className="w-full h-12 bg-red-500"
                       disabled={isDeleting}
                     >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? <LucideLoader2 className='animate-spin' /> : 'Delete'}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -260,21 +246,19 @@ const SingleChallengePage = () => {
                   <Button className="w-full h-12">Edit</Button>
                 </Link>
               </div>
-            ) : isProjectStarted ? (
+            ) : project?.joined_status ? (
               <Button
                 className="w-full h-12"
                 onClick={() => { setOpenSubmitDialog(!openSubmitDialog) }}
               >
                 {'Submit Your Work'}
               </Button>
-            ) : isProjectNotStarted ? (
-              <Button
-                className="w-full h-12"
-                onClick={() => { setOpenJoinDialog(!openJoinDialog) }}
-              >
-                {'Join Challenge'}
-              </Button>
-            ) : ''}
+            ) : <Button
+              className="w-full h-12"
+              onClick={() => { setOpenJoinDialog(!openJoinDialog) }}
+            >
+              {'Join Challenge'}
+            </Button>}
           </Card>
 
           {['admin', 'super admin'].includes(

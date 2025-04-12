@@ -10,6 +10,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { LucideLoader2 } from 'lucide-react';
 
 const emailValidationSchema = z.object({
   emails: z.array(
@@ -126,7 +127,7 @@ const JoinChallengeDialog = ({
             className="w-full h-12 mt-4 bg-primary hover:bg-primary/80 text-white rounded-md"
             disabled={isLoading}
           >
-            {isLoading ? 'Joining...' : 'Join Challenge'}
+            {isLoading ? <LucideLoader2 className='animate-spin' /> : 'Join Challenge'}
           </Button>
         </form>
       </DialogContent>

@@ -13,35 +13,21 @@ import {
   SubmitChallengeDto,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
+  useRejectApproveSubmissionMutation,
 } from "@/store/actions/challenge";
 import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import SingleChallengeSkeleton from "@/components/common/single-project-skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { feedbackSubmissionSchema } from "@/lib/feedback-form-validation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { LinkIcon } from "@/components/common/svg/link-icon";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
+import { LucideLoader2 } from "lucide-react";
 
 const Participants = () => {
-  const form = useForm<ChallengeFeedbackDto>({
-    resolver: zodResolver(feedbackSubmissionSchema),
-    defaultValues: {},
-  });
 
   const params = useParams();
   const { toast } = useToast();
@@ -56,6 +42,7 @@ const Participants = () => {
 
   const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
+  const [rejectApproveSubmission, { isLoading: isRejectingApproving }] = useRejectApproveSubmissionMutation();
 
   const participants = useMemo(() =>
     participantsData?.data?.participantChallenges || [],
@@ -65,27 +52,28 @@ const Participants = () => {
 
   const [openSubmission, setOpenSubmission] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<SubmitChallengeDto | null>(null);
-
-  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
 
   const handleEditFeedback = async (data: ChallengeFeedbackDto) => {
     console.log("Feedback data:", data);
-    setIsSubmittingFeedback(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await rejectApproveSubmission({
+        submissionId: data.submissionId as string,
+        status: data.status,
+      }).unwrap();
+      setOpenSubmission(false);
+      setSelectedParticipant(null);
+      setSubmissionId(null);
       toast({
-        title: "Feedback updated successfully",
-        description: "Your feedback has been updated.",
+        title: "Success",
+        description: "Submission status updated successfully",
       });
     } catch (error: any) {
       toast({
-        title: "Error updating feedback",
+        title: `${data.status} submission failed`,
         description: error?.data?.message,
         variant: "destructive",
       });
-    } finally {
-      setIsSubmittingFeedback(false);
     }
   };
 
@@ -119,7 +107,7 @@ const Participants = () => {
                 <Badge className="text-white">{participants.length}</Badge>
               </h2>
               <div className="space-y-2">
-                {participants.slice(0, 5).map((participant) => (
+                {participants.map((participant) => (
                   <div
                     key={participant?._id}
                     className="flex items-center justify-between space-x-4 border-b py-2 px-6"
@@ -156,7 +144,7 @@ const Participants = () => {
                         className="h-8 text-sm "
                         variant={"outline"}
                         onClick={() => {
-                          // Parse the submission data correctly based on its actual structure
+                          setSubmissionId(participant?._id);
                           setSelectedParticipant(participant?.submissionData as unknown as SubmitChallengeDto);
                           setOpenSubmission(true)
                         }}
@@ -213,46 +201,23 @@ const Participants = () => {
               </p>
             </label>
           </div>
-
-          <Form {...form}>
-            <form
-              className="space-y-2 md:space-y-4"
-              onSubmit={form.handleSubmit(handleEditFeedback)}
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              className="flex items-center justify-center bg-red-600 hover:bg-red-500"
+              disabled={isRejectingApproving}
+              onClick={() => handleEditFeedback({ status: "rejected", submissionId: submissionId as string })}
             >
-              <FormField
-                control={form.control}
-                name="feedback"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel> Feedback </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Add any submission feedback or comments here"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex items-center justify-end gap-2">
-                <Button
-                  className="flex items-center justify-center bg-red-600 hover:bg-red-500"
-                  disabled={isSubmittingFeedback}
-                >
-                  {isSubmittingFeedback ? "Rejecting..." : "Reject"}
-                </Button>
+              {isRejectingApproving ? <LucideLoader2 className="animate-spin" /> : "Reject"}
+            </Button>
 
-                <Button
-                  className=" flex items-center justify-center"
-                  disabled={isSubmittingFeedback}
-                >
-                  {isSubmittingFeedback ? "Promoting..." : "Promote"}
-                </Button>
-              </div>
-
-            </form>
-          </Form>
+            <Button
+              className=" flex items-center justify-center"
+              disabled={isRejectingApproving}
+              onClick={() => handleEditFeedback({ status: "approved", submissionId: submissionId as string })}
+            >
+              {isRejectingApproving ? <LucideLoader2 className="animate-spin" /> : "Promote"}
+            </Button>
+          </div>
 
         </DialogContent>
       </Dialog>
