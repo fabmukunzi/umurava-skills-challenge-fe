@@ -74,6 +74,13 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       providesTags: ['challenge'],
     }),
+    getPublicChallengeById: builder.query<{ data: IProject }, string>({
+      query: (id) => ({
+        url: `/public/challenge/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['challenge'],
+    }),
 
     createChallenge: builder.mutation<IProject, CreateChallengeDto>({
       query: (challengeData) => ({
@@ -154,6 +161,7 @@ export const {
   useGetChallengesQuery,
   useGetParticipantChallengesQuery,
   useGetChallengeByIdQuery,
+  useGetPublicChallengeByIdQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
   useRejectApproveSubmissionMutation,

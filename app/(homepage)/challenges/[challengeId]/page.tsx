@@ -17,7 +17,7 @@ import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
 import { handleError } from '@/lib/errorHandler';
 import { UmuravaWhiteLogo } from '@/lib/images';
 import { homepageRoutes } from '@/lib/routes';
-import { SubmitChallengeDto, useGetChallengeByIdQuery, useSubmitChallengeMutation } from '@/store/actions/challenge';
+import { SubmitChallengeDto, useGetPublicChallengeByIdQuery, useSubmitChallengeMutation } from '@/store/actions/challenge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -27,44 +27,44 @@ import { useForm } from 'react-hook-form';
 
 const HomeSingleProjectView = () => {
 
-    const form = useForm<SubmitChallengeDto>({
-      resolver: zodResolver(challengeSubmissionSchema),
-      defaultValues: {},
-    });
+  const form = useForm<SubmitChallengeDto>({
+    resolver: zodResolver(challengeSubmissionSchema),
+    defaultValues: {},
+  });
 
   const params = useParams();
   const challengeId = params?.challengeId as string;
 
-  const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
+  const { data, isLoading } = useGetPublicChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
   const [submitChallenge, { isLoading: isSubmitting }] =
     useSubmitChallengeMutation();
   const project = data?.data;
 
-    const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
-    const [openJoinDialog, setOpenJoinDialog] = useState(false);
-    const isProjectNotStarted = dayjs().isBefore(
-      dayjs(project?.startDate || dayjs())
-    );
+  const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
+  const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const isProjectNotStarted = dayjs().isBefore(
+    dayjs(project?.startDate || dayjs())
+  );
 
-      const onSubmit = async (values: SubmitChallengeDto) => {
-        try {
-          await submitChallenge({
-            id: challengeId,
-            data: values,
-          }).unwrap();
-          toast({
-            title: 'Success',
-            description: 'Your submission has been sent successfully.',
-          });
-          setOpenSubmitDialog(false);
-        } catch (error) {
-          handleError(error);
-        } finally {
-          form.reset();
-        }
-      };
+  const onSubmit = async (values: SubmitChallengeDto) => {
+    try {
+      await submitChallenge({
+        id: challengeId,
+        data: values,
+      }).unwrap();
+      toast({
+        title: 'Success',
+        description: 'Your submission has been sent successfully.',
+      });
+      setOpenSubmitDialog(false);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      form.reset();
+    }
+  };
 
   if (isLoading) return <SingleChallengeSkeleton />;
 
