@@ -1,8 +1,6 @@
 'use client';
 
 import { AppSidebar } from '@/components/common/dashboard/sidebar';
-import { Button } from '@/components/ui/button';
-import Dropdown from '@/components/ui/dropdown';
 import { Input } from '@/components/ui/input';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,10 +12,11 @@ import { signOut, useSession } from 'next-auth/react';
 import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { NotificationResponse } from './notifications/page';
 import dayjs from 'dayjs';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
@@ -26,7 +25,7 @@ const workSans = Work_Sans({
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const user = session?.data?.user;
-  const { data, isLoading, isError } = useGetNotificationsQuery<NotificationResponse>({});
+  const { data, isLoading } = useGetNotificationsQuery<NotificationResponse>({});
   const notificationsData = useMemo(() => {
     if (Array.isArray(data)) return data;
     return (data && 'data' in data) ? (data.data) : [];
@@ -34,36 +33,30 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const notifications = useMemo(() => {
     if (Array.isArray(notificationsData)) {
       return notificationsData
-        .filter(item => {
-          if (user?.role === 'admin') return item.status === 'unread';
-          return item.status === 'unread' && item.userId === user?.id;
-        })
-        .slice(0, 3);
+        .filter(item => item.status === 'unread')
+        .slice(0, 2);
     }
     return [];
   }, [notificationsData, user?.role, user?.id]);
 
   const notificationsCount = useMemo(() => notificationsData
-    .filter((notif: INotification) => {
-      if (user?.role === 'admin') return notif.status === 'unread';
-      return notif.status === 'unread' && notif.userId === user?.id;
-    })
+    .filter((notif: INotification) => notif.status === 'unread')
     .length, [notificationsData, user?.role, user?.id]);
   const hasNotifications = notificationsCount > 0;
   const noNotifications = notificationsCount === 0;
 
   const router = useRouter();
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const currentPath = pathname;
+  const pathname = usePathname();
+  const currentPathLength = pathname.split('/').length;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase();
 
     if (!searchTerm || searchTerm.trim() === '') {
-      router.push(currentPath);
+      router.push(pathname);
       return;
     }
-    router.push(`${currentPath}?search=${searchTerm}`);
+    router.push(`${pathname}?search=${searchTerm}`);
   };
 
   const handleLogout = async () => {
@@ -73,46 +66,37 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white text-left shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none !z-50">
-    {notificationsCount > 0 && (<div className="py-2 px-3 border-b border-gray-100">
-      <h3 className="text-sm font-medium">Unread Notifications  `(${notificationsCount})`</h3>
-    </div>)}
-    <div className="max-h-64 overflow-y-auto py-1">
-      {isLoading && (
-        <div className="flex items-center justify-center h-32">
-          <LucideLoader2 className="animate-spin" />
-        </div>
-      )}
-      {isError && (
-        <div className="flex items-center justify-center h-32">
-          <div className="text-red-500 tex-sm">Error loading notifications</div>
-        </div>
-      )}
-      {noNotifications && (
-        <div className="flex items-center justify-start ml-3">
-          <div className="text-gray-500 tex-sm">No unread notifications</div>
-        </div>
-      )}
-      {notifications.map((notif: INotification) => (
-        <div key={notif._id} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
-          <p className="text-sm">{notif.title}</p>
-          <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
-        </div>
-      ))}
-    </div>
-    {hasNotifications && (<div className="border-t border-gray-100 py-2 px-3">
-      <button
-        className="text-primary text-xs font-medium w-full text-start"
-        onClick={() => router.push("/dashboard/notifications")}
-      >
-        View all notifications
-      </button>
-    </div>)}
+  const NotificationContainer = () => (<div className="relative">
+    <DropdownMenu>
+      <DropdownMenuTrigger className='rounded-full flex items-center justify-center border p-1 object-contain h-10 w-10'>
+        <NotificationIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='w-52'>
+        <DropdownMenuLabel>Unread {notificationsCount > 0 && `(${notificationsCount})`}</DropdownMenuLabel>
+        <>
+          {isLoading && (
+            <div className="flex items-center justify-center h-32">
+              <LucideLoader2 className="animate-spin" />
+            </div>
+          )}
+          {noNotifications && (
+            <DropdownMenuItem>No unread notifications</DropdownMenuItem>
+          )}
+          {notifications.map((notif: INotification) => (
+            <DropdownMenuItem key={notif._id} className='flex flex-col items-start gap-2'>
+              <p className="text-sm">{notif.title}</p>
+              <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
+            </DropdownMenuItem>
+          ))}
+        </>
+        {hasNotifications && (<DropdownMenuLabel onClick={() => router.push("/dashboard/notifications")} className='hover:text-gray-500 cursor-pointer'>View all</DropdownMenuLabel>)}
+      </DropdownMenuContent>
+    </DropdownMenu>
   </div>)
 
   const ProfileContainer = () => (
-    <div className="absolute right-0 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-      <div className="flex items-center gap-2 py-2 px-3 border-b border-gray-100">
+    <DropdownMenu>
+      <DropdownMenuTrigger className='flex items-center gap-2'>
         <Image
           src={user?.profileUrl || ''}
           alt="Profile"
@@ -120,46 +104,44 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           height={40}
           className="rounded-full border p-1 object-contain h-10 w-10"
         />
-        <div>
-          <p className="text-sm font-medium">{user?.name}</p>
-          <p className="text-xs text-gray-500">{user?.email}</p>
-        </div>
-      </div>
-      <div className="py-1">
-        <Link href={dashboardRoutes.profile.path} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-          <LucideUser className='size-4' /> View Profile
-        </Link>
-        <div onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100">
-          <LucideLogOut className='size-4' /> Log out
-        </div>
-      </div>
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='w-fit'>
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <Image
+            src={user?.profileUrl || ''}
+            alt="Profile"
+            width={40}
+            height={40}
+            className="rounded-full border p-1 object-contain h-10 w-10"
+          />
+          <div>
+            <p className="text-sm font-medium">{user?.name}</p>
+            <p className="text-xs text-gray-500">{user?.email}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <Link href={dashboardRoutes.profile.path} className="flex items-center gap-2">
+              <LucideUser className='size-4' /> View Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 text-red-500">
+            <LucideLogOut className='size-4' /> Log out
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 
   const NotificationIcon = () => (
-    <div className="relative">
-      <Bell className="h-5 w-5 text-gray-500 hover:text-primary" />
+    <div className="relative p-1 ring-1 ring-gray-50 rounded-full bg-secondary_bg hover:bg-slate-200 transition-all">
+      <Bell className="size-5 text-gray-500 hover:text-primary" />
       {hasNotifications && (
         <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
       )}
     </div>
-  );
-
-  const NotificationButton = () => (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="rounded-full bg-secondary_bg hover:bg-slate-200 transition-all"
-      onClick={(e) => {
-        e.preventDefault(); // Prevent navigation when clicking the button itself
-      }
-      }
-    >
-      <Dropdown
-        icon={<NotificationIcon />}
-        items={[<NotificationContainer key="notification-container" />]}
-      />
-    </Button>
   );
 
   return (
@@ -172,7 +154,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col flex-1">
             <header className="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
               <SidebarTrigger className="lg:hidden" />
-              <div className="flex relative items-center w-1/2 md:w-full max-w-md">
+              {currentPathLength < 4 && (<div className="flex relative items-center w-1/2 md:w-full max-w-md">
                 <Search className="text-gray-400 absolute w-5 h-5 left-3" />
                 <Input
                   type="text"
@@ -183,35 +165,21 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     if (e.key === 'Enter') {
                       const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
                       if (!searchTerm || searchTerm.trim() === '') {
-                        router.push(currentPath);
+                        router.push(pathname);
                         return;
                       }
-                      router.push(`${currentPath}?search=${searchTerm}`);
+                      router.push(`${pathname}?search=${searchTerm}`);
                     }
                   }
                   }
                 />
-              </div>
+              </div>)}
 
-              <div className="flex items-center space-x-6">
-                {['admin', 'super admin'].includes(user?.role?.toLowerCase() || '') && (
-                  <div className="relative">
-                    <NotificationButton />
-                  </div>
-                )}
-
+              <div className="flex items-center space-x-2">
+                <NotificationContainer />
 
                 {user?.profileUrl ? (
-                  <Dropdown
-                    icon={<Image
-                      src={user?.profileUrl || ''}
-                      alt="Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full border p-1 object-contain h-10 w-10"
-                    />}
-                    items={[<ProfileContainer key="profile-container" />]}
-                  />
+                  <ProfileContainer />
                 ) : (
                   <Skeleton className="w-full" />
                 )}

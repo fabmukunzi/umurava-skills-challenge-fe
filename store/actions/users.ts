@@ -25,7 +25,7 @@ const usersEndpoints = baseAPI.injectEndpoints({
     }),
     forgotPassword: builder.mutation<void, { email: string }>({
       query: (data) => ({
-        url: '/auth/forget-password', 
+        url: '/auth/forget-password',
         method: 'POST',
         body: data,
       }),
@@ -63,6 +63,18 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body,
       }),
     }),
+    deactivateAccount: builder.mutation<void, { userId: string }>({
+      query: ({ userId }) => ({
+        url: `auth/deactivate-account/${userId}`,
+        method: 'POST',
+      }),
+    }),
+    activateAccount: builder.mutation<void, { userId: string }>({
+      query: ({ userId }) => ({
+        url: `auth/deactivate-account/${userId}`,
+        method: 'POST',
+      }),
+    }),
     changePassword: builder.mutation<
       void,
       { currentPassword: string; newPassword: string }
@@ -94,6 +106,8 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdateProfilePictureMutation,
+  useDeactivateAccountMutation,
+  useActivateAccountMutation,
   useChangePasswordMutation,
   useSubscribeToNewsletterMutation
 } = usersEndpoints;

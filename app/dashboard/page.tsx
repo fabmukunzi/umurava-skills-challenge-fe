@@ -101,7 +101,7 @@ const DashboardPage = () => {
     <div className="px-2">
       <div className="flex flex-wrap max-w-screen-md:text-center justify-between items-center my-6">
         <div>
-          <h1 className="text-2xl text-black font-semibold">
+          <h1 className="text-2xl text-black font-semibold capitalize">
             Welcome back {user?.name?.split(' ')[0]},
           </h1>
           <p className="text-primary_grey">

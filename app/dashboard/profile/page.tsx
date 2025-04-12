@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  useActivateAccountMutation,
   useChangePasswordMutation,
+  useDeactivateAccountMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdateProfilePictureMutation,
@@ -18,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { handleError } from '@/lib/errorHandler';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
 
 interface ChangePwdDto {
   currentPassword: string;
@@ -26,10 +29,17 @@ interface ChangePwdDto {
 }
 
 const ProfilePage = () => {
+  const session = useSession();
+  const { data } = session;
+  const isAdmin = useMemo(() => ['admin', 'super admin'].includes(data?.user?.role?.toLowerCase() || ''), [data?.user?.role]);
+
   const { data: user, isLoading, isError } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const [updateProfilePicture, { isLoading: isUpdatingProfilePicture }] =
     useUpdateProfilePictureMutation();
+  const [deactivateAccount, { isLoading: isDeactivating }] =
+    useDeactivateAccountMutation();
+  const [activateAccount, { isLoading: isActivating }] = useActivateAccountMutation();
   const [changePassword, { isLoading: isChangingPassword }] =
     useChangePasswordMutation();
 
@@ -83,6 +93,24 @@ const ProfilePage = () => {
         email: user?.data?.email,
       }).unwrap();
       toast({ title: 'Profile updated successfully' });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleDeactivateAccount = async () => {
+    try {
+      await deactivateAccount({ userId: data?.user?.id || '' }).unwrap();
+      toast({ title: 'Account deactivated successfully' });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleActivateAccount = async () => {
+    try {
+      await activateAccount({ userId: data?.user?.id || '' }).unwrap();
+      toast({ title: 'Account activated successfully' });
     } catch (error) {
       handleError(error);
     }
@@ -265,23 +293,46 @@ const ProfilePage = () => {
 
           </CardContent>
         </Card>
-
-        <Card className="col-span-3 w-full h-full shadow-lg">
+      </main>
+      <footer>
+        {!isAdmin && (<Card className="col-span-3 w-full h-full shadow-lg">
           <CardHeader className="text-left">
             <CardTitle className="text-2xl font-semibold">Account Settings</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-gray-500">Manage your account settings and preferences.</p>
-            <ul className="list-disc list-inside space-y-2 mt-4">
-              <li>Delete account</li>
-            </ul>
-            <Button className="mt-4" variant={'destructive'}>
-              Delete Account
-            </Button>
-          </CardContent>
-        </Card>
-      </main>
 
+            <div className='flex items-center gap-2'>
+
+              <Button className="mt-4" disabled={isActivating} onClick={handleActivateAccount}>
+                {isActivating ? (
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is activating...
+                  </>
+                ) : (
+                  'Activate Account'
+                )}
+              </Button>
+
+              <Button className="mt-4" variant={'destructive'} disabled={isDeactivating} onClick={handleDeactivateAccount}>
+                {isDeactivating ? (
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is deactivating...
+                  </>
+                ) : (
+                  'Deactivate Account'
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>)}
+
+        <div className="text-center mt-4">
+          <p className="text-sm">
+            Copyright &copy; All Rights Reserved Umurava{' '}
+            {new Date().getFullYear()}.
+          </p>        </div>
+      </footer>
     </div>
   );
 };

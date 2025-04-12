@@ -21,7 +21,7 @@ export interface NotificationResponse {
 }
 
 const buttonStyles = {
-    delete: 'text-red-500 font-medium bg-red-200 hover:bg-red-200/60 border border-red-500 rounded',
+    delete: 'text-red-500 font-medium bg-red-100 hover:bg-red-200/60 border border-red-500 rounded',
     markAsRead: 'text-white bg-primary font-medium',
 }
 
@@ -35,7 +35,6 @@ const NotificationPage = () => {
         if (Array.isArray(data)) return data;
         return (data && 'data' in data) ? (data.data) : [];
     }, [data]);
-
 
     const [markNotificationAsRead, { isLoading: markReadLoading }] = useMarkNotificationAsReadMutation();
     const [markNotificationAsUnread, { isLoading: markUnreadLoading }] = useMarkNotificationAsUnreadMutation();
@@ -79,7 +78,7 @@ const NotificationPage = () => {
         deleteAllNotifications()
     }
 
-    if (isLoading || isFetching) {
+    if (isLoading) {
         return <div className="flex flex-col gap-4 items-center justify-start pt-6">
             <Skeleton className="h-32 w-full bg-gray-300" />
         </div>

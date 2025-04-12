@@ -144,10 +144,10 @@ const FooterComponent = () => {
         </div>
       </div>
       <div className="flex md:flex-row flex-col-reverse gap-4 text-center justify-between pt-8">
-        <h1 className="text-sm">
-          Copyright &copy; All Rights Reserved SawaPay{' '}
+        <p className="text-sm">
+          Copyright &copy; All Rights Reserved Umurava{' '}
           {new Date().getFullYear()}.
-        </h1>
+        </p>
         <div className="text-sm">
           <a href="/privacy">Privacy Policy</a> |
           <a href="/terms"> Terms & Conditions</a>

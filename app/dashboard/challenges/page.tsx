@@ -89,7 +89,6 @@ const ChallengesPage = () => {
     },
   ];
 
-  console.log(challengesData, 'challengesData');
   return (
     <div className="md:px-4">
       <div className="my-4">

@@ -7,7 +7,7 @@ import { UmuravaWhiteLogo } from '@/lib/images';
 import { dashboardRoutes } from '@/lib/routes';
 import Image from 'next/image';
 import ParticipantsCard from '@/components/dashboard/participants';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -22,6 +22,7 @@ import {
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
   useSubmitChallengeMutation,
+  useUpdateChallengeStatusMutation,
 } from '@/store/actions/challenge';
 import { useMemo, useState } from 'react';
 import {
@@ -44,7 +45,7 @@ import { handleError } from '@/lib/errorHandler';
 import { toast } from '@/hooks/use-toast';
 import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialog';
 import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
-import { LucideLoader2 } from 'lucide-react';
+import { Loader2, LucideLoader2 } from 'lucide-react';
 
 const SingleChallengePage = () => {
   const form = useForm<SubmitChallengeDto>({
@@ -77,6 +78,9 @@ const SingleChallengePage = () => {
     useSubmitChallengeMutation();
 
   const [deleteChallenge] = useDeleteChallengeMutation();
+  const [updateChallengeStatus, { isLoading: updatingChallenge }] =
+    useUpdateChallengeStatusMutation();
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
@@ -90,6 +94,34 @@ const SingleChallengePage = () => {
       handleError(error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const onComplete = async () => {
+    try {
+      await updateChallengeStatus({
+        id: challengeId,
+        status: 'completed',
+      }).unwrap();
+      toast({
+        title: 'Challenge updated successfully',
+      });
+    } catch (err) {
+      handleError(err);
+    }
+  };
+
+  const onClose = async () => {
+    try {
+      await updateChallengeStatus({
+        id: challengeId,
+        status: 'closed',
+      }).unwrap();
+      toast({
+        title: 'Challenge updated successfully',
+      });
+    } catch (err) {
+      handleError(err);
     }
   };
 
@@ -210,41 +242,45 @@ const SingleChallengePage = () => {
             {['admin', 'super admin'].includes(
               user?.role?.toLocaleLowerCase() || ''
             ) ? (
-              <div className="flex w-full mt-5 gap-6">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      className="w-full h-12 bg-red-500"
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? <LucideLoader2 className='animate-spin' /> : 'Delete'}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the challenge and remove its data.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleDelete}
-                        className="bg-red-500"
+              <div className='space-y-4'>
+                <div className="flex w-full mt-5 gap-2">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="destructive"
+                        className='w-full h-12'
+                        disabled={isDeleting}
                       >
-                        Yes, delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <Link
-                  className="w-full"
-                  href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
-                >
-                  <Button className="w-full h-12">Edit</Button>
-                </Link>
+                        {isDeleting ? <LucideLoader2 className='animate-spin' /> : 'Delete'}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete the challenge and remove its data.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDelete}
+                          className="bg-red-500"
+                        >
+                          Yes, delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <Link
+                    className="w-full"
+                    href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
+                  >
+                    <Button className="w-full h-12">Edit</Button>
+                  </Link>
+                </div>
+
               </div>
             ) : project?.joined_status ? (
               <Button
@@ -260,6 +296,78 @@ const SingleChallengePage = () => {
               {'Join Challenge'}
             </Button>}
           </Card>
+
+          {project?.status !== 'completed' && (<Card className="mb-5">
+            <div className="w-full h-full shadow-none p-4">
+              <div>
+                <h1 className="text-xl font-semibold">Account Settings</h1>
+                <p className="text-gray-500">Manage your challenge (Complete or Close challenge).</p>
+
+                <div className='flex items-center gap-2 mt-4'>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full h-12" variant={'destructive'} disabled={updatingChallenge}>
+                        Close
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          change challenge status to closed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={onClose} className="bg-red-500"
+                        >
+                          {updatingChallenge ? (
+                            <>
+                              <Loader2 className="animate-spin w-5 h-5 mr-2" />
+                            </>
+                          ) : (
+                            'Yes, Close'
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full h-12" disabled={updatingChallenge}>
+                        Complete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          change challenge status to completed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={onComplete}
+                        >
+                          {updatingChallenge ? (
+                            <>
+                              <Loader2 className="animate-spin w-5 h-5 mr-2" />
+                            </>
+                          ) : (
+                            'Yes, Complete'
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </div>
+          </Card>)}
 
           {['admin', 'super admin'].includes(
             user?.role?.toLocaleLowerCase() || ''
