@@ -7,7 +7,7 @@ import {
   LinkedinIcon,
   YoutubeIcon,
 } from '@/lib/images';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { LucideLoader2, Mail, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -26,7 +26,7 @@ interface SubscribeDto {
 }
 
 const FooterComponent = () => {
-  const { register, handleSubmit } = useForm<SubscribeDto>({
+  const { register, handleSubmit, formState: { errors } } = useForm<SubscribeDto>({
     resolver: zodResolver(
       z.object({
         email: z.string().email('Invalid email address'),
@@ -132,12 +132,13 @@ const FooterComponent = () => {
           </h1>
           <form className="relative" onSubmit={handleSubmit(Suscribe)}>
             <Input className="md:h-auto lg:h-14 h-14" placeholder="Email" {...register('email')} />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
             <Button
               size="lg"
               className="absolute right-2 lg:top-1.5 top-1.5 md:top-[0.126rem] md:px-2 lg:px-7 px-7 md:h-8 lg:h-11 md:text-sm lg:text-base md:font-normal lg:font-semibold font-semibold"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'is Subscribing...' : 'Subscribe'}
+              {isSubmitting ? <LucideLoader2 className='animate-spin' /> : 'Subscribe'}
             </Button>
           </form>
         </div>

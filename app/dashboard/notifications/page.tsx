@@ -2,21 +2,27 @@
 import React, { useMemo } from 'react'
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGetNotificationsQuery, useMarkAllNotificationsAsReadMutation, useMarkNotificationAsReadMutation } from '@/store/actions/notification';
+import { useDeleteAllNotificationsMutation, useDeleteNotificationMutation, useGetNotificationsQuery, useMarkAllNotificationsAsReadMutation, useMarkAllNotificationsAsUnreadMutation, useMarkNotificationAsReadMutation, useMarkNotificationAsUnreadMutation } from '@/store/actions/notification';
 import { Skeleton } from '@/components/ui/skeleton';
 import { INotification } from '@/lib/types/notification';
 import { Button } from '@/components/ui/button';
-import { LucideCheckCheck, LucideEllipsis, LucideEye, LucideLoader2, LucideTrash2 } from 'lucide-react';
+import { LucideCheckCheck, LucideEllipsis, LucideEye, LucideEyeOff, LucideLoader2, LucideTrash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
-export interface NotificationResponse {
+interface NotificationResponse {
     data: {
         data: INotification[],
         message: string,
         status: string,
     };
     isLoading: boolean;
+    isFetching: boolean;
     isError: boolean;
+}
+
+const buttonStyles = {
+    delete: 'text-red-500 font-medium bg-red-200 hover:bg-red-200/60 border border-red-500 rounded',
+    markAsRead: 'text-white bg-primary font-medium',
 }
 
 const NotificationPage = () => {
@@ -24,7 +30,7 @@ const NotificationPage = () => {
     const user = session?.data?.user;
     const isAdmin = useMemo(() => ['admin', 'super admin'].includes(user?.role?.toLowerCase() || ''), [user?.role]);
 
-    const { data, isLoading, isError } = useGetNotificationsQuery<NotificationResponse>({});
+    const { data, isLoading, isFetching, isError } = useGetNotificationsQuery<NotificationResponse>({});
     const notificationsData = useMemo(() => {
         if (Array.isArray(data)) return data;
         return (data && 'data' in data) ? (data.data) : [];
@@ -32,24 +38,48 @@ const NotificationPage = () => {
 
 
     const [markNotificationAsRead, { isLoading: markReadLoading }] = useMarkNotificationAsReadMutation();
+    const [markNotificationAsUnread, { isLoading: markUnreadLoading }] = useMarkNotificationAsUnreadMutation();
+    const [markAllNotificationsAsUnread, { isLoading: markAllUnreadLoading }] = useMarkAllNotificationsAsUnreadMutation();
     const [markAllNotificationsAsRead, { isLoading: markAllReadLoading }] = useMarkAllNotificationsAsReadMutation();
     const [deleteNotification, { isLoading: deleteOneLoading }] = useDeleteNotificationMutation();
     const [deleteAllNotifications, { isLoading: deleteAllLoading }] = useDeleteAllNotificationsMutation();
+    const [loadingNotificationId, setLoadingNotificationId] = React.useState<string | null>(null);
 
     const handleMarkAsRead = (notificationId: string) => {
-        markNotificationAsRead(notificationId)
+        setLoadingNotificationId(notificationId)
+        try {
+            markNotificationAsRead(notificationId)
+        } finally {
+            setLoadingNotificationId(null)
+        }
+    }
+    const handleMarkAsUnread = (notificationId: string) => {
+        setLoadingNotificationId(notificationId)
+        try {
+            markNotificationAsUnread(notificationId)
+        } finally {
+            setLoadingNotificationId(null)
+        }
+    }
+    const handleMarkAllAsUnread = () => {
+        markAllNotificationsAsUnread()
     }
     const handleMarkAllAsRead = () => {
         markAllNotificationsAsRead()
     }
     const handleDeleteNotification = (notificationId: string) => {
-        deleteNotification(notificationId)
+        setLoadingNotificationId(notificationId)
+        try {
+            deleteNotification(notificationId)
+        } finally {
+            setLoadingNotificationId(null)
+        }
     }
     const handleDeleteAllNotifications = () => {
         deleteAllNotifications()
     }
 
-    if (isLoading) {
+    if (isLoading || isFetching) {
         return <div className="flex flex-col gap-4 items-center justify-start pt-6">
             <Skeleton className="h-32 w-full bg-gray-300" />
         </div>
@@ -67,14 +97,22 @@ const NotificationPage = () => {
                 {notificationsData?.length > 0 && isAdmin && (<div className="flex justify-end gap-4 mb-4">
                     {notificationsData.some(item => item.status === 'unread') && (<Button
                         onClick={handleMarkAllAsRead}
-                        className="text-white bg-primary font-medium"
+                        className={buttonStyles.markAsRead}
                         disabled={markAllReadLoading}
                     >
                         {markAllReadLoading ? <LucideLoader2 className='animate-spin' /> : 'Mark All as Read'}
                     </Button>)}
+                    {notificationsData.some(item => item.status === 'read') && (<Button
+                        onClick={handleMarkAllAsUnread}
+                        className={buttonStyles.markAsRead}
+                        disabled={markAllUnreadLoading}
+                    >
+                        {markAllReadLoading ? <LucideLoader2 className='animate-spin' /> : 'Mark All as Unread'}
+                    </Button>)}
                     <Button
                         onClick={handleDeleteAllNotifications}
-                        className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
+                        className={buttonStyles.delete}
+                        disabled={deleteAllLoading}
                     >
                         {deleteAllLoading ? <LucideLoader2 className='animate-spin' /> : 'Delete All'}
                     </Button>
@@ -105,17 +143,27 @@ const NotificationPage = () => {
                                     {item.status === 'unread' && (
                                         <Button
                                             onClick={() => handleMarkAsRead(item._id)}
-                                            className="text-white bg-primary font-medium"
-                                            disabled={markReadLoading}
+                                            className={buttonStyles.markAsRead}
+                                            disabled={markReadLoading && item._id === loadingNotificationId}
                                         >
-                                            {markReadLoading ? <LucideLoader2 className='animate-spin' /> : <LucideEye className='size-5' />}
+                                            {markReadLoading && item._id === loadingNotificationId ? <LucideLoader2 className='animate-spin' /> : <LucideEye className='size-5' />}
+                                        </Button>
+                                    )}
+                                    {item.status === 'read' && (
+                                        <Button
+                                            onClick={() => handleMarkAsUnread(item._id)}
+                                            className={buttonStyles.markAsRead}
+                                            disabled={markUnreadLoading && item._id === loadingNotificationId}
+                                        >
+                                            {markUnreadLoading && item._id === loadingNotificationId ? <LucideLoader2 className='animate-spin' /> : <LucideEyeOff className='size-5' />}
                                         </Button>
                                     )}
                                     <Button
                                         onClick={() => handleDeleteNotification(item._id)}
-                                        className="text-white font-medium bg-red-500 hover:bg-red-600 rounded"
+                                        className={buttonStyles.delete}
+                                        disabled={deleteOneLoading && item._id === loadingNotificationId}
                                     >
-                                        {deleteOneLoading ? <LucideLoader2 className='animate-spin' /> : <LucideTrash2 className='size-5' />}
+                                        {deleteOneLoading && item._id === loadingNotificationId ? <LucideLoader2 className='animate-spin' /> : <LucideTrash2 className='size-5' />}
                                     </Button>
                                 </div>)}
                             </div>

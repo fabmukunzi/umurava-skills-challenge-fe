@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { dashboardRoutes } from '@/lib/routes';
 import { INotification } from '@/lib/types/notification';
 import { useGetNotificationsQuery } from '@/store/actions/notification';
-import { Bell, LucideLoader, LucideLogOut, LucideUser, Search } from 'lucide-react';
+import { Bell, LucideLoader2, LucideLogOut, LucideUser, Search } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
@@ -31,14 +31,26 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     if (Array.isArray(data)) return data;
     return (data && 'data' in data) ? (data.data) : [];
   }, [data]);
+  const notifications = useMemo(() => {
+    if (Array.isArray(notificationsData)) {
+      return notificationsData
+        .filter(item => {
+          if (user?.role === 'admin') return item.status === 'unread';
+          return item.status === 'unread' && item.userId === user?.id;
+        })
+        .slice(0, 3);
+    }
+    return [];
+  }, [notificationsData, user?.role, user?.id]);
 
-  const notificationsCount = notificationsData
+  const notificationsCount = useMemo(() => notificationsData
     .filter((notif: INotification) => {
       if (user?.role === 'admin') return notif.status === 'unread';
-      return notif.status === 'unread' && notif.userId === user?.name;
+      return notif.status === 'unread' && notif.userId === user?.id;
     })
-    .length;
+    .length, [notificationsData, user?.role, user?.id]);
   const hasNotifications = notificationsCount > 0;
+  const noNotifications = notificationsCount === 0;
 
   const router = useRouter();
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -62,13 +74,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white text-left shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none !z-50">
-    <div className="py-2 px-3 border-b border-gray-100">
-      <h3 className="text-sm font-medium">All Notifications {notificationsCount > 0 && `(${notificationsCount})`} </h3>
-    </div>
+    {notificationsCount > 0 && (<div className="py-2 px-3 border-b border-gray-100">
+      <h3 className="text-sm font-medium">Unread Notifications  `(${notificationsCount})`</h3>
+    </div>)}
     <div className="max-h-64 overflow-y-auto py-1">
       {isLoading && (
         <div className="flex items-center justify-center h-32">
-          <LucideLoader className="animate-spin h-5 w-5 text-gray-500" />
+          <LucideLoader2 className="animate-spin" />
         </div>
       )}
       {isError && (
@@ -76,19 +88,19 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="text-red-500 tex-sm">Error loading notifications</div>
         </div>
       )}
-      {notificationsData.filter(item => item.status === 'unread').length === 0 && (
+      {noNotifications && (
         <div className="flex items-center justify-start ml-3">
-          <div className="text-gray-500 tex-sm">No notifications</div>
+          <div className="text-gray-500 tex-sm">No unread notifications</div>
         </div>
       )}
-      {notificationsData.slice(0, 1).filter(item => item.status === 'unread').map((notif: INotification) => (
+      {notifications.map((notif: INotification) => (
         <div key={notif._id} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
           <p className="text-sm">{notif.title}</p>
           <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
         </div>
       ))}
     </div>
-    {notificationsData.length > 0 && (<div className="border-t border-gray-100 py-2 px-3">
+    {hasNotifications && (<div className="border-t border-gray-100 py-2 px-3">
       <button
         className="text-primary text-xs font-medium w-full text-start"
         onClick={() => router.push("/dashboard/notifications")}

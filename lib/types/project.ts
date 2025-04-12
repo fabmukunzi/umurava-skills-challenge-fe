@@ -1,5 +1,6 @@
 import { StaticImageData } from 'next/image';
 import { UserSchema } from './user';
+import { SubmitChallengeDto } from '@/store/actions/challenge';
 
 export interface ICategory {
   _id: string;
@@ -33,6 +34,7 @@ export interface IProject {
   endDate: string;
   submissionDate: string;
   duration: number;
+  joined_status?: boolean
   moneyPrize: {
     categoryPrize: string;
     prize: string;
@@ -50,6 +52,17 @@ export interface IProject {
   __v?: number;
 }
 
+export interface IParticipantsSubmissions extends SubmitChallengeDto {
+  _id: string;
+  challengeId: string;
+  teamLead: UserSchema;
+  members: UserSchema[];
+  submissionStatus: string;
+  submissionDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
+}
 export interface ChallengeAggregates {
   totalChallenges: number;
   totalCompletedChallenges: number;
@@ -69,6 +82,7 @@ export interface IStatistics extends Partial<ChallengeAggregates> {
   totalOngoingChallengesChange: number,
   totalOngoingChallengesChangeDirection: string,
   totalOpenChallengesChange: number,
+  totalOpenChallengesChangeDirection: number,
 }
 
 export interface ChallengePagination {

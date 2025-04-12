@@ -60,6 +60,7 @@ declare module 'next-auth' {
       image?: string | null;
       role?: string;
       profileUrl: string;
+      id?: string;
     };
   }
 }

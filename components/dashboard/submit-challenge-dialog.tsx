@@ -14,6 +14,7 @@ import { SubmitChallengeDto } from '@/store/actions/challenge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
 import TextInput from '../common/text-input';
+import { LucideLoader2 } from 'lucide-react';
 
 interface SubmitChallengeDialogProps {
   open: boolean;
@@ -130,7 +131,7 @@ const SubmitChallengeDialog = ({
               className="w-full h-12 flex items-center justify-center"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+              {isSubmitting ? <LucideLoader2 className='animate-spin' /> : 'Submit'}
             </Button>
           </form>
         </Form>

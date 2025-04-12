@@ -5,7 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { jwtDecode } from 'jwt-decode';
 
-interface DecodedToken {
+export interface DecodedToken {
   id: string;
   email: string;
   role: string;
