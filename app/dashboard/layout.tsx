@@ -1,8 +1,6 @@
 'use client';
 
 import { AppSidebar } from '@/components/common/dashboard/sidebar';
-import { Button } from '@/components/ui/button';
-import Dropdown from '@/components/ui/dropdown';
 import { Input } from '@/components/ui/input';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { NotificationResponse } from './notifications/page';
 import dayjs from 'dayjs';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
@@ -26,7 +25,7 @@ const workSans = Work_Sans({
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const user = session?.data?.user;
-  const { data, isLoading, isError } = useGetNotificationsQuery<NotificationResponse>({});
+  const { data, isLoading } = useGetNotificationsQuery<NotificationResponse>({});
   const notificationsData = useMemo(() => {
     if (Array.isArray(data)) return data;
     return (data && 'data' in data) ? (data.data) : [];
@@ -73,46 +72,37 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const NotificationContainer = () => (<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-md bg-white text-left shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none !z-50">
-    {notificationsCount > 0 && (<div className="py-2 px-3 border-b border-gray-100">
-      <h3 className="text-sm font-medium">Unread Notifications  `(${notificationsCount})`</h3>
-    </div>)}
-    <div className="max-h-64 overflow-y-auto py-1">
-      {isLoading && (
-        <div className="flex items-center justify-center h-32">
-          <LucideLoader2 className="animate-spin" />
-        </div>
-      )}
-      {isError && (
-        <div className="flex items-center justify-center h-32">
-          <div className="text-red-500 tex-sm">Error loading notifications</div>
-        </div>
-      )}
-      {noNotifications && (
-        <div className="flex items-center justify-start ml-3">
-          <div className="text-gray-500 tex-sm">No unread notifications</div>
-        </div>
-      )}
-      {notifications.map((notif: INotification) => (
-        <div key={notif._id} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
-          <p className="text-sm">{notif.title}</p>
-          <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
-        </div>
-      ))}
-    </div>
-    {hasNotifications && (<div className="border-t border-gray-100 py-2 px-3">
-      <button
-        className="text-primary text-xs font-medium w-full text-start"
-        onClick={() => router.push("/dashboard/notifications")}
-      >
-        View all notifications
-      </button>
-    </div>)}
+  const NotificationContainer = () => (<div className="relative">
+    <DropdownMenu>
+      <DropdownMenuTrigger className='rounded-full flex items-center justify-center border p-1 object-contain h-10 w-10'>
+        <NotificationIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='w-fit'>
+        <DropdownMenuLabel>Unread {notificationsCount > 0 && `(${notificationsCount})`}</DropdownMenuLabel>
+        <>
+          {isLoading && (
+            <div className="flex items-center justify-center h-32">
+              <LucideLoader2 className="animate-spin" />
+            </div>
+          )}
+          {noNotifications && (
+            <DropdownMenuItem>No unread notifications</DropdownMenuItem>
+          )}
+          {notifications.map((notif: INotification) => (
+            <DropdownMenuItem key={notif._id}>
+              <p className="text-sm">{notif.title}</p>
+              <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
+            </DropdownMenuItem>
+          ))}
+        </>
+        {hasNotifications && (<DropdownMenuLabel onClick={() => router.push("/dashboard/notifications")}>View all</DropdownMenuLabel>)}
+      </DropdownMenuContent>
+    </DropdownMenu>
   </div>)
 
   const ProfileContainer = () => (
-    <div className="absolute right-0 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-      <div className="flex items-center gap-2 py-2 px-3 border-b border-gray-100">
+    <DropdownMenu>
+      <DropdownMenuTrigger className='flex items-center gap-2'>
         <Image
           src={user?.profileUrl || ''}
           alt="Profile"
@@ -120,46 +110,44 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           height={40}
           className="rounded-full border p-1 object-contain h-10 w-10"
         />
-        <div>
-          <p className="text-sm font-medium">{user?.name}</p>
-          <p className="text-xs text-gray-500">{user?.email}</p>
-        </div>
-      </div>
-      <div className="py-1">
-        <Link href={dashboardRoutes.profile.path} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-          <LucideUser className='size-4' /> View Profile
-        </Link>
-        <div onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100">
-          <LucideLogOut className='size-4' /> Log out
-        </div>
-      </div>
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='w-fit'>
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <Image
+            src={user?.profileUrl || ''}
+            alt="Profile"
+            width={40}
+            height={40}
+            className="rounded-full border p-1 object-contain h-10 w-10"
+          />
+          <div>
+            <p className="text-sm font-medium">{user?.name}</p>
+            <p className="text-xs text-gray-500">{user?.email}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <Link href={dashboardRoutes.profile.path} className="flex items-center gap-2">
+              <LucideUser className='size-4' /> View Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 text-red-500">
+            <LucideLogOut className='size-4' /> Log out
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 
   const NotificationIcon = () => (
-    <div className="relative">
-      <Bell className="h-5 w-5 text-gray-500 hover:text-primary" />
+    <div className="relative p-1 ring-1 ring-gray-50 rounded-full bg-secondary_bg hover:bg-slate-200 transition-all">
+      <Bell className="size-5 text-gray-500 hover:text-primary" />
       {hasNotifications && (
         <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
       )}
     </div>
-  );
-
-  const NotificationButton = () => (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="rounded-full bg-secondary_bg hover:bg-slate-200 transition-all"
-      onClick={(e) => {
-        e.preventDefault(); // Prevent navigation when clicking the button itself
-      }
-      }
-    >
-      <Dropdown
-        icon={<NotificationIcon />}
-        items={[<NotificationContainer key="notification-container" />]}
-      />
-    </Button>
   );
 
   return (
@@ -193,25 +181,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 />
               </div>
 
-              <div className="flex items-center space-x-6">
-                {['admin', 'super admin'].includes(user?.role?.toLowerCase() || '') && (
-                  <div className="relative">
-                    <NotificationButton />
-                  </div>
-                )}
-
+              <div className="flex items-center space-x-2">
+                <NotificationContainer />
 
                 {user?.profileUrl ? (
-                  <Dropdown
-                    icon={<Image
-                      src={user?.profileUrl || ''}
-                      alt="Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full border p-1 object-contain h-10 w-10"
-                    />}
-                    items={[<ProfileContainer key="profile-container" />]}
-                  />
+                  <ProfileContainer />
                 ) : (
                   <Skeleton className="w-full" />
                 )}
