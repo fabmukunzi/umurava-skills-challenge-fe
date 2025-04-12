@@ -63,10 +63,16 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body,
       }),
     }),
-    deactivateAccount: builder.mutation<void, void>({
-      query: () => ({
-        url: '/auth/profile',
-        method: 'DELETE',
+    deactivateAccount: builder.mutation<void, { userId: string }>({
+      query: ({ userId }) => ({
+        url: `auth/deactivate-account/${userId}`,
+        method: 'POST',
+      }),
+    }),
+    activateAccount: builder.mutation<void, { userId: string }>({
+      query: ({ userId }) => ({
+        url: `auth/deactivate-account/${userId}`,
+        method: 'POST',
       }),
     }),
     changePassword: builder.mutation<
@@ -101,6 +107,7 @@ export const {
   useUpdateProfileMutation,
   useUpdateProfilePictureMutation,
   useDeactivateAccountMutation,
+  useActivateAccountMutation,
   useChangePasswordMutation,
   useSubscribeToNewsletterMutation
 } = usersEndpoints;

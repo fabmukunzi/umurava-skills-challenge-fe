@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
+  useActivateAccountMutation,
   useChangePasswordMutation,
   useDeactivateAccountMutation,
   useGetProfileQuery,
@@ -38,6 +39,7 @@ const ProfilePage = () => {
     useUpdateProfilePictureMutation();
   const [deactivateAccount, { isLoading: isDeactivating }] =
     useDeactivateAccountMutation();
+  const [activateAccount, { isLoading: isActivating }] = useActivateAccountMutation();
   const [changePassword, { isLoading: isChangingPassword }] =
     useChangePasswordMutation();
 
@@ -98,8 +100,17 @@ const ProfilePage = () => {
 
   const handleDeactivateAccount = async () => {
     try {
-      await deactivateAccount().unwrap();
+      await deactivateAccount({ userId: data?.user?.id || '' }).unwrap();
       toast({ title: 'Account deactivated successfully' });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleActivateAccount = async () => {
+    try {
+      await activateAccount({ userId: data?.user?.id || '' }).unwrap();
+      toast({ title: 'Account activated successfully' });
     } catch (error) {
       handleError(error);
     }
@@ -291,15 +302,28 @@ const ProfilePage = () => {
           <CardContent>
             <p className="text-gray-500">Manage your account settings and preferences.</p>
 
-            <Button className="mt-4" variant={'destructive'} disabled={isDeactivating} onClick={handleDeactivateAccount}>
-              {isDeactivating ? (
-                <>
-                  <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is deactivating...
-                </>
-              ) : (
-                'Deactivate Account'
-              )}
-            </Button>
+            <div className='flex items-center gap-2'>
+
+              <Button className="mt-4" disabled={isActivating} onClick={handleActivateAccount}>
+                {isActivating ? (
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is activating...
+                  </>
+                ) : (
+                  'Activate Account'
+                )}
+              </Button>
+
+              <Button className="mt-4" variant={'destructive'} disabled={isDeactivating} onClick={handleDeactivateAccount}>
+                {isDeactivating ? (
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is deactivating...
+                  </>
+                ) : (
+                  'Deactivate Account'
+                )}
+              </Button>
+            </div>
           </CardContent>
         </Card>)}
 
