@@ -265,6 +265,21 @@ const ProfilePage = () => {
 
           </CardContent>
         </Card>
+
+        <Card className="col-span-3 w-full h-full shadow-lg">
+          <CardHeader className="text-left">
+            <CardTitle className="text-2xl font-semibold">Account Settings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-500">Manage your account settings and preferences.</p>
+            <ul className="list-disc list-inside space-y-2 mt-4">
+              <li>Delete account</li>
+            </ul>
+            <Button className="mt-4" variant={'destructive'}>
+              Delete Account
+            </Button>
+          </CardContent>
+        </Card>
       </main>
 
     </div>

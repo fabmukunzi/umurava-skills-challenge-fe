@@ -47,7 +47,7 @@ const items = [
 ];
 
 const footerItems = [
-  { title: 'Settings', icon: GearIcon, url: dashboardRoutes.settings.path },
+  { title: 'Settings', icon: GearIcon, url: dashboardRoutes.settings.path  },
   { title: 'Help Center', icon: HeadsetIcon, url: '/help' },
   { title: 'Refer Family & Friends', icon: GiftBoxIcon, url: '/refer' },
 ];

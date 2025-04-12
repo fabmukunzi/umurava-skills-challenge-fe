@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { LucideCheckCheck, LucideEllipsis, LucideEye, LucideEyeOff, LucideLoader2, LucideTrash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
-interface NotificationResponse {
+export interface NotificationResponse {
     data: {
         data: INotification[],
         message: string,
