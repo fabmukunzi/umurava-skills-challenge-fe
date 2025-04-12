@@ -3,7 +3,8 @@ export interface UserSchema {
   names: string;
   role: string;
   profile_url: string;
-  email:string;
+  email: string;
+  id: string;
 }
 
 export interface AppState {
