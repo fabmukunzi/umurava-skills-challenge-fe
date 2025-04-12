@@ -12,7 +12,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { Work_Sans } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { NotificationResponse } from './notifications/page';
 import dayjs from 'dayjs';
@@ -33,36 +33,30 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const notifications = useMemo(() => {
     if (Array.isArray(notificationsData)) {
       return notificationsData
-        .filter(item => {
-          if (user?.role === 'admin') return item.status === 'unread';
-          return item.status === 'unread' && item.userId === user?.id;
-        })
-        .slice(0, 3);
+        .filter(item => item.status === 'unread')
+        .slice(0, 2);
     }
     return [];
   }, [notificationsData, user?.role, user?.id]);
 
   const notificationsCount = useMemo(() => notificationsData
-    .filter((notif: INotification) => {
-      if (user?.role === 'admin') return notif.status === 'unread';
-      return notif.status === 'unread' && notif.userId === user?.id;
-    })
+    .filter((notif: INotification) => notif.status === 'unread')
     .length, [notificationsData, user?.role, user?.id]);
   const hasNotifications = notificationsCount > 0;
   const noNotifications = notificationsCount === 0;
 
   const router = useRouter();
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const currentPath = pathname;
+  const pathname = usePathname();
+  const currentPathLength = pathname.split('/').length;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase();
 
     if (!searchTerm || searchTerm.trim() === '') {
-      router.push(currentPath);
+      router.push(pathname);
       return;
     }
-    router.push(`${currentPath}?search=${searchTerm}`);
+    router.push(`${pathname}?search=${searchTerm}`);
   };
 
   const handleLogout = async () => {
@@ -77,7 +71,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <DropdownMenuTrigger className='rounded-full flex items-center justify-center border p-1 object-contain h-10 w-10'>
         <NotificationIcon />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-fit'>
+      <DropdownMenuContent className='w-52'>
         <DropdownMenuLabel>Unread {notificationsCount > 0 && `(${notificationsCount})`}</DropdownMenuLabel>
         <>
           {isLoading && (
@@ -89,13 +83,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <DropdownMenuItem>No unread notifications</DropdownMenuItem>
           )}
           {notifications.map((notif: INotification) => (
-            <DropdownMenuItem key={notif._id}>
+            <DropdownMenuItem key={notif._id} className='flex flex-col items-start gap-2'>
               <p className="text-sm">{notif.title}</p>
               <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
             </DropdownMenuItem>
           ))}
         </>
-        {hasNotifications && (<DropdownMenuLabel onClick={() => router.push("/dashboard/notifications")}>View all</DropdownMenuLabel>)}
+        {hasNotifications && (<DropdownMenuLabel onClick={() => router.push("/dashboard/notifications")} className='hover:text-gray-500 cursor-pointer'>View all</DropdownMenuLabel>)}
       </DropdownMenuContent>
     </DropdownMenu>
   </div>)
@@ -160,7 +154,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col flex-1">
             <header className="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
               <SidebarTrigger className="lg:hidden" />
-              <div className="flex relative items-center w-1/2 md:w-full max-w-md">
+              {currentPathLength < 4 && (<div className="flex relative items-center w-1/2 md:w-full max-w-md">
                 <Search className="text-gray-400 absolute w-5 h-5 left-3" />
                 <Input
                   type="text"
@@ -171,15 +165,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     if (e.key === 'Enter') {
                       const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
                       if (!searchTerm || searchTerm.trim() === '') {
-                        router.push(currentPath);
+                        router.push(pathname);
                         return;
                       }
-                      router.push(`${currentPath}?search=${searchTerm}`);
+                      router.push(`${pathname}?search=${searchTerm}`);
                     }
                   }
                   }
                 />
-              </div>
+              </div>)}
 
               <div className="flex items-center space-x-2">
                 <NotificationContainer />
