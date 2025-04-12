@@ -281,75 +281,6 @@ const SingleChallengePage = () => {
                   </Link>
                 </div>
 
-                {project?.status !== 'completed' && (<div className="w-full h-full shadow-none p-4 border border-dashed border-primary rounded-xl">
-                  <div>
-                    <h1 className="text-xl font-semibold">Account Settings</h1>
-                    <p className="text-gray-500">Manage your challenge (Complete or Close challenge).</p>
-
-                    <div className='flex items-center gap-2 mt-4'>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button className="w-full h-12" variant={'destructive'} disabled={updatingChallenge}>
-                            Close
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will permanently
-                              change challenge status to closed.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={onClose} className="bg-red-500"
-                            >
-                              {updatingChallenge ? (
-                                <>
-                                  <Loader2 className="animate-spin w-5 h-5 mr-2" />
-                                </>
-                              ) : (
-                                'Yes, Close'
-                              )}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button className="w-full h-12" disabled={updatingChallenge}>
-                            Complete
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will permanently
-                              change challenge status to completed.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={onComplete}
-                            >
-                              {updatingChallenge ? (
-                                <>
-                                  <Loader2 className="animate-spin w-5 h-5 mr-2" />
-                                </>
-                              ) : (
-                                'Yes, Complete'
-                              )}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </div>
-                </div>)}
               </div>
             ) : project?.joined_status ? (
               <Button
@@ -365,6 +296,78 @@ const SingleChallengePage = () => {
               {'Join Challenge'}
             </Button>}
           </Card>
+
+          {project?.status !== 'completed' && (<Card className="mb-5">
+            <div className="w-full h-full shadow-none p-4">
+              <div>
+                <h1 className="text-xl font-semibold">Account Settings</h1>
+                <p className="text-gray-500">Manage your challenge (Complete or Close challenge).</p>
+
+                <div className='flex items-center gap-2 mt-4'>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full h-12" variant={'destructive'} disabled={updatingChallenge}>
+                        Close
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          change challenge status to closed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={onClose} className="bg-red-500"
+                        >
+                          {updatingChallenge ? (
+                            <>
+                              <Loader2 className="animate-spin w-5 h-5 mr-2" />
+                            </>
+                          ) : (
+                            'Yes, Close'
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full h-12" disabled={updatingChallenge}>
+                        Complete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          change challenge status to completed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={onComplete}
+                        >
+                          {updatingChallenge ? (
+                            <>
+                              <Loader2 className="animate-spin w-5 h-5 mr-2" />
+                            </>
+                          ) : (
+                            'Yes, Complete'
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </div>
+          </Card>)}
 
           {['admin', 'super admin'].includes(
             user?.role?.toLocaleLowerCase() || ''
