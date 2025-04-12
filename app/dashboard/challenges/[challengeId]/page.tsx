@@ -7,7 +7,7 @@ import { UmuravaWhiteLogo } from '@/lib/images';
 import { dashboardRoutes } from '@/lib/routes';
 import Image from 'next/image';
 import ParticipantsCard from '@/components/dashboard/participants';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -73,6 +73,12 @@ const SingleChallengePage = () => {
 
   const session = useSession();
   const user = session.data?.user;
+  const isAdmin = useMemo(() =>
+    ['admin', 'super admin'].includes(
+      (user?.role || '').toLowerCase()
+    ),
+    [user?.role]
+  );
 
   const [submitChallenge, { isLoading: isSubmitting }] =
     useSubmitChallengeMutation();
@@ -239,9 +245,7 @@ const SingleChallengePage = () => {
                   </div>
                 )}
             </div>
-            {['admin', 'super admin'].includes(
-              user?.role?.toLocaleLowerCase() || ''
-            ) ? (
+            {isAdmin ? (
               <div className='space-y-4'>
                 <div className="flex w-full mt-5 gap-2">
                   <AlertDialog>
@@ -282,7 +286,7 @@ const SingleChallengePage = () => {
                 </div>
 
               </div>
-            ) : project?.joined_status ? (
+            ) : project?.joined_status && !['closed', 'completed'].includes(project?.status.toLowerCase() || '') ? (
               <Button
                 className="w-full h-12"
                 onClick={() => { setOpenSubmitDialog(!openSubmitDialog) }}
@@ -297,14 +301,14 @@ const SingleChallengePage = () => {
             </Button>}
           </Card>
 
-          {project?.status !== 'completed' && (<Card className="mb-5">
+          {project?.status !== 'completed' && isAdmin && (<Card className="mb-5">
             <div className="w-full h-full shadow-none p-4">
               <div>
                 <h1 className="text-xl font-semibold">Account Settings</h1>
                 <p className="text-gray-500">Manage your challenge (Complete or Close challenge).</p>
 
                 <div className='flex items-center gap-2 mt-4'>
-                  <AlertDialog>
+                  {project?.status !== 'closed' && (<AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button className="w-full h-12" variant={'destructive'} disabled={updatingChallenge}>
                         Close
@@ -333,7 +337,7 @@ const SingleChallengePage = () => {
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </AlertDialog>
+                  </AlertDialog>)}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button className="w-full h-12" disabled={updatingChallenge}>
