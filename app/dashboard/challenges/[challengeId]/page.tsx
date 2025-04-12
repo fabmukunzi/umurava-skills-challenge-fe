@@ -267,7 +267,7 @@ const SingleChallengePage = () => {
                   </Link>
                 </div>
 
-                <Card className="w-full h-full shadow-none p-4 border border-dashed border-primary">
+                {project?.status !== 'completed' && (<Card className="w-full h-full shadow-none p-4 border border-dashed border-primary">
                   <CardContent className='p-0'>
                     <CardTitle className="text-xl font-semibold">Account Settings</CardTitle>
                     <p className="text-gray-500">Manage your challenge.</p>
@@ -282,7 +282,7 @@ const SingleChallengePage = () => {
                       )}
                     </Button>
                   </CardContent>
-                </Card>
+                </Card>)}
               </div>
             ) : project?.joined_status ? (
               <Button
