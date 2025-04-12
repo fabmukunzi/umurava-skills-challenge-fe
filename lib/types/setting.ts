@@ -24,6 +24,12 @@ export interface ISectionProps {
   title?: string;
   items: SectionItem[];
   placeholder?: string;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  isEditOpen: boolean;
+  setIsEditOpen: (isOpen: boolean) => void;
+  setConfirmOpen:(confirmOpen:boolean) => void;
+  confirmOpen:boolean
   onAdd: (name: string, currency?: string) => void;
   onUpdate: (
     id: string,
@@ -32,4 +38,7 @@ export interface ISectionProps {
   ) => void;
   onDelete: (id: string) => void;
   loading?: boolean;
+  isAddLoading: boolean;
+  isUpdateLoading: boolean;
+  isDeleteLoading: boolean;
 }

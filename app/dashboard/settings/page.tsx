@@ -18,45 +18,120 @@ import {
 } from '@/store/actions/setting';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import { Section } from '@/components/common/dashboard/setting-section';
+import { Column, DataTable } from '@/components/common/dashboard/data-table';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Section } from '@/components/common/dashboard/setting-section';
+import { handleError } from '@/lib/errorHandler';
 
+const columns: Column<SystemLog>[] = [
+  {
+    header: 'Method',
+    render: (log) => (
+      <span
+        className={`font-semibold ${
+          log.method === 'GET'
+            ? 'text-blue-600'
+            : log.method === 'POST'
+            ? 'text-green-600'
+            : log.method === 'PUT'
+            ? 'text-yellow-600'
+            : log.method === 'DELETE'
+            ? 'text-red-600'
+            : 'text-gray-600'
+        }`}
+      >
+        {log.method}
+      </span>
+    ),
+  },
+  { header: 'Status', accessor: 'statusCode' },
+  {
+    header: 'URL',
+    render: (log) => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className="truncate max-w-[200px]">
+            {log.url}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{log.url}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+  },
+  { header: 'IP Address', accessor: 'ipAddress' },
+  { header: 'Duration', accessor: 'duration' },
+  {
+    header: 'Timestamp',
+    render: (log) => dayjs(log.timestamp).format('DD-MMM-YYYY'),
+  },
+];
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('skills');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const { data: skills } = useGetSkillsQuery();
-  const [addSkill] = useAddSkillMutation();
-  const [deleteSkill] = useDeleteSkillMutation();
-  const [updateSkill] = useUpdateSkillMutation();
+  const {
+    data: skills,
+    isLoading: isSkillsLoading,
+    isFetching: isSkillsFetching,
+  } = useGetSkillsQuery();
+  const [addSkill, { isLoading: isAddingSkill }] = useAddSkillMutation();
+  const [deleteSkill, { isLoading: isDeletingSkill }] =
+    useDeleteSkillMutation();
+  const [updateSkill, { isLoading: isUpdatingSkill }] =
+    useUpdateSkillMutation();
 
-  const { data: categories } = useGetCategoriesQuery();
-  const [addCategory] = useAddCategoryMutation();
-  const [deleteCategory] = useDeleteCategoryMutation();
-  const [updateCategory] = useUpdateCategoryMutation();
+  const {
+    data: categories,
+    isLoading: isCategoriesLoading,
+    isFetching: isCategoriesFetching,
+  } = useGetCategoriesQuery();
+  const [addCategory, { isLoading: isAddingCategory }] =
+    useAddCategoryMutation();
+  const [deleteCategory, { isLoading: isDeletingCategory }] =
+    useDeleteCategoryMutation();
+  const [updateCategory, { isLoading: isUpdatingCategory }] =
+    useUpdateCategoryMutation();
 
-  const { data: prizes } = useGetPrizesQuery();
-  const [addPrize] = useAddPrizeMutation();
-  const [deletePrize] = useDeletePrizeMutation();
-  const [updatePrize] = useUpdatePrizeMutation();
+  const {
+    data: prizes,
+    isLoading: isPrizesLoading,
+    isFetching: isPrizesFetching,
+  } = useGetPrizesQuery();
+  const [addPrize, { isLoading: isAddingPrize }] = useAddPrizeMutation();
+  const [deletePrize, { isLoading: isDeletingPrize }] =
+    useDeletePrizeMutation();
+  const [updatePrize, { isLoading: isUpdatingPrize }] =
+    useUpdatePrizeMutation();
 
-  const { data: systemLogs } = useGetSystemLogsQuery();
+  const isSkillTabLoading = isSkillsLoading || isSkillsFetching;
+  const isCategoryTabLoading = isCategoriesLoading || isCategoriesFetching;
+  const isPrizeTabLoading = isPrizesLoading || isPrizesFetching;
+
+  const {
+    data: systemLogs,
+    isLoading: isLogsLoading,
+    isFetching: isLogsFetching,
+  } = useGetSystemLogsQuery();
+  const isLogsTabLoading = isLogsLoading || isLogsFetching;
+
+  const renderLoader = () => (
+    <div className="flex justify-center items-center h-[80vh]">
+      <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
+  );
 
   return (
     <div className="p-6">
@@ -74,108 +149,177 @@ export default function SettingsPage() {
         ))}
       </div>
 
-      {activeTab === 'skills' && (
-        <Section
-          title="Skills"
-          items={skills?.data || []}
-          onAdd={(val) => addSkill({ skillName: val })}
-          onDelete={(id) => deleteSkill(id)}
-          onUpdate={(id, newVal) => updateSkill({ id, skillName: newVal })}
-          placeholder="Add a new skill"
-        />
-      )}
+      {activeTab === 'skills' &&
+        (isSkillTabLoading ? (
+          renderLoader()
+        ) : (
+          <Section
+            title="Skills"
+            items={skills?.data || []}
+            isAddLoading={isAddingSkill}
+            isUpdateLoading={isUpdatingSkill}
+            isDeleteLoading={isDeletingSkill}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            setIsEditOpen={setIsEditOpen}
+            isEditOpen={isEditOpen}
+            confirmOpen={confirmOpen}
+            setConfirmOpen={setConfirmOpen}
+            onAdd={async (val) => {
+              try {
+                await addSkill({ skillName: val }).unwrap();
+                setIsOpen(false);
+              } catch (error) {
+                setIsOpen(false);
+                handleError(error);
+              }
+            }}
+            onDelete={async (id) => {
+              try {
+                await deleteSkill(id).unwrap();
+                setConfirmOpen(false);
+              } catch (error) {
+                handleError(error);
+              }
+            }}
+            onUpdate={async (id, newVal) => {
+              try {
+                await updateSkill({ id, skillName: newVal }).unwrap();
+                setIsEditOpen(false);
+              } catch (error) {
+                setIsOpen(false);
+                handleError(error);
+              }
+            }}
+            placeholder="Add a new skill"
+          />
+        ))}
 
-      {activeTab === 'categories' && (
-        <Section
-          title="Challenge Categories"
-          items={categories?.data || []}
-          onAdd={(val) => addCategory({ challengeCategoryName: val })}
-          onDelete={(id) => deleteCategory(id)}
-          onUpdate={(id, newVal) =>
-            updateCategory({ id, challengeCategoryName: newVal })
-          }
-          placeholder="Add a challenge category"
-        />
-      )}
+      {activeTab === 'categories' &&
+        (isCategoryTabLoading ? (
+          renderLoader()
+        ) : (
+          <Section
+            title="Challenge Categories"
+            items={categories?.data || []}
+            isAddLoading={isAddingCategory}
+            isUpdateLoading={isUpdatingCategory}
+            isDeleteLoading={isDeletingCategory}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            setIsEditOpen={setIsEditOpen}
+            isEditOpen={isEditOpen}
+            confirmOpen={confirmOpen}
+            setConfirmOpen={setConfirmOpen}
+            onAdd={async (val) => {
+              try {
+                await addCategory({ challengeCategoryName: val }).unwrap();
+                setIsOpen(false);
+              } catch (error) {
+                setIsOpen(false);
+                handleError(error);
+              }
+            }}
+            onDelete={async (id) => {
+              try {
+                await deleteCategory(id).unwrap();
+                setConfirmOpen(false);
+              } catch (error) {
+                handleError(error);
+              }
+            }}
+            onUpdate={async (id, newVal) => {
+              try {
+                await updateCategory({
+                  id,
+                  challengeCategoryName: newVal,
+                }).unwrap();
+                setIsEditOpen(false);
+              } catch (error) {
+                setIsEditOpen(false);
+                handleError(error);
+              }
+            }}
+            placeholder="Add a challenge category"
+          />
+        ))}
 
-      {activeTab === 'prizes' && (
-        <Section
-          title="Prize Categories"
-          items={prizes?.data || []}
-          onAdd={(val) =>
-            addPrize({ prizeName: val, currency: 'RWF', description: 'N/A' })
-          }
-          onDelete={(id) => deletePrize(id)}
-          onUpdate={(id, newVal) =>
-            updatePrize({
-              id,
-              prizeName: newVal,
-              currency: 'RWF',
-              description: 'N/A',
-            })
-          }
-          placeholder="Category name"
-        />
-      )}
+      {activeTab === 'prizes' &&
+        (isPrizeTabLoading ? (
+          renderLoader()
+        ) : (
+          <Section
+            title="Prize Categories"
+            items={prizes?.data || []}
+            isAddLoading={isAddingPrize}
+            isUpdateLoading={isUpdatingPrize}
+            isDeleteLoading={isDeletingPrize}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            setIsEditOpen={setIsEditOpen}
+            isEditOpen={isEditOpen}
+            confirmOpen={confirmOpen}
+            setConfirmOpen={setConfirmOpen}
+            onAdd={async (val) => {
+              try {
+                const [name, currency = 'USD'] = val.split('@');
+                await addPrize({
+                  prizeName: name.trim(),
+                  currency: currency.trim(),
+                  description: 'N/A',
+                }).unwrap();
+                setIsOpen(false);
+              } catch (error) {
+                setIsOpen(false);
+                handleError(error);
+              }
+            }}
+            onDelete={async (id) => {
+              try {
+                setConfirmOpen(true);
+                await deletePrize(id).unwrap();
+                setConfirmOpen(false);
+              } catch (error) {
+                handleError(error);
+              }
+            }}
+            onUpdate={async (id, newVal, currency) => {
+              try {
+                await updatePrize({
+                  id,
+                  prizeName: newVal,
+                  currency: currency || 'RWF',
+                  description: 'N/A',
+                }).unwrap();
+                setIsEditOpen(false);
+              } catch (error) {
+                setIsEditOpen(false);
+                handleError(error);
+              }
+            }}
+            placeholder="e.g RWF"
+          />
+        ))}
 
-      {activeTab === 'logs' && (
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">System Logs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Method</TableHead>
-                  <TableHead>Status Code</TableHead>
-                  <TableHead>URL</TableHead>
-                  <TableHead>IP Address</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Timestamp</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {systemLogs?.data?.map((log: SystemLog) => (
-                  <TableRow key={log._id}>
-                    <TableCell
-                      className={`font-semibold ${
-                        log.method === 'GET'
-                          ? 'text-blue-600'
-                          : log.method === 'POST'
-                          ? 'text-green-600'
-                          : log.method === 'PUT'
-                          ? 'text-yellow-600'
-                          : log.method === 'DELETE'
-                          ? 'text-red-600'
-                          : 'text-gray-600'
-                      }`}
-                    >
-                      {log.method}
-                    </TableCell>
-                    <TableCell>{log.statusCode}</TableCell>
-                    <TableCell className="truncate max-w-[200px]">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>{log.url}</TooltipTrigger>
-                          <TooltipContent>
-                            <p>{log.url}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </TableCell>
-                    <TableCell>{log.ipAddress}</TableCell>
-                    <TableCell>{log.duration}</TableCell>
-                    <TableCell>
-                      {dayjs(log.timestamp).format('DD-MMM-YYYY')}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      )}
+      {activeTab === 'logs' &&
+        (isLogsTabLoading ? (
+          renderLoader()
+        ) : (
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">
+                System Logs
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DataTable
+                data={systemLogs?.data || []}
+                columns={columns}
+                loading={isLogsTabLoading}
+              />
+            </CardContent>
+          </Card>
+        ))}
     </div>
   );
 }

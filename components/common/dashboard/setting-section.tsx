@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import { handleError } from '@/lib/errorHandler';
-import { ISectionProps } from '@/lib/types/setting';
+import {
+  IChallengeCategory,
+  IPrizeCategory,
+  ISectionProps,
+  ISkill,
+} from '@/lib/types/setting';
 import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GenericDialogForm } from './generic-dialog-form';
@@ -17,6 +22,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '../confirm-delete-dialog';
+import { Column, DataTable } from './data-table';
 
 export const Section = ({
   title,
@@ -24,6 +30,15 @@ export const Section = ({
   onAdd,
   onDelete,
   onUpdate,
+  isOpen,
+  setIsOpen,
+  isEditOpen,
+  setIsEditOpen,
+  confirmOpen,
+  setConfirmOpen,
+  isAddLoading = false,
+  isUpdateLoading = false,
+  isDeleteLoading = false,
   placeholder = 'Enter name',
 }: ISectionProps) => {
   const [value, setValue] = useState('');
@@ -31,14 +46,11 @@ export const Section = ({
   const [editId, setEditId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [editCurrency, setEditCurrency] = useState('');
-  const [editAmount, setEditAmount] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const isPrizeSection = title?.toLowerCase().includes('prize');
 
-  const handleAdd = async () => {
+  const handleAdd = () => {
     if (!value.trim()) {
       toast({
         title: 'Validation',
@@ -49,7 +61,7 @@ export const Section = ({
     }
 
     try {
-      await onAdd(value.trim(), isPrizeSection ? currency : undefined);
+      onAdd(value.trim(), isPrizeSection ? currency : undefined);
       setValue('');
       setCurrency('');
     } catch (error) {
@@ -57,7 +69,7 @@ export const Section = ({
     }
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
     if (!editValue.trim()) {
       toast({
         title: 'Validation',
@@ -69,7 +81,7 @@ export const Section = ({
 
     if (editId) {
       try {
-        await onUpdate(
+        onUpdate(
           editId,
           editValue.trim(),
           isPrizeSection ? editCurrency : undefined
@@ -82,16 +94,17 @@ export const Section = ({
   };
 
   const resetEditState = () => {
-    setEditId(null);
-    setEditValue('');
-    setEditAmount('');
-    setEditCurrency('');
+    if (!isEditOpen) {
+      setEditId(null);
+      setEditValue('');
+      setEditCurrency('');
+    }
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = () => {
     if (confirmDeleteId) {
       try {
-        await onDelete(confirmDeleteId);
+        onDelete(confirmDeleteId);
         setConfirmDeleteId(null);
         setConfirmOpen(false);
       } catch (error) {
@@ -99,6 +112,78 @@ export const Section = ({
       }
     }
   };
+
+  type TableItem = ISkill | IChallengeCategory | IPrizeCategory;
+
+  const columns: Column<TableItem>[] = [
+    {
+      header: '#',
+      render: (_item: TableItem, index: number) => index + 1,
+    },
+    {
+      header: 'Name',
+      render: (item: TableItem) =>
+        'skillName' in item
+          ? item.skillName
+          : 'challengeCategoryName' in item
+          ? item.challengeCategoryName
+          : item.prizeName,
+    },
+    isPrizeSection
+      ? {
+          header: 'Currency',
+          render: (item: TableItem) =>
+            'currency' in item ? item.currency ?? 'N/A' : 'N/A',
+        }
+      : null,
+    {
+      header: 'Created At',
+      render: (item: TableItem) =>
+        item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
+    },
+    {
+      header: 'Actions',
+      render: (item: TableItem) => {
+        const id = item._id;
+        const name =
+          'skillName' in item
+            ? item.skillName
+            : 'challengeCategoryName' in item
+            ? item.challengeCategoryName
+            : item.prizeName;
+
+        return (
+          <div className="text-right space-x-2">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => {
+                setEditId(id || '');
+                setEditValue(name);
+                if ('currency' in item) {
+                  setEditCurrency(item.currency ?? '');
+                }
+                setIsEditOpen(true);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-600 text-red-600"
+              onClick={() => {
+                setConfirmDeleteId(id || '');
+                setConfirmOpen(true);
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        );
+      },
+    },
+  ].filter(Boolean) as Column<TableItem>[];
 
   return (
     <Card className="mt-6">
@@ -112,6 +197,7 @@ export const Section = ({
             setIsOpen={setIsOpen}
             mode="add"
             onSubmit={handleAdd}
+            loading={isAddLoading}
             renderForm={() => (
               <div className="space-y-4">
                 <Input
@@ -132,119 +218,41 @@ export const Section = ({
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>#</TableHead>
-              <TableHead>Name</TableHead>
-              {isPrizeSection && <TableHead>Currency</TableHead>}
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.map((item, index) => {
-              const id = item._id || '';
-              const name =
-                'skillName' in item
-                  ? item.skillName
-                  : 'challengeCategoryName' in item
-                  ? item.challengeCategoryName
-                  : item.prizeName;
-
-              return (
-                <TableRow key={id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{name}</TableCell>
-                  {isPrizeSection && (
-                    <TableCell>
-                      {'currency' in item ? item.currency : 'N/A'}
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    {item.createdAt
-                      ? new Date(item.createdAt).toLocaleDateString()
-                      : 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => {
-                        setEditId(id);
-                        setEditValue(name);
-                        if (isPrizeSection) {
-                          setEditAmount(
-                            'amount' in item ? String(item.amount ?? '') : ''
-                          );
-                          setEditCurrency(
-                            'currency' in item ? item.currency ?? '' : ''
-                          );
-                        }
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-red-600 text-red-600"
-                      onClick={() => {
-                        setConfirmDeleteId(id);
-                        setConfirmOpen(true);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+        <DataTable data={items} columns={columns} />
       </CardContent>
 
-      {editId && (
-        <GenericDialogForm
-          title={`Edit ${title}`}
-          isOpen={!!editId}
-          setIsOpen={resetEditState}
-          triggerLabel=""
-          mode="edit"
-          onSubmit={handleUpdate}
-          renderForm={() => (
-            <div className="space-y-4">
+      <GenericDialogForm
+        title={`Edit ${title}`}
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        triggerLabel=""
+        mode="edit"
+        onSubmit={handleUpdate}
+        loading={isUpdateLoading}
+        renderForm={() => (
+          <div className="space-y-4">
+            <Input
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              placeholder={placeholder}
+            />
+            {isPrizeSection && (
               <Input
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                placeholder={placeholder}
+                value={editCurrency}
+                onChange={(e) => setEditCurrency(e.target.value)}
+                placeholder="Currency"
               />
-              {isPrizeSection && (
-                <>
-                  <Input
-                    value={editAmount}
-                    onChange={(e) => setEditAmount(e.target.value)}
-                    placeholder="Amount"
-                  />
-                  <Input
-                    value={editCurrency}
-                    onChange={(e) => setEditCurrency(e.target.value)}
-                    placeholder="Currency"
-                  />
-                </>
-              )}
-            </div>
-          )}
-        />
-      )}
+            )}
+          </div>
+        )}
+      />
 
-      {confirmDeleteId && (
-        <ConfirmDialog
-          isOpen={confirmOpen}
-          setIsOpen={setConfirmOpen}
-          onConfirm={handleConfirmDelete}
-        />
-      )}
+      <ConfirmDialog
+        isOpen={confirmOpen}
+        setIsOpen={setConfirmOpen}
+        loading={isDeleteLoading}
+        onConfirm={handleConfirmDelete}
+      />
     </Card>
   );
 };

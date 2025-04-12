@@ -16,9 +16,9 @@ export interface GenericDialogFormProps<T> {
   defaultValues?: T;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onSubmit: (data: T) => Promise<void>;
+  onSubmit: (data: T) => void;
   renderForm: (formData: T, setFormData: (data: T) => void) => React.ReactNode;
-  loading?: boolean;
+  loading: boolean;
 }
 
 export function GenericDialogForm<T>({
@@ -30,14 +30,14 @@ export function GenericDialogForm<T>({
   renderForm,
   isOpen,
   setIsOpen,
-  loading = false,
+  loading,
 }: GenericDialogFormProps<T>) {
   const [formData, setFormData] = useState<T>(defaultValues ?? ({} as T));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    setIsOpen(true);
     e.preventDefault();
-    await onSubmit(formData);
-    setIsOpen(false);
+    onSubmit(formData);
   };
 
   return (
@@ -65,8 +65,8 @@ export function GenericDialogForm<T>({
         <form onSubmit={handleSubmit} className="space-y-4">
           {renderForm(formData, setFormData)}
           <div className="flex justify-end">
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : 'Save'}
+            <Button loading={loading} type="submit" disabled={loading}>
+              Save
             </Button>
           </div>
         </form>

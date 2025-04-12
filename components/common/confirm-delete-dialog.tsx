@@ -10,9 +10,10 @@ import {
 interface ConfirmDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  onConfirm: () => Promise<void>;
+  onConfirm: () => void;
   title?: string;
   message?: string;
+  loading?: boolean;
 }
 
 export function ConfirmDialog({
@@ -20,10 +21,11 @@ export function ConfirmDialog({
   setIsOpen,
   onConfirm,
   title = 'Are you sure?',
+  loading = false,
   message = 'This action cannot be undone.',
 }: ConfirmDialogProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -34,10 +36,10 @@ export function ConfirmDialog({
             Cancel
           </Button>
           <Button
+            loading={loading}
             variant="destructive"
-            onClick={async () => {
-              await onConfirm();
-              setIsOpen(false);
+            onClick={() => {
+              onConfirm();
             }}
           >
             Delete
