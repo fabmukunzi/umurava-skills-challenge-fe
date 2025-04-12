@@ -34,7 +34,7 @@ export interface SystemLog {
 
 export const settingsApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
-    getSkills: builder.query<{data:Skill[]}, void>({
+    getSkills: builder.query<{ data: Skill[] }, void>({
       query: () => '/admin/skills',
       providesTags: ['skills'],
     }),
@@ -54,8 +54,7 @@ export const settingsApi = baseAPI.injectEndpoints({
       invalidatesTags: ['skills'],
     }),
 
-    // Challenge Categories
-    getCategories: builder.query<{data:ChallengeCategory[]}, void>({
+    getCategories: builder.query<{ data: ChallengeCategory[] }, void>({
       query: () => '/admin/challenge-category',
       providesTags: ['categories'],
     }),
@@ -75,8 +74,7 @@ export const settingsApi = baseAPI.injectEndpoints({
       invalidatesTags: ['categories'],
     }),
 
-    // Prize Categories
-    getPrizes: builder.query<{data:PrizeCategory[]}, void>({
+    getPrizes: builder.query<{ data: PrizeCategory[] }, void>({
       query: () => '/admin/prize-category',
       providesTags: ['prizes'],
     }),
@@ -99,7 +97,40 @@ export const settingsApi = baseAPI.injectEndpoints({
       invalidatesTags: ['prizes'],
     }),
 
-    getSystemLogs: builder.query<{data:SystemLog[]}, void>({
+    updateSkill: builder.mutation<void, { id: string; skillName: string }>({
+      query: ({ id, skillName }) => ({
+        url: `/admin/skills/${id}`,
+        method: 'PUT',
+        body: { skillName },
+      }),
+      invalidatesTags: ['skills'],
+    }),
+
+    updateCategory: builder.mutation<
+      void,
+      { id: string; challengeCategoryName: string }
+    >({
+      query: ({ id, challengeCategoryName }) => ({
+        url: `/admin/challenge-category/${id}`,
+        method: 'PUT',
+        body: { challengeCategoryName },
+      }),
+      invalidatesTags: ['categories'],
+    }),
+
+    updatePrize: builder.mutation<
+      void,
+      { id: string; prizeName: string; currency: string; description: string }
+    >({
+      query: ({ id, prizeName, currency, description }) => ({
+        url: `/admin/prize-category/${id}`,
+        method: 'PUT',
+        body: { prizeName, currency, description },
+      }),
+      invalidatesTags: ['prizes'],
+    }),
+
+    getSystemLogs: builder.query<{ data: SystemLog[] }, void>({
       query: () => '/admin/audits/all',
       providesTags: ['systemLogs'],
     }),
@@ -110,14 +141,17 @@ export const {
   useGetSkillsQuery,
   useAddSkillMutation,
   useDeleteSkillMutation,
+  useUpdateSkillMutation,
 
   useGetCategoriesQuery,
   useAddCategoryMutation,
   useDeleteCategoryMutation,
+  useUpdateCategoryMutation,
 
   useGetPrizesQuery,
   useAddPrizeMutation,
   useDeletePrizeMutation,
+  useUpdatePrizeMutation,
 
   useGetSystemLogsQuery,
 } = settingsApi;
