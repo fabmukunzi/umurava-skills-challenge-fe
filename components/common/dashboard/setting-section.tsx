@@ -12,14 +12,6 @@ import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GenericDialogForm } from './generic-dialog-form';
 import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '../confirm-delete-dialog';
 import { Column, DataTable } from './data-table';
@@ -126,15 +118,15 @@ export const Section = ({
         'skillName' in item
           ? item.skillName
           : 'challengeCategoryName' in item
-          ? item.challengeCategoryName
-          : item.prizeName,
+            ? item.challengeCategoryName
+            : item.prizeName,
     },
     isPrizeSection
       ? {
-          header: 'Currency',
-          render: (item: TableItem) =>
-            'currency' in item ? item.currency ?? 'N/A' : 'N/A',
-        }
+        header: 'Currency',
+        render: (item: TableItem) =>
+          'currency' in item ? item.currency ?? 'N/A' : 'N/A',
+      }
       : null,
     {
       header: 'Created At',
@@ -149,8 +141,8 @@ export const Section = ({
           'skillName' in item
             ? item.skillName
             : 'challengeCategoryName' in item
-            ? item.challengeCategoryName
-            : item.prizeName;
+              ? item.challengeCategoryName
+              : item.prizeName;
 
         return (
           <div className="text-right space-x-2">

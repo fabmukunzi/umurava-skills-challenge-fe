@@ -18,6 +18,8 @@ export type CreateChallengeDto = Omit<
   | '__v'
   | 'duration'
   | 'submissionDate'
+  | 'joined_status'
+  | 'submissionStatus'
 >;
 
 interface UpdateChallengeDto extends Partial<CreateChallengeDto> {

@@ -14,7 +14,6 @@ import {
   useApproveSubmissionMutation,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
-  useRejectApproveSubmissionMutation,
   useRejectSubmissionMutation,
 } from "@/store/actions/challenge";
 import { useMemo, useState } from "react";
