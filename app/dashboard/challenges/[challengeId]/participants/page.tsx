@@ -11,9 +11,11 @@ import SVGIcon from "@/components/common/svg";
 import {
   ChallengeFeedbackDto,
   SubmitChallengeDto,
+  useApproveSubmissionMutation,
   useGetChallengeByIdQuery,
   useGetParticipantsByChallengeIdQuery,
   useRejectApproveSubmissionMutation,
+  useRejectSubmissionMutation,
 } from "@/store/actions/challenge";
 import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -42,25 +44,40 @@ const Participants = () => {
 
   const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
-  const [rejectApproveSubmission, { isLoading: isRejectingApproving }] = useRejectApproveSubmissionMutation();
+  const [rejectSubmission, { isLoading: isRejecting }] = useRejectSubmissionMutation();
+  const [approveSubmission, { isLoading: isApproving }] = useApproveSubmissionMutation();
 
   const participants = useMemo(() =>
     participantsData?.data?.participantChallenges || [],
     [participantsData?.data?.participantChallenges]
   );
-  console.log(participants, 'participants');
 
   const [openSubmission, setOpenSubmission] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<SubmitChallengeDto | null>(null);
   const [submissionId, setSubmissionId] = useState<string | null>(null);
+  const isApproved = useMemo(
+    () => participants?.find((participant) => participant._id === submissionId)?.submissionStatus === "approved",
+    [participants, submissionId]
+  );
+  const isRejected = useMemo(
+    () => participants?.find((participant) => participant._id === submissionId)?.submissionStatus === "rejected",
+    [participants, submissionId]
+  );
 
-  const handleEditFeedback = async (data: ChallengeFeedbackDto) => {
-    console.log("Feedback data:", data);
+  const handleRejectApprove = async (data: ChallengeFeedbackDto) => {
     try {
-      await rejectApproveSubmission({
-        submissionId: data.submissionId as string,
-        status: data.status,
-      }).unwrap();
+      if (data.status === "approved") {
+        await approveSubmission({
+          submissionId: data.submissionId as string,
+          status: data.status,
+        }).unwrap();
+      }
+      if (data.status === "rejected") {
+        await rejectSubmission({
+          submissionId: data.submissionId as string,
+          status: data.status,
+        }).unwrap();
+      }
       setOpenSubmission(false);
       setSelectedParticipant(null);
       setSubmissionId(null);
@@ -202,21 +219,21 @@ const Participants = () => {
             </label>
           </div>
           <div className="flex items-center justify-end gap-2">
-            <Button
+            {!isRejected && (<Button
               className="flex items-center justify-center bg-red-600 hover:bg-red-500"
-              disabled={isRejectingApproving}
-              onClick={() => handleEditFeedback({ status: "rejected", submissionId: submissionId as string })}
+              disabled={isRejecting}
+              onClick={() => handleRejectApprove({ status: "rejected", submissionId: submissionId as string })}
             >
-              {isRejectingApproving ? <LucideLoader2 className="animate-spin" /> : "Reject"}
-            </Button>
+              {isRejecting ? <LucideLoader2 className="animate-spin" /> : "Reject"}
+            </Button>)}
 
-            <Button
+            {!isApproved && (<Button
               className=" flex items-center justify-center"
-              disabled={isRejectingApproving}
-              onClick={() => handleEditFeedback({ status: "approved", submissionId: submissionId as string })}
+              disabled={isApproving}
+              onClick={() => handleRejectApprove({ status: "approved", submissionId: submissionId as string })}
             >
-              {isRejectingApproving ? <LucideLoader2 className="animate-spin" /> : "Promote"}
-            </Button>
+              {isApproving ? <LucideLoader2 className="animate-spin" /> : "Approve"}
+            </Button>)}
           </div>
 
         </DialogContent>

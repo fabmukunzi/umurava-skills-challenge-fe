@@ -35,6 +35,7 @@ export interface IProject {
   submissionDate: string;
   duration: number;
   joined_status?: boolean
+  submissionStatus: string;
   moneyPrize: {
     categoryPrize: string;
     prize: string;

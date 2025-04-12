@@ -47,6 +47,7 @@ import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialo
 import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
 import { Loader2, LucideLoader2 } from 'lucide-react';
 
+const ITEMS_PER_PAGE = 100;
 const SingleChallengePage = () => {
   const form = useForm<SubmitChallengeDto>({
     resolver: zodResolver(challengeSubmissionSchema),
@@ -55,6 +56,14 @@ const SingleChallengePage = () => {
 
   const router = useRouter();
   const params = useParams();
+  const session = useSession();
+  const user = session.data?.user;
+  const isAdmin = useMemo(() =>
+    ['admin', 'super admin'].includes(
+      (user?.role || '').toLowerCase()
+    ),
+    [user?.role]
+  );
   const challengeId = params?.challengeId as string;
 
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
@@ -64,21 +73,13 @@ const SingleChallengePage = () => {
   const project = data?.data;
 
   const { data: participantsData, isLoading: participantsLoading } =
-    useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: 5 });
+    useGetParticipantsByChallengeIdQuery({ challengeId, page: 1, limit: ITEMS_PER_PAGE });
 
   const participants = useMemo(() =>
     participantsData?.data?.participantChallenges || [],
     [participantsData?.data?.participantChallenges]
   );
 
-  const session = useSession();
-  const user = session.data?.user;
-  const isAdmin = useMemo(() =>
-    ['admin', 'super admin'].includes(
-      (user?.role || '').toLowerCase()
-    ),
-    [user?.role]
-  );
 
   const [submitChallenge, { isLoading: isSubmitting }] =
     useSubmitChallengeMutation();
@@ -246,15 +247,11 @@ const SingleChallengePage = () => {
                 )}
             </div>
             {isAdmin ? (
-              <div className='space-y-4'>
-                <div className="flex w-full mt-5 gap-2">
+              <div className='space-y-4 mt-5'>
+                <div className="flex w-full gap-2">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button
-                        variant="destructive"
-                        className='w-full h-12'
-                        disabled={isDeleting}
-                      >
+                      <Button variant="destructive" className='w-full h-12' disabled={isDeleting}>
                         {isDeleting ? <LucideLoader2 className='animate-spin' /> : 'Delete'}
                       </Button>
                     </AlertDialogTrigger>
@@ -268,37 +265,27 @@ const SingleChallengePage = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={handleDelete}
-                          className="bg-red-500"
-                        >
+                        <AlertDialogAction onClick={handleDelete} className="bg-red-500">
                           Yes, delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                  <Link
-                    className="w-full"
-                    href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
-                  >
+                  <Link className="w-full" href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}>
                     <Button className="w-full h-12">Edit</Button>
                   </Link>
                 </div>
-
               </div>
-            ) : project?.joined_status && !['closed', 'completed'].includes(project?.status.toLowerCase() || '') ? (
-              <Button
-                className="w-full h-12"
-                onClick={() => { setOpenSubmitDialog(!openSubmitDialog) }}
-              >
-                {'Submit Your Work'}
+            ) : project?.joined_status && !['rejected', 'approved', "submitted"].includes(project?.submissionStatus?.toLowerCase() || '') &&
+              !['closed', 'completed'].includes(project?.status?.toLowerCase() || '') ? (
+              <Button className="w-full h-12" onClick={() => setOpenSubmitDialog(prev => !prev)}>
+                Submit Your Work
               </Button>
-            ) : <Button
-              className="w-full h-12"
-              onClick={() => { setOpenJoinDialog(!openJoinDialog) }}
-            >
-              {'Join Challenge'}
-            </Button>}
+            ) : !project?.joined_status && !['closed', 'completed'].includes(project?.status?.toLowerCase() || '') ? (
+              <Button className="w-full h-12" onClick={() => setOpenJoinDialog(prev => !prev)}>
+                Join Challenge
+              </Button>
+            ) : ""}
           </Card>
 
           {project?.status !== 'completed' && isAdmin && (<Card className="mb-5">
