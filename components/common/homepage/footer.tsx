@@ -7,7 +7,7 @@ import {
   LinkedinIcon,
   YoutubeIcon,
 } from '@/lib/images';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { LucideLoader2, Mail, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
