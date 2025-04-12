@@ -38,7 +38,7 @@ const notificationEndpoints = baseAPI.injectEndpoints({
         }),
         markAllNotificationsAsUnread: builder.mutation<void, void>({
             query: () => ({
-                url: '/public/notifications/unread/all',
+                url: '/public/notifications/unread/update/all',
                 method: 'PUT',
             }),
             invalidatesTags: ['notifications'],
