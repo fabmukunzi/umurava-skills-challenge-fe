@@ -37,7 +37,7 @@ const items = [
     title: dashboardRoutes.challengeHackathons.label,
     url: dashboardRoutes.challengeHackathons.path,
     icon: PaperIcon,
-  },
+  },  
   {
     title: dashboardRoutes.community.label,
     url: dashboardRoutes.community.path,
