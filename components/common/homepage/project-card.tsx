@@ -87,8 +87,6 @@ const Projectcard: FC<{
         </p>
       </CardContent>
       <CardFooter className="border-t items-center justify-between px-5 py-3">
-        {isAdmin && project.status === 'draft' && (<Button size={'sm'} variant="outline" className="ml-2" disabled={updatingChallenge} onClick={onKickstart}>{updatingChallenge ? <div className="h-6 w-6 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-          : 'Kick-start'}</Button>)}
         <Link
           href={`${usage === 'homepage'
             ? `/challenges/${project._id}`
@@ -97,6 +95,8 @@ const Projectcard: FC<{
         >
           <Button size="sm">View Challenge</Button>
         </Link>
+        {isAdmin && project.status === 'draft' && (<Button size={'sm'} variant="outline" className={`${statusStyles.completed} hover:bg-green-200/50 hover:text-green-800`} disabled={updatingChallenge} onClick={onKickstart}>{updatingChallenge ? <div className="h-6 w-6 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+          : 'Publish'}</Button>)}
       </CardFooter>
     </Card>
   );
