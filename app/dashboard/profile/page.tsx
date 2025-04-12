@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useChangePasswordMutation,
   useDeactivateAccountMutation,
@@ -19,6 +19,7 @@ import { useToast } from '@/hooks/use-toast';
 import { handleError } from '@/lib/errorHandler';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
 
 interface ChangePwdDto {
   currentPassword: string;
@@ -27,6 +28,10 @@ interface ChangePwdDto {
 }
 
 const ProfilePage = () => {
+  const session = useSession();
+  const { data } = session;
+  const isAdmin = useMemo(() => ['admin', 'super admin'].includes(data?.user?.role?.toLowerCase() || ''), [data?.user?.role]);
+
   const { data: user, isLoading, isError } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const [updateProfilePicture, { isLoading: isUpdatingProfilePicture }] =
@@ -279,7 +284,7 @@ const ProfilePage = () => {
         </Card>
       </main>
       <footer>
-        <Card className="col-span-3 w-full h-full shadow-lg">
+        {!isAdmin && (<Card className="col-span-3 w-full h-full shadow-lg">
           <CardHeader className="text-left">
             <CardTitle className="text-2xl font-semibold">Account Settings</CardTitle>
           </CardHeader>
@@ -296,7 +301,7 @@ const ProfilePage = () => {
               )}
             </Button>
           </CardContent>
-        </Card>
+        </Card>)}
 
         <div className="text-center mt-4">
           <p className="text-sm">
