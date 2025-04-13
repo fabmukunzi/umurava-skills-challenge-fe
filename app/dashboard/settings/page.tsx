@@ -15,6 +15,7 @@ import {
   useUpdatePrizeMutation,
   useGetSystemLogsQuery,
   SystemLog,
+  useGetUsersQuery,
 } from '@/store/actions/setting';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +31,9 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { handleError } from '@/lib/errorHandler';
+import { UserSchema } from '@/lib/types/user';
+import Image from 'next/image';
+import { Switch } from '@/components/ui/switch';
 
 const columns: Column<SystemLog>[] = [
   {
@@ -76,6 +80,35 @@ const columns: Column<SystemLog>[] = [
   },
 ];
 
+const userColumns: Column<UserSchema>[] = [
+  {
+    header: '',
+    accessor: 'profile_url',
+    render: (user) => (
+      <Image
+        src={user.profile_url}
+        alt={user.names}
+        width={100}
+        height={100}
+        className="w-10 h-10 object-cover rounded-full"
+      />
+    ),
+  },
+  { header: 'Name', accessor: 'names' },
+  { header: 'Email', accessor: 'email' },
+  { header: 'Role', accessor: 'userRole' },
+  {
+    header: 'Status',
+    accessor: 'status',
+    render: (user) => (
+      <Switch
+        checked={user.status === 'active'}
+        // onCheckedChange={() => toggleStatus(user)}
+      />
+    ),
+  },
+];
+
 const ITEMS_PER_PAGE = 10;
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('skills');
@@ -87,6 +120,7 @@ export default function SettingsPage() {
   const [categoryPage, setCategoryPage] = useState(1);
   const [prizePage, setPrizePage] = useState(1);
   const [logsPage, setLogsPage] = useState(1);
+  const [userPage, setUserPage] = useState(1);
 
   const {
     data: skills,
@@ -132,6 +166,10 @@ export default function SettingsPage() {
     params: { limit: ITEMS_PER_PAGE, page: logsPage },
   });
 
+  const { data: users } = useGetUsersQuery({
+    params: { limit: ITEMS_PER_PAGE, page: userPage },
+  });
+
   const isSkillTabLoading = isSkillsLoading || isSkillsFetching;
   const isCategoryTabLoading = isCategoriesLoading || isCategoriesFetching;
   const isPrizeTabLoading = isPrizesLoading || isPrizesFetching;
@@ -148,16 +186,18 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold mb-4">App controls</h1>
 
       <div className="flex flex-wrap gap-2 md:gap-4 mb-6">
-        {['skills', 'categories', 'prizes', 'system logs'].map((tab) => (
-          <Button
-            key={tab}
-            variant={activeTab === tab ? 'default' : 'outline'}
-            onClick={() => setActiveTab(tab)}
-            className="text-sm"
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </Button>
-        ))}
+        {['skills', 'categories', 'prizes', 'system logs', 'users'].map(
+          (tab) => (
+            <Button
+              key={tab}
+              variant={activeTab === tab ? 'default' : 'outline'}
+              onClick={() => setActiveTab(tab)}
+              className="text-sm"
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </Button>
+          )
+        )}
       </div>
 
       <div className="w-full">
@@ -334,6 +374,26 @@ export default function SettingsPage() {
                   columns={columns}
                   pagination={systemLogs?.data?.pagination}
                   onPageChange={(page) => setLogsPage(page)}
+                  loading={isLogsTabLoading}
+                />
+              </CardContent>
+            </Card>
+          ))}
+
+        {activeTab === 'users' &&
+          (isLogsTabLoading ? (
+            renderLoader()
+          ) : (
+            <Card className="mt-6 max-sm:!w-[360px] md:w-full overflow-x-auto">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Users</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DataTable
+                  data={users?.data.users || []}
+                  columns={userColumns}
+                  pagination={users?.data?.pagination}
+                  onPageChange={(page) => setUserPage(page)}
                   loading={isLogsTabLoading}
                 />
               </CardContent>

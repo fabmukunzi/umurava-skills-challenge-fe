@@ -1,10 +1,11 @@
 
 export interface UserSchema {
   names: string;
-  role: string;
+  userRole: string;
   profile_url: string;
   email: string;
-  id: string;
+  status:string;
+  _id: string;
 }
 
 export interface AppState {

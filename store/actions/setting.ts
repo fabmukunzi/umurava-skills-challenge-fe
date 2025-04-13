@@ -5,6 +5,7 @@ import {
   IPrizeCategory,
   ISkill,
 } from '@/lib/types/setting';
+import { UserSchema } from '@/lib/types/user';
 import { baseAPI } from '@/store/api';
 
 export interface SystemLog {
@@ -159,6 +160,18 @@ export const settingsApi = baseAPI.injectEndpoints({
       }),
       providesTags: ['systemLogs'],
     }),
+
+    getUsers: builder.query<
+      { data: { users:UserSchema[]; pagination: ChallengePagination } },
+      { params: any }
+    >({
+      query: ({ params }) => ({
+        url: '/auth/users',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['users'],
+    }),
   }),
 });
 
@@ -179,4 +192,6 @@ export const {
   useUpdatePrizeMutation,
 
   useGetSystemLogsQuery,
+
+  useGetUsersQuery
 } = settingsApi;
