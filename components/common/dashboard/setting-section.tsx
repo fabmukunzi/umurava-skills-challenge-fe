@@ -119,15 +119,15 @@ export const Section = ({
         'skillName' in item
           ? item.skillName
           : 'challengeCategoryName' in item
-          ? item.challengeCategoryName
-          : item.prizeName,
+            ? item.challengeCategoryName
+            : item.prizeName,
     },
     isPrizeSection
       ? {
-          header: 'Currency',
-          render: (item: TableItem) =>
-            'currency' in item ? item.currency ?? 'N/A' : 'N/A',
-        }
+        header: 'Currency',
+        render: (item: TableItem) =>
+          'currency' in item ? item.currency ?? 'N/A' : 'N/A',
+      }
       : null,
     {
       header: 'Created At',
@@ -142,8 +142,8 @@ export const Section = ({
           'skillName' in item
             ? item.skillName
             : 'challengeCategoryName' in item
-            ? item.challengeCategoryName
-            : item.prizeName;
+              ? item.challengeCategoryName
+              : item.prizeName;
 
         return (
           <div className="flex text-right space-x-2">

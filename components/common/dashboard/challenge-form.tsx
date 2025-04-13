@@ -28,7 +28,6 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { dashboardRoutes } from '@/lib/routes';
 import { useGetPrizesQuery } from '@/store/actions/setting';
-import { IPrizeCategory } from '@/lib/types/setting';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 

@@ -30,7 +30,7 @@ const NotificationPage = () => {
     const user = session?.data?.user;
     const isAdmin = useMemo(() => ['admin', 'super admin'].includes(user?.role?.toLowerCase() || ''), [user?.role]);
 
-    const { data, isLoading, isFetching, isError } = useGetNotificationsQuery<NotificationResponse>({});
+    const { data, isLoading, isError } = useGetNotificationsQuery<NotificationResponse>({});
     const notificationsData = useMemo(() => {
         if (Array.isArray(data)) return data;
         return (data && 'data' in data) ? (data.data) : [];

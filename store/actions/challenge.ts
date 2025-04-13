@@ -18,6 +18,8 @@ export type CreateChallengeDto = Omit<
   | '__v'
   | 'duration'
   | 'submissionDate'
+  | 'joined_status'
+  | 'submissionStatus'
 >;
 
 interface UpdateChallengeDto extends Partial<CreateChallengeDto> {
@@ -108,7 +110,15 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ['challenge', 'challenges'],
     }),
-    rejectApproveSubmission: builder.mutation<IParticipantsSubmissions, ChallengeFeedbackDto>({
+    approveSubmission: builder.mutation<IParticipantsSubmissions, ChallengeFeedbackDto>({
+      query: ({ submissionId, ...challengeData }) => ({
+        url: `/participant/${submissionId}/approve-reject`,
+        method: 'PUT',
+        body: challengeData,
+      }),
+      invalidatesTags: ['challenge', 'challenges'],
+    }),
+    rejectSubmission: builder.mutation<IParticipantsSubmissions, ChallengeFeedbackDto>({
       query: ({ submissionId, ...challengeData }) => ({
         url: `/participant/${submissionId}/approve-reject`,
         method: 'PUT',
@@ -164,7 +174,8 @@ export const {
   useGetPublicChallengeByIdQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
-  useRejectApproveSubmissionMutation,
+  useApproveSubmissionMutation,
+  useRejectSubmissionMutation,
   useUpdateChallengeStatusMutation,
   useDeleteChallengeMutation,
   useGetParticipantsByChallengeIdQuery,

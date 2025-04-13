@@ -43,7 +43,7 @@ const EditChallengePage = () => {
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
       const { startDate, endDate,moneyPrize, ...restValues } = values;
-      const moneyPrizeFormated=values.moneyPrize.map((item) => {
+      const moneyPrizeFormated=moneyPrize.map((item) => {
         const parsedItem = JSON.parse(item.categoryPrize) as IPrizeCategory;
         return {
           ...item,

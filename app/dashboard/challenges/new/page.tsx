@@ -9,6 +9,7 @@ import {
 import { dashboardRoutes } from '@/lib/routes';
 import dayjs from 'dayjs';
 import { handleError } from '@/lib/errorHandler';
+import { IPrizeCategory } from '@/lib/types/setting';
 
 const CreateChallengePage = () => {
   const router = useRouter();
@@ -16,10 +17,21 @@ const CreateChallengePage = () => {
 
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
-      const { startDate, endDate, ...restValues } = values;
+      const { startDate, endDate, moneyPrize, ...restValues } = values;
+      const moneyPrizeFormated = moneyPrize
+        .map((item) => {
+          const parsedItem = JSON.parse(item.categoryPrize) as IPrizeCategory;
+          return {
+            ...item,
+            currency: parsedItem.currency,
+            categoryPrize: parsedItem.prizeName,
+          };
+        })
+        .filter((item) => item !== null);
       await createChallenge({
         startDate: dayjs(startDate).format('DD-MM-YYYY'),
         endDate: dayjs(endDate).format('DD-MM-YYYY'),
+        moneyPrize: moneyPrizeFormated,
         ...restValues,
       }).unwrap();
       router.push(dashboardRoutes.challengeHackathons.path);
