@@ -5,7 +5,7 @@ import Carousel from '@/components/common/carousel';
 import { SokofundDashboard, SokofundLogo } from '@/lib/images';
 import AdvertCard from '@/components/common/homepage/advert-card';
 import { motion } from 'framer-motion';
-import { useGetSkillsQuery } from '@/store/actions/categories';
+import { useGetSkillsQuery } from '@/store/actions/setting';
 
 const fadeInUpVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -26,8 +26,8 @@ const containerVariant = {
 };
 
 const SkillsCovered = () => {
-  const { data, isLoading } = useGetSkillsQuery();
-  const skillsData = data?.data;
+  const { data, isLoading } = useGetSkillsQuery({params:{}});
+  const skillsData = data?.data?.skills;
   const skills = skillsData?.map((skill) => skill.skillName);
 
   const adverts = Array(4).fill({

@@ -1,5 +1,5 @@
 import { ICareerStats } from '@/components/homepage/stastics';
-import { ICategory, ISkill } from '@/lib/types/project';
+import { ICategory } from '@/lib/types/project';
 import { baseAPI } from '@/store/api';
 
 const categoryEndpoints = baseAPI.injectEndpoints({
@@ -7,12 +7,6 @@ const categoryEndpoints = baseAPI.injectEndpoints({
     getCategories: builder.query<{ data: ICategory[] }, void>({
       query: () => ({
         url: `/admin/challenge-category`,
-        method: 'GET',
-      }),
-    }),
-    getSkills: builder.query<{ data: ISkill[] }, void>({
-      query: () => ({
-        url: `/public/skills`,
         method: 'GET',
       }),
     }),
@@ -25,4 +19,4 @@ const categoryEndpoints = baseAPI.injectEndpoints({
   }),
 });
 
-export const { useGetCategoriesQuery, useGetSkillsQuery, useGetCareerStatsQuery } = categoryEndpoints;
+export const { useGetCategoriesQuery, useGetCareerStatsQuery } = categoryEndpoints;

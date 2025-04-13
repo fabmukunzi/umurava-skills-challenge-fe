@@ -106,7 +106,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           className="rounded-full border p-1 object-contain h-10 w-10"
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-fit'>
+      <DropdownMenuContent className='w-fit font-sans'>
         <DropdownMenuLabel className="flex items-center gap-2">
           <Image
             src={user?.profileUrl || ''}

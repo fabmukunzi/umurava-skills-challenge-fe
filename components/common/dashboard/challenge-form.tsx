@@ -22,12 +22,12 @@ import SelectInput from '@/components/common/select-box';
 import { CreateChallengeDto } from '@/store/actions/challenge';
 import {
   useGetCategoriesQuery,
-  useGetSkillsQuery,
 } from '@/store/actions/categories';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { dashboardRoutes } from '@/lib/routes';
 import { IPrizeCategory } from '@/lib/types/setting';
+import { useGetSkillsQuery } from '@/store/actions/setting';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -70,8 +70,8 @@ const ChallengeForm = ({
     label: category.challengeCategoryName,
   }));
 
-  const { data: skillsData } = useGetSkillsQuery();
-  const skills = skillsData?.data?.map((skill) => ({
+  const { data: skillsData } = useGetSkillsQuery({params:{}});
+  const skills = skillsData?.data?.skills?.map((skill) => ({
     value: skill.skillName,
     label: skill.skillName,
   }));

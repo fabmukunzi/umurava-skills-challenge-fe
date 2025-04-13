@@ -98,9 +98,8 @@ const filteredItems = items.filter(item => {
   if (item.title === dashboardRoutes.community.label && isAdmin) return false;
   return true;
 });
-
 const filteredFooterItems = footerItems.filter(item => {
-  if (item.title === dashboardRoutes.settings.name && !isParticipant) return false;
+  if (item.title === dashboardRoutes.settings.name && isParticipant) return false;
   return true;
 });
 
