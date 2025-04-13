@@ -35,7 +35,7 @@ const Statistics = () => {
           <p className="text-white">Loading...</p>
         </div>) : stats ? (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
-            {Object.entries(stats).map(([key, value], index) => (
+            {Object.entries(stats)?.map(([key, value], index) => (
               <motion.div
                 key={key}
                 className="text-center"
