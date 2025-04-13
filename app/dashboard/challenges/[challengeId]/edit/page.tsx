@@ -23,7 +23,7 @@ const EditChallengePage = () => {
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
-  const { data: prizesData } = useGetPrizesQuery();
+  const { data: prizesData } = useGetPrizesQuery({});
 
   const { toast } = useToast();
 
@@ -46,7 +46,7 @@ const EditChallengePage = () => {
       const { startDate, endDate, moneyPrize, ...restValues } = values;
       const moneyPrizeFormated = moneyPrize
         .map((item) => {
-          const selectedPrize = prizesData?.data?.find(
+          const selectedPrize = prizesData?.data?.categories?.find(
             (p) => p.prizeName === item.categoryPrize
           );
           return {
@@ -85,7 +85,7 @@ const EditChallengePage = () => {
       onSubmit={onSubmit}
       isSubmitting={updatingChallenge}
       defaultValues={restValues}
-      prizesData={prizesData?.data ?? []}
+      prizesData={prizesData?.data?.categories ?? []}
     />
   );
 };

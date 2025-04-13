@@ -14,14 +14,14 @@ import { useGetPrizesQuery } from '@/store/actions/setting';
 const CreateChallengePage = () => {
   const router = useRouter();
   const [createChallenge, { isLoading }] = useCreateChallengeMutation();
-    const { data: prizesData } = useGetPrizesQuery();
+    const { data: prizesData } = useGetPrizesQuery({});
 
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
       const { startDate, endDate, moneyPrize, ...restValues } = values;
       const moneyPrizeFormated = moneyPrize
       .map((item) => {
-        const selectedPrize = prizesData?.data?.find(
+        const selectedPrize = prizesData?.data?.categories?.find(
           (p) => p.prizeName === item.categoryPrize
         );
         return {
@@ -59,7 +59,7 @@ const CreateChallengePage = () => {
         levels: [],
         teamSize: '',
       }}
-      prizesData={prizesData?.data ?? []}
+      prizesData={prizesData?.data?.categories ?? []}
     />
   );
 };

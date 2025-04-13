@@ -1,21 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ChallengePagination } from '@/lib/types/project';
+import {
+  IChallengeCategory,
+  IPrizeCategory,
+  ISkill,
+} from '@/lib/types/setting';
 import { baseAPI } from '@/store/api';
-
-export interface Skill {
-  _id: string;
-  skillName: string;
-}
-
-export interface ChallengeCategory {
-  _id: string;
-  challengeCategoryName: string;
-}
-
-export interface PrizeCategory {
-  _id: string;
-  prizeName: string;
-  currency: string;
-  description: string;
-}
 
 export interface SystemLog {
   _id: string;
@@ -34,8 +24,15 @@ export interface SystemLog {
 
 export const settingsApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
-    getSkills: builder.query<{ data: Skill[] }, void>({
-      query: () => '/admin/skills',
+    getSkills: builder.query<
+      { data: { skills: ISkill[]; pagination: ChallengePagination } },
+      { params: any }
+    >({
+      query: ({ params }) => ({
+        url: '/admin/skills',
+        method: 'GET',
+        params,
+      }),
       providesTags: ['skills'],
     }),
     addSkill: builder.mutation<void, { skillName: string }>({
@@ -54,8 +51,20 @@ export const settingsApi = baseAPI.injectEndpoints({
       invalidatesTags: ['skills'],
     }),
 
-    getCategories: builder.query<{ data: ChallengeCategory[] }, void>({
-      query: () => '/admin/challenge-category',
+    getCategories: builder.query<
+      {
+        data: {
+          categories: IChallengeCategory[];
+          pagination: ChallengePagination;
+        };
+      },
+      { params: any }
+    >({
+      query: ({ params }) => ({
+        url: '/admin/challenge-category',
+        method: 'GET',
+        params,
+      }),
       providesTags: ['categories'],
     }),
     addCategory: builder.mutation<void, { challengeCategoryName: string }>({
@@ -74,8 +83,17 @@ export const settingsApi = baseAPI.injectEndpoints({
       invalidatesTags: ['categories'],
     }),
 
-    getPrizes: builder.query<{ data: PrizeCategory[] }, void>({
-      query: () => '/admin/prize-category',
+    getPrizes: builder.query<
+      {
+        data: { categories: IPrizeCategory[]; pagination: ChallengePagination };
+      },
+      { params?: any }
+    >({
+      query: ({ params }) => ({
+        url: '/admin/prize-category',
+        method: 'GET',
+        params,
+      }),
       providesTags: ['prizes'],
     }),
     addPrize: builder.mutation<
@@ -130,8 +148,15 @@ export const settingsApi = baseAPI.injectEndpoints({
       invalidatesTags: ['prizes'],
     }),
 
-    getSystemLogs: builder.query<{ data: SystemLog[] }, void>({
-      query: () => '/admin/audits/all',
+    getSystemLogs: builder.query<
+      { data: { audits: SystemLog[]; pagination: ChallengePagination } },
+      { params: any }
+    >({
+      query: ({ params }) => ({
+        url: '/admin/audits/all',
+        method: 'GET',
+        params,
+      }),
       providesTags: ['systemLogs'],
     }),
   }),

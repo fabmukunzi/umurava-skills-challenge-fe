@@ -17,12 +17,7 @@ import {
   SystemLog,
 } from '@/store/actions/setting';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -81,17 +76,23 @@ const columns: Column<SystemLog>[] = [
   },
 ];
 
+const ITEMS_PER_PAGE = 10;
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('skills');
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  const [skillPage, setSkillPage] = useState(1);
+  const [categoryPage, setCategoryPage] = useState(1);
+  const [prizePage, setPrizePage] = useState(1);
+  const [logsPage, setLogsPage] = useState(1);
+
   const {
     data: skills,
     isLoading: isSkillsLoading,
     isFetching: isSkillsFetching,
-  } = useGetSkillsQuery();
+  } = useGetSkillsQuery({ params: { limit: ITEMS_PER_PAGE, page: skillPage } });
   const [addSkill, { isLoading: isAddingSkill }] = useAddSkillMutation();
   const [deleteSkill, { isLoading: isDeletingSkill }] =
     useDeleteSkillMutation();
@@ -102,7 +103,9 @@ export default function SettingsPage() {
     data: categories,
     isLoading: isCategoriesLoading,
     isFetching: isCategoriesFetching,
-  } = useGetCategoriesQuery();
+  } = useGetCategoriesQuery({
+    params: { limit: ITEMS_PER_PAGE, page: categoryPage },
+  });
   const [addCategory, { isLoading: isAddingCategory }] =
     useAddCategoryMutation();
   const [deleteCategory, { isLoading: isDeletingCategory }] =
@@ -114,7 +117,7 @@ export default function SettingsPage() {
     data: prizes,
     isLoading: isPrizesLoading,
     isFetching: isPrizesFetching,
-  } = useGetPrizesQuery();
+  } = useGetPrizesQuery({ params: { limit: ITEMS_PER_PAGE, page: prizePage } });
   const [addPrize, { isLoading: isAddingPrize }] = useAddPrizeMutation();
   const [deletePrize, { isLoading: isDeletingPrize }] =
     useDeletePrizeMutation();
@@ -125,7 +128,9 @@ export default function SettingsPage() {
     data: systemLogs,
     isLoading: isLogsLoading,
     isFetching: isLogsFetching,
-  } = useGetSystemLogsQuery();
+  } = useGetSystemLogsQuery({
+    params: { limit: ITEMS_PER_PAGE, page: logsPage },
+  });
 
   const isSkillTabLoading = isSkillsLoading || isSkillsFetching;
   const isCategoryTabLoading = isCategoriesLoading || isCategoriesFetching;
@@ -162,10 +167,12 @@ export default function SettingsPage() {
           ) : (
             <Section
               title="Skills"
-              items={skills?.data || []}
+              items={skills?.data?.skills || []}
               isAddLoading={isAddingSkill}
               isUpdateLoading={isUpdatingSkill}
               isDeleteLoading={isDeletingSkill}
+              pagination={skills?.data?.pagination}
+              onPageChange={(page) => setSkillPage(page)}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               setIsEditOpen={setIsEditOpen}
@@ -208,12 +215,14 @@ export default function SettingsPage() {
           ) : (
             <Section
               title="Challenge Categories"
-              items={categories?.data || []}
+              items={categories?.data?.categories || []}
               isAddLoading={isAddingCategory}
               isUpdateLoading={isUpdatingCategory}
               isDeleteLoading={isDeletingCategory}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
+              onPageChange={(page) => setCategoryPage(page)}
+              pagination={categories?.data?.pagination}
               setIsEditOpen={setIsEditOpen}
               isEditOpen={isEditOpen}
               confirmOpen={confirmOpen}
@@ -257,13 +266,15 @@ export default function SettingsPage() {
           ) : (
             <Section
               title="Prize Categories"
-              items={prizes?.data || []}
+              items={prizes?.data?.categories || []}
               isAddLoading={isAddingPrize}
               isUpdateLoading={isUpdatingPrize}
               isDeleteLoading={isDeletingPrize}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               setIsEditOpen={setIsEditOpen}
+              pagination={prizes?.data?.pagination}
+              onPageChange={(page) => setPrizePage(page)}
               isEditOpen={isEditOpen}
               confirmOpen={confirmOpen}
               setConfirmOpen={setConfirmOpen}
@@ -319,8 +330,10 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent>
                 <DataTable
-                  data={systemLogs?.data || []}
+                  data={systemLogs?.data?.audits || []}
                   columns={columns}
+                  pagination={systemLogs?.data?.pagination}
+                  onPageChange={(page) => setLogsPage(page)}
                   loading={isLogsTabLoading}
                 />
               </CardContent>

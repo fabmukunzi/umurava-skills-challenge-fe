@@ -1,3 +1,5 @@
+import { ChallengePagination } from "./project";
+
 export interface ISkill {
   _id?: string;
   skillName: string;
@@ -41,4 +43,6 @@ export interface ISectionProps {
   isAddLoading: boolean;
   isUpdateLoading: boolean;
   isDeleteLoading: boolean;
+  pagination?:ChallengePagination
+  onPageChange: (page: number) => void;
 }

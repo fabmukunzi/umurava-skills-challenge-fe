@@ -31,6 +31,8 @@ export const Section = ({
   isAddLoading = false,
   isUpdateLoading = false,
   isDeleteLoading = false,
+  pagination,
+  onPageChange,
   placeholder = 'Enter name',
 }: ISectionProps) => {
   const [value, setValue] = useState('');
@@ -119,15 +121,15 @@ export const Section = ({
         'skillName' in item
           ? item.skillName
           : 'challengeCategoryName' in item
-            ? item.challengeCategoryName
-            : item.prizeName,
+          ? item.challengeCategoryName
+          : item.prizeName,
     },
     isPrizeSection
       ? {
-        header: 'Currency',
-        render: (item: TableItem) =>
-          'currency' in item ? item.currency ?? 'N/A' : 'N/A',
-      }
+          header: 'Currency',
+          render: (item: TableItem) =>
+            'currency' in item ? item.currency ?? 'N/A' : 'N/A',
+        }
       : null,
     {
       header: 'Created At',
@@ -142,8 +144,8 @@ export const Section = ({
           'skillName' in item
             ? item.skillName
             : 'challengeCategoryName' in item
-              ? item.challengeCategoryName
-              : item.prizeName;
+            ? item.challengeCategoryName
+            : item.prizeName;
 
         return (
           <div className="flex text-right space-x-2">
@@ -211,7 +213,12 @@ export const Section = ({
         </div>
       </CardHeader>
       <CardContent className="max-w-sm:p-0 md:p-[auto]">
-        <DataTable data={items} columns={columns} />
+        <DataTable
+          onPageChange={onPageChange}
+          pagination={pagination}
+          data={items}
+          columns={columns}
+        />
       </CardContent>
 
       <GenericDialogForm
