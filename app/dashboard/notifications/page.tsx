@@ -93,7 +93,7 @@ const NotificationPage = () => {
         <main className="p-4">
             <h1 className="text-2xl font-bold mb-4">Notifications</h1>
             <div className="space-y-4">
-                {notificationsData?.length > 0 && isAdmin && (<div className="flex justify-end gap-4 mb-4">
+                {notificationsData?.length > 0 && (<div className="flex justify-end gap-4 mb-4">
                     {notificationsData.some(item => item.status === 'unread') && (<Button
                         onClick={handleMarkAllAsRead}
                         className={buttonStyles.markAsRead}
@@ -138,7 +138,7 @@ const NotificationPage = () => {
                                         {item.status}
                                     </Badge>
                                 </div>
-                                {isAdmin && (<div className="flex gap-2">
+                                <div className="flex gap-2">
                                     {item.status === 'unread' && (
                                         <Button
                                             onClick={() => handleMarkAsRead(item._id)}
@@ -164,7 +164,7 @@ const NotificationPage = () => {
                                     >
                                         {deleteOneLoading && item._id === loadingNotificationId ? <LucideLoader2 className='animate-spin' /> : <LucideTrash2 className='size-5' />}
                                     </Button>
-                                </div>)}
+                                </div>
                             </div>
                         </motion.div>
                     ))
