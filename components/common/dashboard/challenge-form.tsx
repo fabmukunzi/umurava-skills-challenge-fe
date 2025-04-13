@@ -27,7 +27,7 @@ import {
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { dashboardRoutes } from '@/lib/routes';
-import { useGetPrizesQuery } from '@/store/actions/setting';
+import { IPrizeCategory } from '@/lib/types/setting';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -36,6 +36,7 @@ interface ChallengeFormProps {
   defaultValues: CreateChallengeDto;
   isEdit?: boolean;
   isSubmitting?: boolean;
+  prizesData: IPrizeCategory[];
 }
 
 const ChallengeForm = ({
@@ -43,6 +44,7 @@ const ChallengeForm = ({
   defaultValues,
   isEdit = false,
   isSubmitting = false,
+  prizesData,
 }: ChallengeFormProps) => {
   const form = useForm<CreateChallengeDto>({
     resolver: zodResolver(challengeFormSchema),
@@ -74,12 +76,10 @@ const ChallengeForm = ({
     label: skill.skillName,
   }));
 
-  const { data: prizesData } = useGetPrizesQuery();
-const prizeOptions = prizesData?.data?.map((prize) => ({
-  value: JSON.stringify(prize),
-  label: prize.prizeName,
-}));
-
+  const prizeOptions = prizesData?.map((prize) => ({
+    value: prize.prizeName,
+    label: prize.prizeName,
+  }));
 
   const seniorityLevels = [
     { value: 'Junior', label: 'Junior' },
@@ -155,9 +155,11 @@ const prizeOptions = prizesData?.data?.map((prize) => ({
                 <SelectInput
                   form={form}
                   hideLabel={true}
-                  name={`moneyPrize.${index}.categoryPrize` as keyof CreateChallengeDto}
+                  name={
+                    `moneyPrize.${index}.categoryPrize` as keyof CreateChallengeDto
+                  }
                   label="Price Category"
-                  options={prizeOptions ?? []}
+                  options={prizeOptions}
                   multi={false}
                 />
                 <TextInput
@@ -182,7 +184,9 @@ const prizeOptions = prizesData?.data?.map((prize) => ({
             <Button
               className="border-dashed"
               type="button"
-              onClick={() => append({ categoryPrize: '', prize: '', currency: 'RWF' })}
+              onClick={() =>
+                append({ categoryPrize: '', prize: '', currency: 'RWF' })
+              }
               variant="outline"
             >
               + Add Prize

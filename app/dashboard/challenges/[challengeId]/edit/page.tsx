@@ -11,7 +11,7 @@ import { dashboardRoutes } from '@/lib/routes';
 import { useToast } from '@/hooks/use-toast';
 import { handleError } from '@/lib/errorHandler';
 import dayjs from 'dayjs';
-import { IPrizeCategory } from '@/lib/types/setting';
+import { useGetPrizesQuery } from '@/store/actions/setting';
 
 const EditChallengePage = () => {
   const router = useRouter();
@@ -23,6 +23,7 @@ const EditChallengePage = () => {
   const { data, isLoading } = useGetChallengeByIdQuery(challengeId, {
     skip: !challengeId,
   });
+  const { data: prizesData } = useGetPrizesQuery();
 
   const { toast } = useToast();
 
@@ -42,15 +43,19 @@ const EditChallengePage = () => {
 
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
-      const { startDate, endDate,moneyPrize, ...restValues } = values;
-      const moneyPrizeFormated=moneyPrize.map((item) => {
-        const parsedItem = JSON.parse(item.categoryPrize) as IPrizeCategory;
-        return {
-          ...item,
-          currency: parsedItem.currency,
-          categoryPrize: parsedItem.prizeName,
-        };
-      }).filter(item => item !== null)
+      const { startDate, endDate, moneyPrize, ...restValues } = values;
+      const moneyPrizeFormated = moneyPrize
+        .map((item) => {
+          const selectedPrize = prizesData?.data?.find(
+            (p) => p.prizeName === item.categoryPrize
+          );
+          return {
+            ...item,
+            currency: selectedPrize?.currency || '',
+            categoryPrize: selectedPrize?.prizeName || '',
+          };
+        })
+        .filter((item) => item !== null);
       await updateChallenge({
         id: challengeId,
         startDate: dayjs(startDate).format('DD-MM-YYYY'),
@@ -80,6 +85,7 @@ const EditChallengePage = () => {
       onSubmit={onSubmit}
       isSubmitting={updatingChallenge}
       defaultValues={restValues}
+      prizesData={prizesData?.data ?? []}
     />
   );
 };

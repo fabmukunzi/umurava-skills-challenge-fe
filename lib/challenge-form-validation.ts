@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 export const challengeSubmissionSchema = z.object({
   links: z.array(
     z.object({
