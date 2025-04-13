@@ -36,6 +36,17 @@ export const settingsApi = baseAPI.injectEndpoints({
       }),
       providesTags: ['skills'],
     }),
+    getPublicSkills: builder.query<
+      { data: { skills: ISkill[]; pagination: ChallengePagination } },
+      { params: any }
+    >({
+      query: ({ params }) => ({
+        url: '/public/skills',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['skills'],
+    }),
     addSkill: builder.mutation<void, { skillName: string }>({
       query: (body) => ({
         url: '/admin/skills',
@@ -162,7 +173,7 @@ export const settingsApi = baseAPI.injectEndpoints({
     }),
 
     getUsers: builder.query<
-      { data: { users:UserSchema[]; pagination: ChallengePagination } },
+      { data: { users: UserSchema[]; pagination: ChallengePagination } },
       { params: any }
     >({
       query: ({ params }) => ({
@@ -177,6 +188,7 @@ export const settingsApi = baseAPI.injectEndpoints({
 
 export const {
   useGetSkillsQuery,
+  useGetPublicSkillsQuery,
   useAddSkillMutation,
   useDeleteSkillMutation,
   useUpdateSkillMutation,
