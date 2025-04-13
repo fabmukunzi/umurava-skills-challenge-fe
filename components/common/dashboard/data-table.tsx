@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 export type Column<T> = {
   header: string;
   accessor?: keyof T;
-  render?: (item: T) => React.ReactNode;
+  render?: (item: T, index?: number) => React.ReactNode;
 };
 
 interface DataTableProps<T> {
@@ -76,7 +76,7 @@ export function DataTable<T>({
       </Table>
 
       {totalPages > 1 && (
-        <div className="flex justify-end space-x-2 pt-2">
+        <div className="flex justify-end items-center space-x-2 pt-2">
           <Button
             size="sm"
             variant="outline"
@@ -85,7 +85,7 @@ export function DataTable<T>({
           >
             Prev
           </Button>
-          <span className="text-sm text-muted-foreground pt-1">
+          <span className="text-sm text-muted-foreground">
             Page {currentPage} of {totalPages}
           </span>
           <Button

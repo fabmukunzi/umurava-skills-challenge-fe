@@ -130,7 +130,7 @@ const DashboardPage = () => {
           {(statisticsLoading || statisticsFetching) ? (Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className={`${i < 2 ? 'md:col-span-3' : 'md:col-span-2'} h-32 rounded-xl bg-gray-400 animate-pulse`}
+              className={`${i < 2 ? 'md:col-span-3' : 'md:col-span-2'} h-32 rounded-xl bg-primary/30 animate-pulse`}
             />
           ))
           ) : adminStatData.map((card, index) => (

@@ -151,7 +151,7 @@ const HomeSingleProjectView = () => {
                             </span>
                           </div>
                           <span className="font-semibold text-primary">
-                            {prize.prize.toLocaleString()} $
+                            {prize.prize.toLocaleString()} {prize?.currency}
                           </span>
                         </Card>
                       ))}

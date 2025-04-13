@@ -23,11 +23,11 @@ const Projectcard: FC<{
     useUpdateChallengeStatusMutation();
 
   const statusStyles: Record<string, string> = {
-    draft: 'bg-gray-300 text-gray-700 border border-gray-300',
-    open: 'bg-blue-100 text-blue-600 border border-blue-500',
-    ongoing: 'bg-yellow-200 text-yellow-800 border border-yellow-300',
-    closed: 'bg-red-200 text-red-800 border border-red-300',
-    completed: 'bg-green-200 text-green-800 border border-green-300',
+    draft: 'bg-gray-500 text-white',
+    open: 'bg-blue-100 text-blue-600',
+    ongoing: 'bg-yellow-300 text-yellow-800',
+    closed: 'bg-red-300 text-red-800',
+    completed: 'bg-green-700 text-white',
   };
 
   const onKickstart = async () => {

@@ -27,6 +27,8 @@ import {
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { dashboardRoutes } from '@/lib/routes';
+import { useGetPrizesQuery } from '@/store/actions/setting';
+import { IPrizeCategory } from '@/lib/types/setting';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -47,16 +49,15 @@ const ChallengeForm = ({
     resolver: zodResolver(challengeFormSchema),
     defaultValues: {
       ...defaultValues,
-      startDate: dayjs(defaultValues.startDate || new Date()).format(
-        'DD-MM-YYYY'
+      startDate: dayjs(defaultValues?.startDate || new Date()).format(
+        'YYYY-MM-DD'
       ),
-      endDate: dayjs(defaultValues.endDate || new Date()).format('DD-MM-YYYY'),
+      endDate: dayjs(defaultValues?.endDate || new Date()).format('YYYY-MM-DD'),
       moneyPrize: defaultValues.moneyPrize?.length
         ? defaultValues.moneyPrize
         : [{ categoryPrize: '', prize: '', currency: 'RWF' }],
     },
   });
-
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'moneyPrize',
@@ -74,12 +75,13 @@ const ChallengeForm = ({
     label: skill.skillName,
   }));
 
-  const currencies = [
-    { value: 'RWF', label: 'RWF' },
-    { value: 'KSH', label: 'KSH' },
-    { value: 'UGX', label: 'UGX' },
-    { value: 'USD', label: 'USD' },
-  ]
+  const { data: prizesData } = useGetPrizesQuery();
+const prizeOptions = prizesData?.data?.map((prize) => ({
+  value: JSON.stringify(prize),
+  label: prize.prizeName,
+}));
+
+
   const seniorityLevels = [
     { value: 'Junior', label: 'Junior' },
     { value: 'Intermediate', label: 'Intermediate' },
@@ -151,14 +153,13 @@ const ChallengeForm = ({
                 key={field.id}
                 className="flex gap-4 items-center justify-center w-full"
               >
-                <TextInput
+                <SelectInput
                   form={form}
                   hideLabel={true}
-                  name={
-                    `moneyPrize.${index}.categoryPrize` as keyof CreateChallengeDto
-                  }
-                  label="Category"
-                  placeholder="e.g. First Runner"
+                  name={`moneyPrize.${index}.categoryPrize` as keyof CreateChallengeDto}
+                  label="Price Category"
+                  options={prizeOptions ?? []}
+                  multi={false}
                 />
                 <TextInput
                   form={form}
@@ -166,14 +167,6 @@ const ChallengeForm = ({
                   name={`moneyPrize.${index}.prize` as keyof CreateChallengeDto}
                   label="Amount ($)"
                   placeholder="500"
-                />
-                <SelectInput
-                  form={form}
-                  hideLabel={true}
-                  name={`moneyPrize.${index}.currency` as keyof CreateChallengeDto}
-                  label="Currency"
-                  options={currencies ?? []}
-                  multi={false}
                 />
                 {fields?.length > 1 && (
                   <Button

@@ -11,6 +11,7 @@ import { dashboardRoutes } from '@/lib/routes';
 import { useToast } from '@/hooks/use-toast';
 import { handleError } from '@/lib/errorHandler';
 import dayjs from 'dayjs';
+import { IPrizeCategory } from '@/lib/types/setting';
 
 const EditChallengePage = () => {
   const router = useRouter();
@@ -41,11 +42,20 @@ const EditChallengePage = () => {
 
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
-      const { startDate, endDate, ...restValues } = values;
+      const { startDate, endDate,moneyPrize, ...restValues } = values;
+      const moneyPrizeFormated=values.moneyPrize.map((item) => {
+        const parsedItem = JSON.parse(item.categoryPrize) as IPrizeCategory;
+        return {
+          ...item,
+          currency: parsedItem.currency,
+          categoryPrize: parsedItem.prizeName,
+        };
+      }).filter(item => item !== null)
       await updateChallenge({
         id: challengeId,
         startDate: dayjs(startDate).format('DD-MM-YYYY'),
         endDate: dayjs(endDate).format('DD-MM-YYYY'),
+        moneyPrize: moneyPrizeFormated,
         ...restValues,
       }).unwrap();
       toast({

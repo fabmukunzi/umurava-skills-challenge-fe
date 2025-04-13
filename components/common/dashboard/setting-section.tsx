@@ -12,14 +12,6 @@ import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GenericDialogForm } from './generic-dialog-form';
 import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '../confirm-delete-dialog';
 import { Column, DataTable } from './data-table';
@@ -62,8 +54,10 @@ export const Section = ({
 
     try {
       onAdd(value.trim(), isPrizeSection ? currency : undefined);
-      setValue('');
-      setCurrency('');
+      if (!isOpen) {
+        setValue('');
+        setCurrency('');
+      }
     } catch (error) {
       handleError(error);
     }
@@ -106,7 +100,6 @@ export const Section = ({
       try {
         onDelete(confirmDeleteId);
         setConfirmDeleteId(null);
-        setConfirmOpen(false);
       } catch (error) {
         handleError(error);
       }
@@ -153,7 +146,7 @@ export const Section = ({
             : item.prizeName;
 
         return (
-          <div className="text-right space-x-2">
+          <div className="flex text-right space-x-2">
             <Button
               variant="default"
               size="sm"
@@ -186,8 +179,8 @@ export const Section = ({
   ].filter(Boolean) as Column<TableItem>[];
 
   return (
-    <Card className="mt-6">
-      <CardHeader>
+    <Card className="mt-6 max-sm:!w-[360px] md:w-full overflow-x-auto">
+      <CardHeader className="max-w-sm:items-center justify-center">
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
         <div className="flex justify-end mt-2">
           <GenericDialogForm
@@ -217,7 +210,7 @@ export const Section = ({
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-w-sm:p-0 md:p-[auto]">
         <DataTable data={items} columns={columns} />
       </CardContent>
 

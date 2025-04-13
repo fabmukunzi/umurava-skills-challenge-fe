@@ -74,7 +74,7 @@ export const dashboardRoutes = {
     name: 'profile',
   },
   settings: {
-    label: 'Settings',
+    label: 'App Controls',
     path: '/dashboard/settings',
     name: 'settings',
   },

@@ -37,6 +37,7 @@ const DateInput = ({
     name,
     control: form.control,
   });
+  const date = new Date(field.value);
 
   return (
     <FormItem className="w-full">
@@ -54,7 +55,7 @@ const DateInput = ({
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {field.value ? (
-                dayjs(field.value).format('DD-MM-YYYY')
+                dayjs(date).format('DD-MM-YYYY')
               ) : (
                 <span>{placeHolder || 'Pick a date'}</span>
               )}
@@ -63,7 +64,7 @@ const DateInput = ({
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={field.value ? new Date(field.value) : undefined}
+              selected={field.value ? date : undefined}
               onSelect={(date) => field.onChange(date)}
               initialFocus
               disabled={(date) => {

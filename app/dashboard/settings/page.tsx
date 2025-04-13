@@ -17,7 +17,12 @@ import {
   SystemLog,
 } from '@/store/actions/setting';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -116,210 +121,212 @@ export default function SettingsPage() {
   const [updatePrize, { isLoading: isUpdatingPrize }] =
     useUpdatePrizeMutation();
 
-  const isSkillTabLoading = isSkillsLoading || isSkillsFetching;
-  const isCategoryTabLoading = isCategoriesLoading || isCategoriesFetching;
-  const isPrizeTabLoading = isPrizesLoading || isPrizesFetching;
-
   const {
     data: systemLogs,
     isLoading: isLogsLoading,
     isFetching: isLogsFetching,
   } = useGetSystemLogsQuery();
+
+  const isSkillTabLoading = isSkillsLoading || isSkillsFetching;
+  const isCategoryTabLoading = isCategoriesLoading || isCategoriesFetching;
+  const isPrizeTabLoading = isPrizesLoading || isPrizesFetching;
   const isLogsTabLoading = isLogsLoading || isLogsFetching;
 
   const renderLoader = () => (
-    <div className="flex justify-center items-center h-[80vh]">
+    <div className="flex justify-center items-center h-[60vh]">
       <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
     </div>
   );
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Settings</h1>
+    <div className="p-4 md:p-6 max-w-full overflow-x-auto">
+      <h1 className="text-2xl font-bold mb-4">App controls</h1>
 
-      <div className="flex space-x-4 mb-6">
+      <div className="flex flex-wrap gap-2 md:gap-4 mb-6">
         {['skills', 'categories', 'prizes', 'logs'].map((tab) => (
           <Button
             key={tab}
             variant={activeTab === tab ? 'default' : 'outline'}
             onClick={() => setActiveTab(tab)}
+            className="text-sm"
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </Button>
         ))}
       </div>
 
-      {activeTab === 'skills' &&
-        (isSkillTabLoading ? (
-          renderLoader()
-        ) : (
-          <Section
-            title="Skills"
-            items={skills?.data || []}
-            isAddLoading={isAddingSkill}
-            isUpdateLoading={isUpdatingSkill}
-            isDeleteLoading={isDeletingSkill}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            setIsEditOpen={setIsEditOpen}
-            isEditOpen={isEditOpen}
-            confirmOpen={confirmOpen}
-            setConfirmOpen={setConfirmOpen}
-            onAdd={async (val) => {
-              try {
-                await addSkill({ skillName: val }).unwrap();
-                setIsOpen(false);
-              } catch (error) {
-                setIsOpen(false);
-                handleError(error);
-              }
-            }}
-            onDelete={async (id) => {
-              try {
-                await deleteSkill(id).unwrap();
-                setConfirmOpen(false);
-              } catch (error) {
-                handleError(error);
-              }
-            }}
-            onUpdate={async (id, newVal) => {
-              try {
-                await updateSkill({ id, skillName: newVal }).unwrap();
-                setIsEditOpen(false);
-              } catch (error) {
-                setIsOpen(false);
-                handleError(error);
-              }
-            }}
-            placeholder="Add a new skill"
-          />
-        ))}
+      <div className="w-full">
+        {activeTab === 'skills' &&
+          (isSkillTabLoading ? (
+            renderLoader()
+          ) : (
+            <Section
+              title="Skills"
+              items={skills?.data || []}
+              isAddLoading={isAddingSkill}
+              isUpdateLoading={isUpdatingSkill}
+              isDeleteLoading={isDeletingSkill}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              setIsEditOpen={setIsEditOpen}
+              isEditOpen={isEditOpen}
+              confirmOpen={confirmOpen}
+              setConfirmOpen={setConfirmOpen}
+              onAdd={async (val) => {
+                try {
+                  await addSkill({ skillName: val }).unwrap();
+                  setIsOpen(false);
+                } catch (error) {
+                  setIsOpen(false);
+                  handleError(error);
+                }
+              }}
+              onDelete={async (id) => {
+                try {
+                  await deleteSkill(id).unwrap();
+                  setConfirmOpen(false);
+                } catch (error) {
+                  handleError(error);
+                }
+              }}
+              onUpdate={async (id, newVal) => {
+                try {
+                  await updateSkill({ id, skillName: newVal }).unwrap();
+                  setIsEditOpen(false);
+                } catch (error) {
+                  setIsOpen(false);
+                  handleError(error);
+                }
+              }}
+              placeholder="Add a new skill"
+            />
+          ))}
 
-      {activeTab === 'categories' &&
-        (isCategoryTabLoading ? (
-          renderLoader()
-        ) : (
-          <Section
-            title="Challenge Categories"
-            items={categories?.data || []}
-            isAddLoading={isAddingCategory}
-            isUpdateLoading={isUpdatingCategory}
-            isDeleteLoading={isDeletingCategory}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            setIsEditOpen={setIsEditOpen}
-            isEditOpen={isEditOpen}
-            confirmOpen={confirmOpen}
-            setConfirmOpen={setConfirmOpen}
-            onAdd={async (val) => {
-              try {
-                await addCategory({ challengeCategoryName: val }).unwrap();
-                setIsOpen(false);
-              } catch (error) {
-                setIsOpen(false);
-                handleError(error);
-              }
-            }}
-            onDelete={async (id) => {
-              try {
-                await deleteCategory(id).unwrap();
-                setConfirmOpen(false);
-              } catch (error) {
-                handleError(error);
-              }
-            }}
-            onUpdate={async (id, newVal) => {
-              try {
-                await updateCategory({
-                  id,
-                  challengeCategoryName: newVal,
-                }).unwrap();
-                setIsEditOpen(false);
-              } catch (error) {
-                setIsEditOpen(false);
-                handleError(error);
-              }
-            }}
-            placeholder="Add a challenge category"
-          />
-        ))}
+        {activeTab === 'categories' &&
+          (isCategoryTabLoading ? (
+            renderLoader()
+          ) : (
+            <Section
+              title="Challenge Categories"
+              items={categories?.data || []}
+              isAddLoading={isAddingCategory}
+              isUpdateLoading={isUpdatingCategory}
+              isDeleteLoading={isDeletingCategory}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              setIsEditOpen={setIsEditOpen}
+              isEditOpen={isEditOpen}
+              confirmOpen={confirmOpen}
+              setConfirmOpen={setConfirmOpen}
+              onAdd={async (val) => {
+                try {
+                  await addCategory({ challengeCategoryName: val }).unwrap();
+                  setIsOpen(false);
+                } catch (error) {
+                  setIsOpen(false);
+                  handleError(error);
+                }
+              }}
+              onDelete={async (id) => {
+                try {
+                  await deleteCategory(id).unwrap();
+                  setConfirmOpen(false);
+                } catch (error) {
+                  handleError(error);
+                }
+              }}
+              onUpdate={async (id, newVal) => {
+                try {
+                  await updateCategory({
+                    id,
+                    challengeCategoryName: newVal,
+                  }).unwrap();
+                  setIsEditOpen(false);
+                } catch (error) {
+                  setIsEditOpen(false);
+                  handleError(error);
+                }
+              }}
+              placeholder="Add a challenge category"
+            />
+          ))}
 
-      {activeTab === 'prizes' &&
-        (isPrizeTabLoading ? (
-          renderLoader()
-        ) : (
-          <Section
-            title="Prize Categories"
-            items={prizes?.data || []}
-            isAddLoading={isAddingPrize}
-            isUpdateLoading={isUpdatingPrize}
-            isDeleteLoading={isDeletingPrize}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            setIsEditOpen={setIsEditOpen}
-            isEditOpen={isEditOpen}
-            confirmOpen={confirmOpen}
-            setConfirmOpen={setConfirmOpen}
-            onAdd={async (val) => {
-              try {
-                const [name, currency = 'USD'] = val.split('@');
-                await addPrize({
-                  prizeName: name.trim(),
-                  currency: currency.trim(),
-                  description: 'N/A',
-                }).unwrap();
-                setIsOpen(false);
-              } catch (error) {
-                setIsOpen(false);
-                handleError(error);
-              }
-            }}
-            onDelete={async (id) => {
-              try {
-                setConfirmOpen(true);
-                await deletePrize(id).unwrap();
-                setConfirmOpen(false);
-              } catch (error) {
-                handleError(error);
-              }
-            }}
-            onUpdate={async (id, newVal, currency) => {
-              try {
-                await updatePrize({
-                  id,
-                  prizeName: newVal,
-                  currency: currency || 'RWF',
-                  description: 'N/A',
-                }).unwrap();
-                setIsEditOpen(false);
-              } catch (error) {
-                setIsEditOpen(false);
-                handleError(error);
-              }
-            }}
-            placeholder="e.g RWF"
-          />
-        ))}
+        {activeTab === 'prizes' &&
+          (isPrizeTabLoading ? (
+            renderLoader()
+          ) : (
+            <Section
+              title="Prize Categories"
+              items={prizes?.data || []}
+              isAddLoading={isAddingPrize}
+              isUpdateLoading={isUpdatingPrize}
+              isDeleteLoading={isDeletingPrize}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              setIsEditOpen={setIsEditOpen}
+              isEditOpen={isEditOpen}
+              confirmOpen={confirmOpen}
+              setConfirmOpen={setConfirmOpen}
+              onAdd={async (val) => {
+                try {
+                  const [name, currency = 'USD'] = val.split('@');
+                  await addPrize({
+                    prizeName: name.trim(),
+                    currency: currency.trim(),
+                    description: 'N/A',
+                  }).unwrap();
+                  setIsOpen(false);
+                } catch (error) {
+                  setIsOpen(false);
+                  handleError(error);
+                }
+              }}
+              onDelete={async (id) => {
+                try {
+                  await deletePrize(id).unwrap();
+                  setConfirmOpen(false);
+                } catch (error) {
+                  handleError(error);
+                }
+              }}
+              onUpdate={async (id, newVal, currency) => {
+                try {
+                  await updatePrize({
+                    id,
+                    prizeName: newVal,
+                    currency: currency || 'RWF',
+                    description: 'N/A',
+                  }).unwrap();
+                  setIsEditOpen(false);
+                } catch (error) {
+                  setIsEditOpen(false);
+                  handleError(error);
+                }
+              }}
+              placeholder="e.g RWF"
+            />
+          ))}
 
-      {activeTab === 'logs' &&
-        (isLogsTabLoading ? (
-          renderLoader()
-        ) : (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">
-                System Logs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DataTable
-                data={systemLogs?.data || []}
-                columns={columns}
-                loading={isLogsTabLoading}
-              />
-            </CardContent>
-          </Card>
-        ))}
+        {activeTab === 'logs' &&
+          (isLogsTabLoading ? (
+            renderLoader()
+          ) : (
+            <Card className="mt-6 max-sm:!w-[360px] md:w-full overflow-x-auto">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">
+                  System Logs
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DataTable
+                  data={systemLogs?.data || []}
+                  columns={columns}
+                  loading={isLogsTabLoading}
+                />
+              </CardContent>
+            </Card>
+          ))}
+      </div>
     </div>
   );
 }

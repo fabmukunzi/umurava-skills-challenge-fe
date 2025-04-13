@@ -37,7 +37,7 @@ const items = [
     title: dashboardRoutes.challengeHackathons.label,
     url: dashboardRoutes.challengeHackathons.path,
     icon: PaperIcon,
-  },  
+  },
   {
     title: dashboardRoutes.community.label,
     url: dashboardRoutes.community.path,
@@ -47,7 +47,7 @@ const items = [
 ];
 
 const footerItems = [
-  { title: 'Settings', icon: GearIcon, url: dashboardRoutes.settings.path  },
+  { title: 'App Controls', icon: GearIcon, url: dashboardRoutes.settings.path },
   { title: 'Help Center', icon: HeadsetIcon, url: '/help' },
   { title: 'Refer Family & Friends', icon: GiftBoxIcon, url: '/refer' },
 ];
@@ -68,7 +68,7 @@ declare module 'next-auth' {
 export function AppSidebar() {
   const pathname = usePathname();
   const [selectedItem, setSelectedItem] = useState(() => {
-    const matchingItem = items.find(
+    const matchingItem = [...items, ...footerItems].find(
       (item) =>
         pathname.startsWith(item.url) &&
         item.url !== dashboardRoutes.dashboard.path
@@ -79,7 +79,7 @@ export function AppSidebar() {
   const session = useSession();
 
   useEffect(() => {
-    const matchingItem = items.find(
+    const matchingItem = [...items, ...footerItems].find(
       (item) =>
         pathname.startsWith(item.url) &&
         item.url !== dashboardRoutes.dashboard.path
@@ -89,6 +89,21 @@ export function AppSidebar() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | undefined>(undefined);
+
+  const role = session.data?.user?.role;
+  const isParticipant = role === 'participant';
+  const isAdmin = role === 'admin' || role?.toLocaleLowerCase() === 'super admin';
+
+const filteredItems = items.filter(item => {
+  if (item.title === dashboardRoutes.community.label && isAdmin) return false;
+  return true;
+});
+
+const filteredFooterItems = footerItems.filter(item => {
+  if (item.title === dashboardRoutes.settings.name && !isParticipant) return false;
+  return true;
+});
+
   if (!session?.data) {
     return <SidebarSkeleton />;
   }
@@ -105,16 +120,17 @@ export function AppSidebar() {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item, index) => {
+                {filteredItems.map((item, index) => {
                   const isSelected = selectedItem === item.title;
                   const isHovered = hoveredItem === item.title;
                   return (
                     <SidebarMenuItem
                       key={index}
-                      className={`rounded group py-0 ${selectedItem === item.title
-                        ? 'bg-white text-primary'
-                        : 'hover:bg-white hover:text-primary text-white'
-                        }`}
+                      className={`rounded group py-0 ${
+                        selectedItem === item.title
+                          ? 'bg-white text-primary'
+                          : 'hover:bg-white hover:text-primary text-white'
+                      }`}
                       onClick={() => {
                         if (item.isDialog) {
                           setIsDialogOpen(true);
@@ -170,16 +186,17 @@ export function AppSidebar() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {footerItems.map((item, index) => {
+                  {filteredFooterItems.map((item, index) => {
                     const isSelected = selectedItem === item.title;
                     const isHovered = hoveredItem === item.title;
                     return (
                       <SidebarMenuItem
                         key={index}
-                        className={`rounded group py-0 ${isHovered || isSelected
-                          ? 'bg-white text-primary'
-                          : ' text-white'
-                          }`}
+                        className={`rounded group py-0 ${
+                          isHovered || isSelected
+                            ? 'bg-white text-primary'
+                            : ' text-white'
+                        }`}
                         onClick={() => setSelectedItem(item.title)}
                         onMouseEnter={() => setHoveredItem(item.title)}
                         onMouseLeave={() => setHoveredItem(undefined)}
