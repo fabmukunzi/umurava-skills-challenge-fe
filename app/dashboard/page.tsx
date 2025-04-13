@@ -8,10 +8,9 @@ import FlatPaperIcon from '@/components/common/svg/flatpaper-icon';
 import UserGroupIcon from '@/components/common/svg/user-group-icon';
 import AdminStatCard from '@/components/dashboard/admin-statistics-card';
 import TalentStasticsCard from '@/components/dashboard/talent-statistics-card';
-import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
 import { useGetChallengesQuery, useGetParticipantChallengesQuery, useGiveChallengeStatisticsQuery } from '@/store/actions/challenge';
-import { ChevronRight, Eye } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -108,12 +107,7 @@ const DashboardPage = () => {
             Build Work Experience through Skills Challenges
           </p>
         </div>
-        <Link href={dashboardRoutes.profile.path}>
-          <Button className="py-6">
-            <Eye />
-            View Profile
-          </Button>
-        </Link>
+
       </div>
       {!isAdmin ? (
         <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">

@@ -148,7 +148,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold mb-4">App controls</h1>
 
       <div className="flex flex-wrap gap-2 md:gap-4 mb-6">
-        {['skills', 'categories', 'prizes', 'logs'].map((tab) => (
+        {['skills', 'categories', 'prizes', 'system logs'].map((tab) => (
           <Button
             key={tab}
             variant={activeTab === tab ? 'default' : 'outline'}
@@ -318,7 +318,7 @@ export default function SettingsPage() {
             />
           ))}
 
-        {activeTab === 'logs' &&
+        {activeTab === 'system logs' &&
           (isLogsTabLoading ? (
             renderLoader()
           ) : (
