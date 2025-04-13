@@ -37,11 +37,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         .slice(0, 2);
     }
     return [];
-  }, [notificationsData, user?.role, user?.id]);
+  }, [notificationsData]);
 
   const notificationsCount = useMemo(() => notificationsData
     .filter((notif: INotification) => notif.status === 'unread')
-    .length, [notificationsData, user?.role, user?.id]);
+    .length, [notificationsData]);
+
   const hasNotifications = notificationsCount > 0;
   const noNotifications = notificationsCount === 0;
 
@@ -66,7 +67,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const NotificationContainer = () => (<div className="relative">
+  const NotificationContainer = () => (<div className={"relative"}>
     <DropdownMenu>
       <DropdownMenuTrigger className='rounded-full flex items-center justify-center border p-1 object-contain h-10 w-10'>
         <NotificationIcon />
@@ -152,7 +153,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <SidebarProvider>
           <AppSidebar />
           <div className="flex flex-col flex-1">
-            <header className="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
+            <header className={`bg-white flex items-center justify-between  px-6 py-4 shadow-sm `}>
               <SidebarTrigger className="lg:hidden" />
               {currentPathLength < 4 && (<div className="flex relative items-center w-1/2 md:w-full max-w-md">
                 <Search className="text-gray-400 absolute w-5 h-5 left-3" />
@@ -175,7 +176,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 />
               </div>)}
 
-              <div className="flex items-center space-x-2">
+              <div className={`flex items-center ${currentPathLength > 3 ? 'ml-auto' : 'justify-between'} space-x-2`}>
                 <NotificationContainer />
 
                 {user?.profileUrl ? (
