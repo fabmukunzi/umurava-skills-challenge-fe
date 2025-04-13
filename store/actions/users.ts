@@ -71,7 +71,7 @@ const usersEndpoints = baseAPI.injectEndpoints({
     }),
     activateAccount: builder.mutation<void, { userId: string }>({
       query: ({ userId }) => ({
-        url: `auth/deactivate-account/${userId}`,
+        url: `auth/activate-account/${userId}`,
         method: 'POST',
       }),
     }),
