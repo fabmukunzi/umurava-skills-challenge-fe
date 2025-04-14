@@ -10,6 +10,7 @@ import MailIcon from '@/components/common/svg/mail-icon';
 import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
 import KeyInstruction from '@/components/dashboard/key-instruction-card';
 import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
@@ -17,7 +18,11 @@ import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
 import { handleError } from '@/lib/errorHandler';
 import { UmuravaWhiteLogo } from '@/lib/images';
 import { homepageRoutes } from '@/lib/routes';
-import { SubmitChallengeDto, useGetPublicChallengeByIdQuery, useSubmitChallengeMutation } from '@/store/actions/challenge';
+import {
+  SubmitChallengeDto,
+  useGetPublicChallengeByIdQuery,
+  useSubmitChallengeMutation,
+} from '@/store/actions/challenge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -26,7 +31,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const HomeSingleProjectView = () => {
-
   const form = useForm<SubmitChallengeDto>({
     resolver: zodResolver(challengeSubmissionSchema),
     defaultValues: {},
@@ -66,6 +70,14 @@ const HomeSingleProjectView = () => {
     }
   };
 
+  const statusStyles: Record<string, string> = {
+    draft: 'bg-gray-500 text-white',
+    open: 'bg-blue-100 text-blue-600',
+    ongoing: 'bg-yellow-300 text-yellow-800',
+    closed: 'bg-red-300 text-red-800',
+    completed: 'bg-green-700 text-white',
+  };
+
   if (isLoading) return <SingleChallengeSkeleton />;
 
   return (
@@ -87,6 +99,14 @@ const HomeSingleProjectView = () => {
         <Card className="md:w-8/12 p-6">
           <div className="relative bg-primary h-80 flex items-center justify-center rounded-lg mb-6">
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
+            <Badge
+              variant="secondary"
+              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl ${
+                statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
+              }`}
+            >
+              {project?.status}
+            </Badge>
           </div>
           <h1 className="text-2xl font-semibold my-1">
             {project?.challengeName}
@@ -161,6 +181,9 @@ const HomeSingleProjectView = () => {
             </div>
             <Button
               className="w-full h-12"
+              disabled={
+                project?.status === 'open' || dayjs().isAfter(project?.endDate)
+              }
               onClick={() => {
                 if (isProjectNotStarted) {
                   setOpenJoinDialog(!openJoinDialog);

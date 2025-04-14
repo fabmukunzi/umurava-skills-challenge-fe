@@ -34,6 +34,7 @@ import { handleError } from '@/lib/errorHandler';
 import { UserSchema } from '@/lib/types/user';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 
 const columns: Column<SystemLog>[] = [
   {
@@ -56,7 +57,20 @@ const columns: Column<SystemLog>[] = [
       </span>
     ),
   },
-  { header: 'Status', accessor: 'statusCode' },
+  {
+    header: 'Status',
+    accessor: 'status',
+    render: (item) => (
+      <Badge
+        className={`${
+          item.status === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white rounded-lg`}
+      >
+        {item.status}
+      </Badge>
+    ),
+  },
+  { header: 'Status Code', accessor: 'statusCode' },
   {
     header: 'URL',
     render: (log) => (
@@ -72,8 +86,10 @@ const columns: Column<SystemLog>[] = [
       </TooltipProvider>
     ),
   },
+  { header: 'Details', accessor: 'details' },
   { header: 'IP Address', accessor: 'ipAddress' },
   { header: 'Duration', accessor: 'duration' },
+  { header: 'Done By', accessor: 'doneBy' },
   {
     header: 'Timestamp',
     render: (log) => dayjs(log.timestamp).format('DD-MMM-YYYY'),
@@ -96,7 +112,19 @@ const userColumns: Column<UserSchema>[] = [
   },
   { header: 'Name', accessor: 'names' },
   { header: 'Email', accessor: 'email' },
-  { header: 'Role', accessor: 'userRole' },
+  {
+    header: 'Role',
+    accessor: 'userRole',
+    render: (user) => (
+      <Badge
+        className={`${
+          user.userRole === 'admin' ? 'bg-green-500' : 'bg-primary'
+        } text-white rounded-lg`}
+      >
+        {user.userRole}
+      </Badge>
+    ),
+  },
   {
     header: 'Status',
     accessor: 'status',
@@ -362,7 +390,7 @@ export default function SettingsPage() {
           (isLogsTabLoading ? (
             renderLoader()
           ) : (
-            <Card className="mt-6 max-sm:!w-[360px] md:w-full overflow-x-auto">
+            <Card className="mt-6 max-sm:!w-[360px] md:w-[75vw] overflow-x-auto">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">
                   System Logs

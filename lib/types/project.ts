@@ -69,6 +69,8 @@ export interface ChallengeAggregates {
   totalCompletedChallenges: number;
   totalOpenChallenges: number;
   totalOngoingChallenges: number;
+  totalDraftChallenges: number;
+  totolClosedChallenges: number;
 }
 
 export interface IStatistics extends Partial<ChallengeAggregates> {

@@ -73,19 +73,29 @@ const ChallengesPage = () => {
       count: isAdmin ? data?.data.aggregates.totalChallenges : participantChallenges?.data.aggregates.totalChallenges,
     },
     {
-      label: 'Completed Challenges',
+      label: 'Completed',
       value: 'completed',
       count: isAdmin ? data?.data.aggregates.totalCompletedChallenges : participantChallenges?.data.aggregates.totalCompletedChallenges,
     },
     {
-      label: 'Open Challenges',
+      label: 'Open',
       value: 'open',
       count: isAdmin ? data?.data.aggregates.totalOpenChallenges : participantChallenges?.data.aggregates.totalOpenChallenges,
     },
     {
-      label: 'Ongoing Challenges',
+      label: 'Ongoing',
       value: 'ongoing',
       count: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
+    },
+    {
+      label: 'Draft',
+      value: 'draft',
+      count: isAdmin ? data?.data.aggregates.totalDraftChallenges : participantChallenges?.data.aggregates.totalDraftChallenges,
+    },
+    {
+      label: 'Closed',
+      value: 'closed',
+      count: isAdmin ? data?.data.aggregates.totolClosedChallenges : participantChallenges?.data.aggregates.totolClosedChallenges,
     },
   ];
 
@@ -97,7 +107,7 @@ const ChallengesPage = () => {
           Join a challenge or a hackathon to gain valuable work experience,
         </p>
       </div>
-      <div className="my-10 grid md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <div className="my-10 grid md:grid-cols-2 lg:grid-cols-5 2xl:grid-cols-6 gap-4">
         {statusOptions.map(({ label, value, count }) => (
           <Button
             key={value}
