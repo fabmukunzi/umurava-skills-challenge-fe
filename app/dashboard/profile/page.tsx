@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  useActivateAccountMutation,
   useChangePasswordMutation,
   useDeactivateAccountMutation,
   useGetProfileQuery,
@@ -39,7 +38,6 @@ const ProfilePage = () => {
     useUpdateProfilePictureMutation();
   const [deactivateAccount, { isLoading: isDeactivating }] =
     useDeactivateAccountMutation();
-  const [activateAccount, { isLoading: isActivating }] = useActivateAccountMutation();
   const [changePassword, { isLoading: isChangingPassword }] =
     useChangePasswordMutation();
 
@@ -107,15 +105,6 @@ const ProfilePage = () => {
     }
   };
 
-  const handleActivateAccount = async () => {
-    try {
-      await activateAccount({ userId: data?.user?.id || '' }).unwrap();
-      toast({ title: 'Account activated successfully' });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -155,7 +144,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 space-y-4 md:space-y-8 max-w-screen-xl">
+    <div className="flex flex-col min-h-screen bg-gray-100 space-y-4 md:space-y-8 max-w-screen-2xl mx-auto">
       <header>
         <Link href="/dashboard" className='flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 md:mb-6'>
           <LucideArrowLeft className="size-5" /> Back
@@ -237,7 +226,7 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
 
-        <Card className="col-span-2 w-full h-full shadow-lg">
+        <Card className="w-full h-full shadow-lg">
           <CardHeader className="text-left">
             <CardTitle className="text-2xl font-semibold">Change Password</CardTitle>
           </CardHeader>
@@ -293,9 +282,8 @@ const ProfilePage = () => {
 
           </CardContent>
         </Card>
-      </main>
-      <footer>
-        {!isAdmin && (<Card className="col-span-3 w-full h-full shadow-lg">
+
+        {!isAdmin && (<Card className=" w-full h-fit shadow-lg">
           <CardHeader className="text-left">
             <CardTitle className="text-2xl font-semibold">Account Settings</CardTitle>
           </CardHeader>
@@ -304,34 +292,26 @@ const ProfilePage = () => {
 
             <div className='flex items-center gap-2'>
 
-              <Button className="mt-4" disabled={isActivating} onClick={handleActivateAccount}>
-                {isActivating ? (
-                  <>
-                    <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is activating...
-                  </>
-                ) : (
-                  'Activate Account'
-                )}
-              </Button>
-
               <Button className="mt-4" variant={'destructive'} disabled={isDeactivating} onClick={handleDeactivateAccount}>
                 {isDeactivating ? (
                   <>
                     <Loader2 className="animate-spin w-5 h-5 mr-2" /> Is deactivating...
                   </>
                 ) : (
-                  'Deactivate Account'
+                  'Delete Account'
                 )}
               </Button>
             </div>
           </CardContent>
         </Card>)}
-
+      </main>
+      <footer>
         <div className="text-center mt-4">
           <p className="text-sm">
             Copyright &copy; All Rights Reserved Umurava{' '}
             {new Date().getFullYear()}.
-          </p>        </div>
+          </p>
+        </div>
       </footer>
     </div>
   );
