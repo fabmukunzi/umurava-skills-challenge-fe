@@ -1,9 +1,10 @@
 'use client';
+export const dynamic = 'force-dynamic';
 
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,13 +18,19 @@ interface LoginForm {
   password: string;
 }
 
-export const dynamic = 'force-dynamic';
-
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginForm>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const router = useRouter();
+  const router=useRouter()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: session, status } = useSession();
+
+useEffect(() => {
+  if (status === 'authenticated') {
+    router.push('/dashboard');
+  }
+}, [router, status]);
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
@@ -38,7 +45,7 @@ export default function LoginPage() {
       });
 
       if (result?.ok && result?.url) {
-        router.push(result.url || '/dashboard');
+        location.reload()
       }
       if (result?.error) {
         setError(result.error);
