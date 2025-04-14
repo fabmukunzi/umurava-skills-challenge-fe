@@ -4,7 +4,7 @@ import { baseAPI } from '@/store/api';
 
 const categoryEndpoints = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<{ data: ICategory[] }, void>({
+    getCategories: builder.query<{ data: { categories: ICategory[] } }, void>({
       query: () => ({
         url: `/admin/challenge-category`,
         method: 'GET',
