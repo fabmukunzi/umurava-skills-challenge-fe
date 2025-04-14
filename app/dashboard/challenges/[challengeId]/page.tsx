@@ -197,7 +197,7 @@ const SingleChallengePage = () => {
 
             {project?.submissionStatus === 'submitted' && <Alert isShow={showAlert} variant='success' title="In Review ✅" description={'Your submission is currently being reviewed.'} onClose={() => setShowAlert(false)} />}
 
-            {project?.submissionStatus !== 'not-submitted' && isSubmissionNear && <Alert isShow={showAlert} variant='warning' title="Friendly Reminder" description={'You are nearing submission deadline.'} onClose={() => setShowAlert(false)} />}
+            {project?.submissionStatus !== 'not submitted' && isSubmissionNear && <Alert isShow={showAlert} variant='warning' title="Friendly Reminder" description={'You are nearing submission deadline.'} onClose={() => setShowAlert(false)} />}
 
             {project?.submissionStatus === 'approved' && <Alert isShow={showAlert} variant='success' title="Congratulations 🚀" description={'Your submission have been selected onto the next stage.'} onClose={() => setShowAlert(false)} />}
 
