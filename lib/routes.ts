@@ -5,7 +5,7 @@ export const homepageRoutes = {
     name: 'home',
   },
   challengeHackathons: {
-    label: 'Challenge & Hackathons',
+    label: 'Challenges & Hackathons',
     path: '/challenges',
     name: 'challenge-hackathons',
   },

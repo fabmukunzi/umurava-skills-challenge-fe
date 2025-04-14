@@ -100,17 +100,16 @@ const FooterComponent = () => {
           <h1 className="text-white font-bold text-2xl">Our Address</h1>
           <div className="flex items-center gap-4">
             <Mail size={20} className="text-[#bbbbbb]" />
-            <a href="mailto:career@tickets.com">career@tickets.com</a>
+            <a href="mailto:career@tickets.com">team@umurava.africa</a>
           </div>
           <div className="flex items-center gap-4">
             <MapPin size={20} className="text-[#bbbbbb]" />{' '}
             <a href="https://maps.app.goo.gl/RzxVRfQ5uNQYRQRDA">
-              89 KG 14 Ave, Kigali
-            </a>
+              8 KG 208 St, Kigali-Rwanda            </a>
           </div>
           <div className="flex items-center gap-4">
             <Phone size={20} className="text-[#bbbbbb]" />{' '}
-            <a href="tel:+250700000">+250 700 000</a>
+            <a href="tel:+250700000">+ 250 789 263 354</a>
           </div>
         </div>
         <div className="md:w-1/3 flex flex-col gap-4">
@@ -119,7 +118,7 @@ const FooterComponent = () => {
             Home
           </a>
           <a className="block" href={homepageRoutes.challengeHackathons.path}>
-            Program
+            Platform
           </a>
           <a href={homepageRoutes.about.path}>About</a>
           <a className="block" href={homepageRoutes.contact.path}>

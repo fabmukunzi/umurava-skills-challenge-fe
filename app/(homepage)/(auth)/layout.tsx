@@ -2,27 +2,25 @@ import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Umurava skills challenge',
-    description: 'Build Work Experience through Skills Challenges Program',
-  };
+  title: 'Umurava skills challenge',
+  description: 'Build Work Experience through Skills Challenges Program',
+};
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-      <div className="flex min-h-screen bg-gray-100 px-6 py-12 lg:px-20">
-        <div className="hidden lg:flex flex-col justify-start mt-10 w-1/2 pr-12">
-          <h1 className="text-4xl font-bold text-gray-900">
-            Outsource, Hire, Work with and Manage Africa&apos;s Vetted Talents &
-            Teams
-          </h1>
-          <p className="mt-4 text-lg text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-        </div>
-
-        <div className="flex justify-center h-fit w-full lg:w-1/2">
-          {children}
-        </div>
+    <div className="flex min-h-screen bg-gray-100 px-6 py-12 lg:px-20">
+      <div className="hidden lg:flex flex-col justify-start mt-10 w-1/2 pr-12">
+        <h1 className="text-4xl font-bold text-gray-900">
+          Build Work Experience and Land Job Opportunities through Project-based Learning Solution!
+        </h1>
+        <p className="mt-4 text-lg text-gray-600">
+          Work on real-world projects - Connect with a large network of digital professionals - land job opportunities.
+        </p>
       </div>
+
+      <div className="flex justify-center h-fit w-full lg:w-1/2">
+        {children}
+      </div>
+    </div>
   );
 }
