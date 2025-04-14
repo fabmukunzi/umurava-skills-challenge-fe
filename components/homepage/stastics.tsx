@@ -1,5 +1,6 @@
 "use client"
 
+import { formatToK } from '@/lib/format-k';
 import { BackgroundSVG2 } from '@/lib/images';
 import { useGetCareerStatsQuery } from '@/store/actions/categories';
 import { motion } from 'framer-motion';
@@ -25,7 +26,7 @@ const Statistics = () => {
   return (
     <div className="mx-auto text-white py-10">
       <motion.div
-        initial={{ opacity: 0, y: 30 }} 
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
         style={{ backgroundImage: `url(${BackgroundSVG2.src})` }}
@@ -45,7 +46,7 @@ const Statistics = () => {
                 whileHover={{ scale: 1.1 }}
               >
                 <h1 className="text-4xl font-bold">
-                  {String(value)}
+                  {formatToK(Number(value))}{typeof key !== undefined && !key.includes('year') && '+'}
                   <span className="block text-lg font-normal capitalize">{typeof key !== undefined && key.includes('users') ? 'Users' : key.includes('challenge') ? 'Challenges completed' : key.includes('countr') ? 'Countries' : key}</span>
                 </h1>
               </motion.div>

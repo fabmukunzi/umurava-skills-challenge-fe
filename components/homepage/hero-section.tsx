@@ -17,12 +17,10 @@ const HeroSection = () => {
         transition={{ duration: 1 }}
       >
         <h1 className="text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl font-bold">
-          Build Work Experience through Skills Challenges Program
+          Build Work Experience through Skills Challenges Platform
         </h1>
         <p className="my-6 lg:my-10 text-black text-lg 2xl:text-xl">
-          Enhance your Employability and Accelerate your Career Growth by
-          working on Hands-on projects & hackathons from various businesses &
-          organizations.
+          Enhance your Employability and Accelerate your Career Growth By working on Real-World Projects through hackathons, skills competitions, and task challenges from various businesses and organizations.
         </p>
         <Link href={homepageRoutes.challengeHackathons.path}>
           <Button

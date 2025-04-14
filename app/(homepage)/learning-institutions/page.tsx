@@ -9,21 +9,21 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
-  AREDLogo,
-  AshesiLogo,
+  // AREDLogo,
+  // AshesiLogo,
   BackgroundSVG2,
   ChallengesDashboardView,
-  CIBALogo,
-  GDGLogo,
-  IgiheLogo,
-  InnovationHubLogo,
-  KeplerLogo,
-  LateriteLogo,
+  // CIBALogo,
+  // GDGLogo,
+  // IgiheLogo,
+  // InnovationHubLogo,
+  // KeplerLogo,
+  // LateriteLogo,
   SchoolCaseIcon,
-  SokoFundLogo2,
+  // SokoFundLogo2,
   StudentsImage,
-  ToriLogo,
-  ViamoLogo,
+  // ToriLogo,
+  // ViamoLogo,
 } from '@/lib/images';
 import Image from 'next/image';
 import React from 'react';
@@ -58,20 +58,20 @@ const LearningInstitutionsPage = () => {
     },
   ];
 
-  const partners = [
-    ToriLogo,
-    GDGLogo,
-    AshesiLogo,
-    KeplerLogo,
-    InnovationHubLogo,
-    CIBALogo,
-    AREDLogo,
-    IgiheLogo,
-    ViamoLogo,
-    KeplerLogo,
-    LateriteLogo,
-    SokoFundLogo2,
-  ];
+  // const partners = [
+  //   ToriLogo,
+  //   GDGLogo,
+  //   AshesiLogo,
+  //   KeplerLogo,
+  //   InnovationHubLogo,
+  //   CIBALogo,
+  //   AREDLogo,
+  //   IgiheLogo,
+  //   ViamoLogo,
+  //   KeplerLogo,
+  //   LateriteLogo,
+  //   SokoFundLogo2,
+  // ];
 
   const institutionBenefits = [
     'As Career Development and Job Readiness Program',
@@ -146,9 +146,8 @@ const LearningInstitutionsPage = () => {
         >
           {offerings.map((offer, index) => (
             <motion.div
-              className={`${
-                index === 3 ? 'lg:col-span-2' : ''
-              } bg-primary text-white rounded-xl`}
+              className={`${index === 3 ? 'lg:col-span-2' : ''
+                } bg-primary text-white rounded-xl`}
               key={index}
               variants={{
                 hidden: { opacity: 0, y: 30 },
@@ -191,7 +190,7 @@ const LearningInstitutionsPage = () => {
         </motion.div>
       </div>
 
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: 'easeInOut' }}
@@ -206,9 +205,9 @@ const LearningInstitutionsPage = () => {
             <Image key={index} src={logo} alt="Partner Logo" />
           ))}
         </div>
-      </motion.div>
+      </motion.div> */}
 
-      <div className="mx-auto w-10/12">
+      <div className="mx-auto py-20 w-10/12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

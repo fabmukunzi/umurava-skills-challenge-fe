@@ -43,9 +43,7 @@ const GainExperience = () => {
           Experience a New Way of Building Work Experience
         </h1>
         <p className="my-4 text-primary_grey">
-          Join the Skills Challenges Program to accelerate your career growth
-          and become part of Africa’s largest workforce of digital
-          professionals.
+          Join the Skills Challenges Platform and accelerate your career growth and become part of Africa’s largest network of digital professionals.
         </p>
       </motion.div>
 
@@ -70,9 +68,8 @@ const GainExperience = () => {
         {experiences.map((experience, index) => (
           <motion.div
             key={index}
-            className={`${
-              index === 0 ? 'md:col-span-2' : ''
-            } bg-primary rounded-2xl`}
+            className={`${index === 0 ? 'md:col-span-2' : ''
+              } bg-primary rounded-2xl`}
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
