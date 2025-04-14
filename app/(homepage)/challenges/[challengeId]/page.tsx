@@ -25,6 +25,7 @@ import {
 } from '@/store/actions/challenge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -38,6 +39,8 @@ const HomeSingleProjectView = () => {
 
   const params = useParams();
   const challengeId = params?.challengeId as string;
+  const session = useSession();
+  const user = session.data?.user;
 
   const { data, isLoading } = useGetPublicChallengeByIdQuery(challengeId, {
     skip: !challengeId,
@@ -48,9 +51,7 @@ const HomeSingleProjectView = () => {
 
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
-  const isProjectNotStarted = dayjs().isBefore(
-    dayjs(project?.startDate || dayjs())
-  );
+  const isLoggedIn = Boolean(user);
 
   const onSubmit = async (values: SubmitChallengeDto) => {
     try {
@@ -101,9 +102,8 @@ const HomeSingleProjectView = () => {
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
             <Badge
               variant="secondary"
-              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl ${
-                statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
-              }`}
+              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl ${statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
+                }`}
             >
               {project?.status}
             </Badge>
@@ -183,16 +183,17 @@ const HomeSingleProjectView = () => {
               className="w-full h-12"
               disabled={
                 project?.status === 'open' || dayjs().isAfter(project?.endDate)
+                // || !isLoggedIn
               }
               onClick={() => {
-                if (isProjectNotStarted) {
-                  setOpenJoinDialog(!openJoinDialog);
-                } else {
+                if (isLoggedIn) {
                   setOpenSubmitDialog(!openSubmitDialog);
+                } else {
+                  setOpenJoinDialog(!openJoinDialog);
                 }
               }}
             >
-              {isProjectNotStarted ? 'Join Challenge' : 'Submit Your Work'}
+              {isLoggedIn ? 'Submit Your Work' : 'Join Challenge'}
             </Button>
           </Card>
         </div>
