@@ -180,7 +180,7 @@ const HomeSingleProjectView = () => {
                 )}
             </div>
             <Button
-              className="w-full h-12"
+              className="w-full"
               disabled={
                 project?.status === 'open' || dayjs().isAfter(project?.endDate)
                 // || !isLoggedIn

@@ -149,11 +149,12 @@ const Participants = () => {
                     <div className="flex items-center gap-2">
                       <Badge
                         className={`text-white capitalize ${{
-                          'approved': 'bg-green-500',
-                          'rejected': 'bg-red-500',
-                          'submitted': 'bg-primary',
-                          'not submitted': 'bg-gray-500'
-                        }[participant?.submissionStatus] || 'bg-[#2B71F0]'
+                          'completed': 'bg-green-700 text-white',
+                          'closed': 'bg-red-300 text-red-800',
+                          'open': 'bg-blue-100 text-blue-600',
+                          'ongoing': 'bg-yellow-300 text-yellow-800',
+                          'draft': 'bg-gray-500 text-white',
+                        }[participant?.submissionStatus] || 'bg-gray-500 text-white'}
                           }`}
                       >
                         {participant?.submissionStatus}
