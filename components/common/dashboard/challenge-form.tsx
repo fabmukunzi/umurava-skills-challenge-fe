@@ -65,12 +65,12 @@ const ChallengeForm = ({
   });
 
   const { data: categoriesData } = useGetCategoriesQuery();
-  const categories = categoriesData?.data?.map((category) => ({
+  const categories = categoriesData?.data?.categories?.map((category) => ({
     value: category.challengeCategoryName,
     label: category.challengeCategoryName,
   }));
 
-  const { data: skillsData } = useGetSkillsQuery({params:{}});
+  const { data: skillsData } = useGetSkillsQuery({ params: {} });
   const skills = skillsData?.data?.skills?.map((skill) => ({
     value: skill.skillName,
     label: skill.skillName,

@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { challengeSubmissionSchema } from '@/lib/challenge-form-validation';
 import TextInput from '../common/text-input';
 import { LucideLoader2 } from 'lucide-react';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface SubmitChallengeDialogProps {
   open: boolean;
@@ -43,7 +44,7 @@ const SubmitChallengeDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent hideCloseButton={true} className="flex flex-col mx-auto">
         <div className="flex items-center justify-between gap-2">
-          <h1 className="text-black text-lg font-semibold">Submit Your Work</h1>
+          <DialogTitle className="text-black text-lg font-semibold">Submit Your Work</DialogTitle>
         </div>
         <h2 className="text-primary_grey text-base">
           Submit your work and provide either a Github repository URL or Google

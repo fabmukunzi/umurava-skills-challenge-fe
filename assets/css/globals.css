@@ -8,6 +8,20 @@
   }
 }
 
+@layer components {
+  .primary-btn-outline {
+    @apply bg-blue-100 hover:bg-blue-100/50 text-primary hover:text-primary border border-primary cursor-pointer !important;
+  }
+  .danger-btn-outline {
+    @apply bg-red-100 hover:bg-red-100/50 text-red-700 hover:text-red-700 border border-red-700 cursor-pointer !important;
+  }
+
+  .primary-btn-outline:hover,
+  .danger-btn-outline:hover {
+    @apply shadow-md;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -80,8 +94,9 @@
   }
 }
 
-html,body{
-  scroll-behavior: smooth
+html,
+body {
+  scroll-behavior: smooth;
 }
 
 @layer base {

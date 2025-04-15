@@ -45,8 +45,10 @@ import { handleError } from '@/lib/errorHandler';
 import { toast } from '@/hooks/use-toast';
 import SubmitChallengeDialog from '@/components/dashboard/submit-challenge-dialog';
 import JoinChallengeDialog from '@/components/dashboard/join-challenge-dialog';
-import { Loader2, LucideLoader2 } from 'lucide-react';
+import { Alert } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
 import dayjs from 'dayjs';
+import { Badge } from '@/components/ui/badge';
 
 const ITEMS_PER_PAGE = 100;
 const SingleChallengePage = () => {
@@ -70,6 +72,15 @@ const SingleChallengePage = () => {
   });
 
   const project = data?.data;
+  const isSubmissionNear = useMemo(() => {
+    if (project?.submissionDate) {
+      const currentDate = dayjs();
+      const submissionDate = dayjs(project.submissionDate);
+      const daysDiff = submissionDate.diff(currentDate, 'day');
+      return daysDiff <= 3 && daysDiff >= 0;
+    }
+    return false;
+  }, [project?.submissionDate]);
 
   const { data: participantsData, isLoading: participantsLoading } =
     useGetParticipantsByChallengeIdQuery({
@@ -93,6 +104,7 @@ const SingleChallengePage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const [showSubmissionAlert, setShowSubmissionAlert] = useState(true);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -106,25 +118,11 @@ const SingleChallengePage = () => {
     }
   };
 
-  const onComplete = async () => {
+  const onStatusChange = async (status: string) => {
     try {
       await updateChallengeStatus({
         id: challengeId,
-        status: 'completed',
-      }).unwrap();
-      toast({
-        title: 'Challenge updated successfully',
-      });
-    } catch (err) {
-      handleError(err);
-    }
-  };
-
-  const onClose = async () => {
-    try {
-      await updateChallengeStatus({
-        id: challengeId,
-        status: 'closed',
+        status: status,
       }).unwrap();
       toast({
         title: 'Challenge updated successfully',
@@ -191,7 +189,44 @@ const SingleChallengePage = () => {
         </Card>
 
         <div className="lg:w-5/12 md:w-6/12 h-fit">
+
           <Card className="p-6 mb-6">
+
+            <div className="mb-3 space-y-4">
+              Challenge status: {" "}
+              <Badge
+                className={`text-white capitalize ${{
+                  'completed': 'bg-green-700 text-white',
+                  'closed': 'bg-red-300 text-red-800',
+                  'open': 'bg-blue-100 text-blue-600',
+                  'ongoing': 'bg-yellow-300 text-yellow-800',
+                  'draft': 'bg-gray-500 text-white',
+                }[project?.status.toLowerCase() || ''] || 'bg-gray-500 text-white'
+                  }`}
+              >
+                {project?.status}
+              </Badge>
+            </div>
+
+            {!isAdmin && (<div className="mb-3 space-y-4">
+              Join status: {" "}
+              <Badge
+                className={`text-white capitalize ${project?.joined_status ?
+                  'bg-green-700 text-white' : 'bg-yellow-300 text-yellow-800'
+                  }`}
+              >
+                {project?.joined_status ? 'Joined' : 'Not Joined'}
+              </Badge>
+            </div>)}
+
+            {project?.submissionStatus === 'submitted' && <Alert isShow={showSubmissionAlert} variant='success' title="In Review ✅" description={'Your submission is currently being reviewed.'} onClose={() => setShowSubmissionAlert(false)} />}
+
+            {(project?.submissionStatus === 'not submitted' && isSubmissionNear) && <Alert isShow={showSubmissionAlert} variant='warning' title="Friendly Reminder" description={'You are nearing submission deadline.'} onClose={() => setShowSubmissionAlert(false)} />}
+
+            {project?.submissionStatus === 'approved' && <Alert isShow={showSubmissionAlert} variant='success' title="Congratulations 🚀" description={'Your submission have been selected onto the next stage.'} onClose={() => setShowSubmissionAlert(false)} />}
+
+            {project?.submissionStatus === 'rejected' && <Alert isShow={showSubmissionAlert} variant='error' title="Not Selected 😞" description={'Your submission was not selected. Thank you for participating. Stay tuned in for more future challenges'} onClose={() => setShowSubmissionAlert(false)} />}
+
             <h2 className="text-xl font-semibold mb-4">Key Instructions</h2>
             <p className="my-2">
               You are free to schedule a clarification call with the team via
@@ -253,16 +288,8 @@ const SingleChallengePage = () => {
                 <div className="flex w-full gap-2">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button
-                        variant="destructive"
-                        className="w-full h-12"
-                        disabled={isDeleting}
-                      >
-                        {isDeleting ? (
-                          <LucideLoader2 className="animate-spin" />
-                        ) : (
-                          'Delete'
-                        )}
+                      <Button variant="destructive" className='w-full' disabled={isDeleting}>
+                        {isDeleting ? <Loader2 className='animate-spin' /> : 'Delete'}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -284,39 +311,18 @@ const SingleChallengePage = () => {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                  <Link
-                    className="w-full"
-                    href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}
-                  >
-                    <Button className="w-full h-12">Edit</Button>
+                  <Link className="w-full" href={`${dashboardRoutes.challengeHackathons.path} /${challengeId}/edit`}>
+                    <Button className="w-full">Edit</Button>
                   </Link>
                 </div>
               </div>
-            ) : project?.joined_status &&
-              !['rejected', 'approved', 'submitted'].includes(
-                project?.submissionStatus?.toLowerCase() || ''
-              ) &&
-              !['closed', 'completed'].includes(
-                project?.status?.toLowerCase() || ''
-              ) ? (
-              <Button
-                disabled={
-                  project?.status === 'open' ||
-                  dayjs().isAfter(project?.endDate)
-                }
-                className="w-full h-12"
-                onClick={() => setOpenSubmitDialog((prev) => !prev)}
-              >
+            ) : project?.joined_status && (project?.submissionStatus?.toLowerCase() === 'not submitted') &&
+              (project?.status?.toLowerCase() === 'ongoing') ? (
+              <Button className="w-full" onClick={() => setOpenSubmitDialog(prev => !prev)}>
                 Submit Your Work
               </Button>
-            ) : !project?.joined_status &&
-              !['closed', 'completed'].includes(
-                project?.status?.toLowerCase() || ''
-              ) ? (
-              <Button
-                className="w-full h-12"
-                onClick={() => setOpenJoinDialog((prev) => !prev)}
-              >
+            ) : !project?.joined_status && (project?.submissionStatus?.toLowerCase() === 'not submitted') && (project?.status?.toLowerCase() === 'open') ? (
+              <Button className="w-full" onClick={() => setOpenJoinDialog(prev => !prev)}>
                 Join Challenge
               </Button>
             ) : (
@@ -324,61 +330,51 @@ const SingleChallengePage = () => {
             )}
           </Card>
 
-          {project?.status !== 'completed' && isAdmin && (
-            <Card className="mb-5">
+          {
+            isAdmin && (<Card className="mb-5">
               <div className="w-full h-full shadow-none p-4">
                 <div>
-                  <h1 className="text-xl font-semibold">Account Settings</h1>
-                  <p className="text-gray-500">
-                    Manage your challenge (Complete or Close challenge).
-                  </p>
+                  <h1 className="text-xl font-semibold">Challenge Settings</h1>
+                  <p className="text-gray-500">Manage your challenge (Complete, Close and re-open challenge).</p>
 
-                  <div className="flex items-center gap-2 mt-4">
-                    {project?.status !== 'closed' && (
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            className="w-full h-12"
-                            variant={'destructive'}
-                            disabled={updatingChallenge}
-                          >
-                            Close
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will
-                              permanently change challenge status to closed.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={onClose}
-                              className="bg-red-500"
-                            >
-                              {updatingChallenge ? (
-                                <>
-                                  <Loader2 className="animate-spin w-5 h-5 mr-2" />
-                                </>
-                              ) : (
-                                'Yes, Close'
-                              )}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    )}
+                  <div className='flex items-center gap-2 mt-4'>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button
-                          className="w-full h-12"
-                          disabled={updatingChallenge}
-                        >
+                        {['ongoing', 'open'].includes(project?.status?.toLowerCase() || '') ? (<Button className="w-full danger-btn-outline" variant={'outline'} disabled={updatingChallenge}>
+                          Close
+                        </Button>) : (<Button className="w-full primary-btn-outline" variant={'outline'} disabled={updatingChallenge}>
+                          Re-open
+                        </Button>)}
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            change challenge status to closed.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => onStatusChange('closed')} className="bg-red-500 hover:bg-red-500/70"
+                          >
+                            {updatingChallenge ? (
+                              <>
+                                <Loader2 className="animate-spin w-5 h-5 mr-2" />
+                              </>
+                            ) : (
+                              'Yes, Close'
+                            )}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        {!['completed', 'closed', 'open'].includes(project?.status?.toLowerCase() || '') && (<Button className="w-full primary-btn-outline" variant={'outline'} disabled={updatingChallenge}>
                           Complete
-                        </Button>
+                        </Button>)}
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
@@ -390,7 +386,9 @@ const SingleChallengePage = () => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={onComplete}>
+                          <AlertDialogAction
+                            onClick={() => onStatusChange('completed')}
+                          >
                             {updatingChallenge ? (
                               <>
                                 <Loader2 className="animate-spin w-5 h-5 mr-2" />
@@ -406,16 +404,19 @@ const SingleChallengePage = () => {
                 </div>
               </div>
             </Card>
-          )}
+            )
+          }
 
-          {['admin', 'super admin'].includes(
-            user?.role?.toLocaleLowerCase() || ''
-          ) &&
+          {
+            ['admin', 'super admin'].includes(
+              user?.role?.toLocaleLowerCase() || ''
+            ) &&
             !participantsLoading && (
               <ParticipantsCard participants={participants} />
-            )}
-        </div>
-      </div>
+            )
+          }
+        </div >
+      </div >
 
       <SubmitChallengeDialog
         isSubmitting={isSubmitting}
@@ -423,14 +424,16 @@ const SingleChallengePage = () => {
         open={openSubmitDialog}
         onOpenChange={setOpenSubmitDialog}
       />
-      {project && (
-        <JoinChallengeDialog
-          open={openJoinDialog}
-          onOpenChange={setOpenJoinDialog}
-          challenge={project}
-        />
-      )}
-    </div>
+      {
+        project && (
+          <JoinChallengeDialog
+            open={openJoinDialog}
+            onOpenChange={setOpenJoinDialog}
+            challenge={project}
+          />
+        )
+      }
+    </div >
   );
 };
 

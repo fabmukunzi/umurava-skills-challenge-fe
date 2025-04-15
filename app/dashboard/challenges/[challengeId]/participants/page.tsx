@@ -147,13 +147,22 @@ const Participants = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge className="text-white bg-[#2B71F0] capitalize">
+                      <Badge
+                        className={`text-white capitalize ${{
+                          'completed': 'bg-green-700 text-white',
+                          'closed': 'bg-red-300 text-red-800',
+                          'open': 'bg-blue-100 text-blue-600',
+                          'ongoing': 'bg-yellow-300 text-yellow-800',
+                          'draft': 'bg-gray-500 text-white',
+                        }[participant?.submissionStatus] || 'bg-gray-500 text-white'}
+                          }`}
+                      >
                         {participant?.submissionStatus}
                       </Badge>
 
                       <div className="flex items-center gap-2 my-4">
                         <h2 className="text-primary_grey text-base">
-                          {dayjs(participant?.submissionDate).format("YYYY-MM-DD HH:mm A")}
+                          {participant?.submissionDate && <>Submitted:  {dayjs(participant?.submissionDate).format("YYYY-MM-DD HH:mm A")}</>}
                         </h2>
                       </div>
                       {participant?.submissionData && (<Button
