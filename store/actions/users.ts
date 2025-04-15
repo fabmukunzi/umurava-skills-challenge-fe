@@ -53,10 +53,7 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body,
       }),
     }),
-    updateProfilePicture: builder.mutation<
-      void,
-      FormData
-    >({
+    updateProfilePicture: builder.mutation<void, FormData>({
       query: (body) => ({
         url: '/auth/profile/upload-picture',
         method: 'POST',
@@ -68,12 +65,14 @@ const usersEndpoints = baseAPI.injectEndpoints({
         url: `auth/deactivate-account/${userId}`,
         method: 'POST',
       }),
+      invalidatesTags: ['users'],
     }),
     activateAccount: builder.mutation<void, { userId: string }>({
       query: ({ userId }) => ({
         url: `auth/activate-account/${userId}`,
         method: 'POST',
       }),
+      invalidatesTags: ['users'],
     }),
     changePassword: builder.mutation<
       void,
@@ -85,12 +84,16 @@ const usersEndpoints = baseAPI.injectEndpoints({
         body,
       }),
     }),
-    subscribeToNewsletter: builder.mutation<
-      void,
-      { email: string; }
-    >({
+    subscribeToNewsletter: builder.mutation<void, { email: string }>({
       query: (body) => ({
         url: '/public/subscribe-newsletter',
+        method: 'POST',
+        body,
+      }),
+    }),
+    inviteAdmin: builder.mutation<void, { names: string; email: string }>({
+      query: (body) => ({
+        url: '/auth/register-admin',
         method: 'POST',
         body,
       }),
@@ -109,5 +112,6 @@ export const {
   useDeactivateAccountMutation,
   useActivateAccountMutation,
   useChangePasswordMutation,
-  useSubscribeToNewsletterMutation
+  useSubscribeToNewsletterMutation,
+  useInviteAdminMutation
 } = usersEndpoints;

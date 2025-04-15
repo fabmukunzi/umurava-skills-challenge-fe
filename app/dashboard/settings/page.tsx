@@ -35,6 +35,11 @@ import { UserSchema } from '@/lib/types/user';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import {
+  useActivateAccountMutation,
+  useDeactivateAccountMutation,
+} from '@/store/actions/users';
+import InviteAdminDialog from '@/components/dashboard/invite-admin-dialog';
 
 const columns: Column<SystemLog>[] = [
   {
@@ -96,47 +101,6 @@ const columns: Column<SystemLog>[] = [
   },
 ];
 
-const userColumns: Column<UserSchema>[] = [
-  {
-    header: '',
-    accessor: 'profile_url',
-    render: (user) => (
-      <Image
-        src={user.profile_url}
-        alt={user.names}
-        width={100}
-        height={100}
-        className="w-10 h-10 object-cover rounded-full"
-      />
-    ),
-  },
-  { header: 'Name', accessor: 'names' },
-  { header: 'Email', accessor: 'email' },
-  {
-    header: 'Role',
-    accessor: 'userRole',
-    render: (user) => (
-      <Badge
-        className={`${
-          user.userRole === 'admin' ? 'bg-green-500' : 'bg-primary'
-        } text-white rounded-lg`}
-      >
-        {user.userRole}
-      </Badge>
-    ),
-  },
-  {
-    header: 'Status',
-    accessor: 'status',
-    render: (user) => (
-      <Switch
-        checked={user.status === 'active'}
-        // onCheckedChange={() => toggleStatus(user)}
-      />
-    ),
-  },
-];
-
 const ITEMS_PER_PAGE = 10;
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('skills');
@@ -194,20 +158,93 @@ export default function SettingsPage() {
     params: { limit: ITEMS_PER_PAGE, page: logsPage },
   });
 
-  const { data: users } = useGetUsersQuery({
+  const {
+    data: users,
+    isLoading: isUsersLoading,
+    isFetching: isUsersFetching,
+  } = useGetUsersQuery({
     params: { limit: ITEMS_PER_PAGE, page: userPage },
   });
+
+  const [activateAccount] = useActivateAccountMutation();
+  const [deactivateAccount] = useDeactivateAccountMutation();
 
   const isSkillTabLoading = isSkillsLoading || isSkillsFetching;
   const isCategoryTabLoading = isCategoriesLoading || isCategoriesFetching;
   const isPrizeTabLoading = isPrizesLoading || isPrizesFetching;
   const isLogsTabLoading = isLogsLoading || isLogsFetching;
+  const isUsersTabLoading = isUsersLoading || isUsersFetching;
 
   const renderLoader = () => (
     <div className="flex justify-center items-center h-[60vh]">
       <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
     </div>
   );
+
+  const handleActivateAccount = async (userId: string) => {
+    try {
+      await activateAccount({ userId });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleDeactivateAccount = async (userId: string) => {
+    try {
+      await deactivateAccount({ userId });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const userColumns: Column<UserSchema>[] = [
+    {
+      header: '',
+      accessor: 'profile_url',
+      render: (user) => (
+        <Image
+          src={user.profile_url}
+          alt={user.names}
+          width={100}
+          height={100}
+          className="w-10 h-10 object-cover rounded-full"
+        />
+      ),
+    },
+    { header: 'Name', accessor: 'names' },
+    { header: 'Email', accessor: 'email' },
+    {
+      header: 'Role',
+      accessor: 'userRole',
+      render: (user) => (
+        <Badge
+          className={`${
+            user.userRole === 'admin' ? 'bg-green-500' : 'bg-primary'
+          } text-white rounded-lg`}
+        >
+          {user.userRole}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (user) => (
+        <Switch
+          checked={user.status == 'active'}
+          onCheckedChange={(event) => {
+            const checked = event;
+            console.log('Checked:', user._id);
+            if (checked) {
+              handleActivateAccount(user._id);
+            } else {
+              handleDeactivateAccount(user._id);
+            }
+          }}
+        />
+      ),
+    },
+  ];
 
   return (
     <div className="p-4 md:p-6 max-w-full overflow-x-auto">
@@ -408,25 +445,29 @@ export default function SettingsPage() {
             </Card>
           ))}
 
-        {activeTab === 'users' &&
-          (isLogsTabLoading ? (
-            renderLoader()
-          ) : (
-            <Card className="mt-6 max-sm:!w-[360px] md:w-full overflow-x-auto">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Users</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DataTable
-                  data={users?.data.users || []}
-                  columns={userColumns}
-                  pagination={users?.data?.pagination}
-                  onPageChange={(page) => setUserPage(page)}
-                  loading={isLogsTabLoading}
-                />
-              </CardContent>
-            </Card>
-          ))}
+        {activeTab === 'users' && (
+          <>
+            {isUsersTabLoading ? (
+              renderLoader()
+            ) : (
+              <Card className="mt-6 max-sm:!w-[360px] md:w-full overflow-x-auto">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Users</CardTitle>
+                  <InviteAdminDialog />
+                </CardHeader>
+                <CardContent>
+                  <DataTable
+                    data={users?.data.users || []}
+                    columns={userColumns}
+                    pagination={users?.data?.pagination}
+                    onPageChange={(page) => setUserPage(page)}
+                    loading={isLogsTabLoading}
+                  />
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
