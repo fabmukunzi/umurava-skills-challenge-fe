@@ -64,7 +64,9 @@ const ChallengeForm = ({
     name: 'moneyPrize',
   });
 
-  const { data: categoriesData } = useGetCategoriesQuery();
+  const { data: categoriesData } = useGetCategoriesQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
   const categories = categoriesData?.data?.categories?.map((category) => ({
     value: category.challengeCategoryName,
     label: category.challengeCategoryName,
