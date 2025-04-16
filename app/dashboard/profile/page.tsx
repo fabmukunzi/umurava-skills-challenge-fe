@@ -153,8 +153,8 @@ const ProfilePage = () => {
         <p className='text-gray-500'>Manage your personal information and account preferences</p>
       </header>
 
-      <main className='grid grid-cols-3 gap-4 md:gap-8  w-full mx-auto'>
-        <Card className="w-full h-full max-w-md shadow-lg md:pb-8">
+      <main className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8  w-full mx-auto'>
+        <Card className="w-full h-full shadow-lg md:pb-8">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-semibold">My Profile</CardTitle>
           </CardHeader>
@@ -283,7 +283,7 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
 
-        {!isAdmin && (<Card className=" w-full h-fit shadow-lg">
+        {!isAdmin && (<Card className="w-full h-fit shadow-lg">
           <CardHeader className="text-left">
             <CardTitle className="text-2xl font-semibold">Account Settings</CardTitle>
           </CardHeader>
