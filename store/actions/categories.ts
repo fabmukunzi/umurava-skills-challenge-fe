@@ -9,12 +9,14 @@ const categoryEndpoints = baseAPI.injectEndpoints({
         url: `/admin/challenge-category`,
         method: 'GET',
       }),
+      providesTags: ['categories'],
     }),
     getCareerStats: builder.query<{ data: ICareerStats[] }, void>({
       query: () => ({
         url: `/public/website/data`,
         method: 'GET',
       }),
+      providesTags: ['stats'],
     }),
   }),
 });
