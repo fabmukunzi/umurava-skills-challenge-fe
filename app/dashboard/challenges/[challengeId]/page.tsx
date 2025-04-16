@@ -311,7 +311,7 @@ const SingleChallengePage = () => {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                  <Link className="w-full" href={`${dashboardRoutes.challengeHackathons.path} /${challengeId}/edit`}>
+                  <Link className="w-full" href={`${dashboardRoutes.challengeHackathons.path}/${challengeId}/edit`}>
                     <Button className="w-full">Edit</Button>
                   </Link>
                 </div>
