@@ -56,6 +56,10 @@ const DashboardPage = () => {
       title: 'Ongoing Challenges',
       value: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
     },
+    {
+      title: 'Total Closed Challenges',
+      value: isAdmin ? data?.data.aggregates.totolClosedChallenges : participantChallenges?.data.aggregates.totolClosedChallenges,
+    }
   ];
 
   const adminStatData = [

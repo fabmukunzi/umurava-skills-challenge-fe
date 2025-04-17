@@ -159,13 +159,13 @@ const SingleChallengePage = () => {
       />
     );
 
-    const statusStyles: Record<string, string> = {
-      draft: 'bg-gray-500 text-white',
-      open: 'bg-blue-100 text-blue-600',
-      ongoing: 'bg-yellow-300 text-yellow-800',
-      closed: 'bg-red-300 text-red-800',
-      completed: 'bg-green-700 text-white',
-    };
+  const statusStyles: Record<string, string> = {
+    draft: 'bg-gray-500 text-white',
+    open: 'bg-blue-100 text-blue-600',
+    ongoing: 'bg-yellow-300 text-yellow-800',
+    closed: 'bg-red-300 text-red-800',
+    completed: 'bg-green-700 text-white',
+  };
 
   return (
     <div>
@@ -188,10 +188,9 @@ const SingleChallengePage = () => {
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
             <Badge
               variant="secondary"
-              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl ${
-                statusStyles[project?.status?.toLowerCase()||''] ||
+              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl capitalize ${statusStyles[project?.status?.toLowerCase() || ''] ||
                 'bg-gray-200 text-black'
-              }`}
+                }`}
             >
               {project?.status}
             </Badge>
@@ -207,17 +206,15 @@ const SingleChallengePage = () => {
 
         <div className="lg:w-5/12 md:w-6/12 h-fit">
           <Card className="p-6 mb-6">
-            <div className="mb-3 space-y-4"></div>
 
             {!isAdmin && (
               <div className="mb-3 space-y-4">
                 Join status:{' '}
                 <Badge
-                  className={`text-white capitalize ${
-                    project?.joined_status
-                      ? 'bg-green-700 text-white'
-                      : 'bg-yellow-300 text-yellow-800'
-                  }`}
+                  className={`text-white capitalize ${project?.joined_status
+                    ? 'bg-green-700 text-white'
+                    : 'bg-yellow-300 text-yellow-800'
+                    }`}
                 >
                   {project?.joined_status ? 'Joined' : 'Not Joined'}
                 </Badge>
@@ -455,14 +452,14 @@ const SingleChallengePage = () => {
                         {!['completed', 'closed', 'open'].includes(
                           project?.status?.toLowerCase() || ''
                         ) && (
-                          <Button
-                            className="w-full primary-btn-outline"
-                            variant={'outline'}
-                            disabled={updatingChallenge}
-                          >
-                            Complete
-                          </Button>
-                        )}
+                            <Button
+                              className="w-full primary-btn-outline"
+                              variant={'outline'}
+                              disabled={updatingChallenge}
+                            >
+                              Complete
+                            </Button>
+                          )}
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>

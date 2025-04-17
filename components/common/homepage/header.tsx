@@ -48,9 +48,8 @@ const HeaderComponent = () => {
                 <a
                   key={index}
                   href={item.path}
-                  className={`transition-colors ${
-                    isActive ? 'text-primary' : 'text-black hover:text-primary'
-                  }`}
+                  className={`transition-colors ${isActive ? 'text-primary' : 'text-black hover:text-primary'
+                    }`}
                 >
                   {item.name}
                 </a>
@@ -94,9 +93,8 @@ const HeaderComponent = () => {
                 <a
                   key={index}
                   href={item.path}
-                  className={`font-medium transition-colors ${
-                    isActive ? 'text-primary' : 'text-black hover:text-primary'
-                  }`}
+                  className={`font-medium transition-colors ${isActive ? 'text-primary' : 'text-black hover:text-primary'
+                    }`}
                 >
                   {item.name}
                 </a>
@@ -105,7 +103,7 @@ const HeaderComponent = () => {
           </nav>
           <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
             <Link href={dashboardRoutes.dashboard.path}>
-              {user ? 'Go to dashboard' : 'Join the Program'}
+              {user ? 'Go to dashboard' : 'Join the Platform'}
             </Link>
           </Button>
         </div>

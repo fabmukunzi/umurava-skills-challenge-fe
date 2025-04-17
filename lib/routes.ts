@@ -10,7 +10,7 @@ export const homepageRoutes = {
     name: 'challenge-hackathons',
   },
   learningInstitutions: {
-    label: 'For Learning Institutions',
+    label: 'For Educational Institutions',
     path: '/learning-institutions',
     name: 'learning-institutions',
   },
@@ -49,7 +49,7 @@ export const dashboardRoutes = {
     name: 'dashboard',
   },
   challengeHackathons: {
-    label: 'Challenge & Hackathons',
+    label: 'Challenges & Hackathons',
     path: '/dashboard/challenges',
     name: 'challenge-hackathons',
     new: {

@@ -51,7 +51,7 @@ const Projectcard: FC<{
           <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
           <Badge
             variant="secondary"
-            className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl ${statusStyles[project?.status?.toLowerCase()] ||
+            className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl capitalize ${statusStyles[project?.status?.toLowerCase()] ||
               'bg-gray-200 text-black'
               }`}
           >
