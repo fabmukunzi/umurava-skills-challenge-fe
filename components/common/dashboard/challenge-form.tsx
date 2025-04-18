@@ -20,14 +20,11 @@ import { DateInput } from '@/components/common/date-input';
 import TextInput from '@/components/common/text-input';
 import SelectInput from '@/components/common/select-box';
 import { CreateChallengeDto } from '@/store/actions/challenge';
-import {
-  useGetCategoriesQuery,
-} from '@/store/actions/categories';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { dashboardRoutes } from '@/lib/routes';
 import { IPrizeCategory } from '@/lib/types/setting';
-import { useGetSkillsQuery } from '@/store/actions/setting';
+import { useGetCategoriesQuery, useGetSkillsQuery } from '@/store/actions/setting';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -64,15 +61,15 @@ const ChallengeForm = ({
     name: 'moneyPrize',
   });
 
-  const { data: categoriesData } = useGetCategoriesQuery(undefined, {
-    refetchOnMountOrArgChange: true,
+  const {
+    data: categoriesData,
+    // isLoading: isCategoriesLoading,
+    // isFetching: isCategoriesFetching,
+  } = useGetCategoriesQuery({
+    params: { limit: 50, page: 1 },
   });
-  const categories = categoriesData?.data?.categories?.map((category) => ({
-    value: category.challengeCategoryName,
-    label: category.challengeCategoryName,
-  }));
 
-  const { data: skillsData } = useGetSkillsQuery({ params: {} });
+  const { data: skillsData } = useGetSkillsQuery({ params: { limit: 1000, page: 1 } });
   const skills = skillsData?.data?.skills?.map((skill) => ({
     value: skill.skillName,
     label: skill.skillName,
@@ -135,7 +132,7 @@ const ChallengeForm = ({
               label="Start Date"
               placeHolder="Select start date"
               disablePast={!isEdit}
-              disableBeforeDate={!isEdit?today:undefined}
+              disableBeforeDate={!isEdit ? today : undefined}
             />
             <DateInput
               form={form}
@@ -236,7 +233,11 @@ const ChallengeForm = ({
             name="challengeCategory"
             label="Challenge Category"
             placeholder="Select a category"
-            options={categories ?? []}
+            options={categoriesData?.data?.categories?.map((category) => ({
+              value: category?.challengeCategoryName,
+              label: category?.challengeCategoryName,
+            })) ?? []}
+            multi={false}
           />
 
           <SelectInput

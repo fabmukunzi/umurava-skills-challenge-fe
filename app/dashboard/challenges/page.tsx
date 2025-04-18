@@ -38,16 +38,14 @@ const ChallengesPage = () => {
     page: currentPage,
     status,
     search: searchParam
-  });
+  }, { skip: !isAdmin });
   const { data: participantChallenges, isLoading: participantChallengesLoading, isFetching: particpantChallengeFetching } = useGetParticipantChallengesQuery(
     {
       limit: ITEMS_PER_PAGE,
       page: currentPage,
       status,
       search: searchParam
-    },
-    { skip: isAdmin }
-  );
+    }, { skip: isAdmin });
 
   const challengesData = isAdmin ? data?.data?.challenges : participantChallenges?.data?.challenges;
 

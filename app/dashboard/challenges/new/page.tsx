@@ -14,23 +14,23 @@ import { useGetPrizesQuery } from '@/store/actions/setting';
 const CreateChallengePage = () => {
   const router = useRouter();
   const [createChallenge, { isLoading }] = useCreateChallengeMutation();
-    const { data: prizesData } = useGetPrizesQuery({});
+  const { data: prizesData } = useGetPrizesQuery({});
 
   const onSubmit = async (values: CreateChallengeDto) => {
     try {
       const { startDate, endDate, moneyPrize, ...restValues } = values;
       const moneyPrizeFormated = moneyPrize
-      .map((item) => {
-        const selectedPrize = prizesData?.data?.categories?.find(
-          (p) => p.prizeName === item.categoryPrize
-        );
-        return {
-          ...item,
-          currency: selectedPrize?.currency || '',
-          categoryPrize: selectedPrize?.prizeName || '',
-        };
-      })
-      .filter((item) => item !== null);
+        .map((item) => {
+          const selectedPrize = prizesData?.data?.categories?.find(
+            (p) => p.prizeName === item.categoryPrize
+          );
+          return {
+            ...item,
+            currency: selectedPrize?.currency || '',
+            categoryPrize: selectedPrize?.prizeName || '',
+          };
+        })
+        .filter((item) => item !== null);
       await createChallenge({
         startDate: dayjs(startDate).format('DD-MM-YYYY'),
         endDate: dayjs(endDate).format('DD-MM-YYYY'),
