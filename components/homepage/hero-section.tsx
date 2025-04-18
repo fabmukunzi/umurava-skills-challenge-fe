@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { HomeImage } from '@/lib/images';
 import Link from 'next/link';
-import { homepageRoutes } from '@/lib/routes';
+import { dashboardRoutes } from '@/lib/routes';
 import { motion } from 'framer-motion';
 
 const HeroSection = () => {
@@ -22,7 +22,7 @@ const HeroSection = () => {
         <p className="my-6 lg:my-10 text-black text-lg 2xl:text-xl">
           Enhance your Employability and Accelerate your Career Growth By working on Real-World Projects through hackathons, skills competitions, and task challenges from various businesses and organizations.
         </p>
-        <Link href={homepageRoutes.challengeHackathons.path}>
+        <Link href={dashboardRoutes.dashboard.path}>
           <Button
             size="lg"
             className="px-8 lg:px-12 py-5 lg:py-7 font-medium text-sm lg:text-lg"

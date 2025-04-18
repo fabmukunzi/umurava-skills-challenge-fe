@@ -99,13 +99,13 @@ const authOptions: NextAuthOptions = {
           const user: DecodedToken = jwtDecode<DecodedToken>(
             resData.data.token
           );
-
           userData = {
             id: user.id,
             name: user?.names,
             email: user?.email,
             profileUrl: user?.profile_url,
             token: resData.data.token,
+            role:user?.role
           };
 
           return true;

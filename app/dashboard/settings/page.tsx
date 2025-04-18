@@ -107,6 +107,7 @@ export default function SettingsPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
   const [skillPage, setSkillPage] = useState(1);
   const [categoryPage, setCategoryPage] = useState(1);
@@ -183,17 +184,23 @@ export default function SettingsPage() {
 
   const handleActivateAccount = async (userId: string) => {
     try {
+      setLoadingUserId(userId);
       await activateAccount({ userId });
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoadingUserId(null);
     }
   };
 
   const handleDeactivateAccount = async (userId: string) => {
     try {
+      setLoadingUserId(userId);
       await deactivateAccount({ userId });
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoadingUserId(null);
     }
   };
 
@@ -211,7 +218,7 @@ export default function SettingsPage() {
         />
       ),
     },
-    { header: 'Name', accessor: 'names' },
+    { header: 'Names', accessor: 'names' },
     { header: 'Email', accessor: 'email' },
     {
       header: 'Role',
@@ -229,20 +236,30 @@ export default function SettingsPage() {
     {
       header: 'Status',
       accessor: 'status',
-      render: (user) => (
-        <Switch
-          checked={user.status == 'active'}
-          onCheckedChange={(event) => {
-            const checked = event;
-            console.log('Checked:', user._id);
-            if (checked) {
-              handleActivateAccount(user._id);
-            } else {
-              handleDeactivateAccount(user._id);
-            }
-          }}
-        />
-      ),
+      render: (user) => {
+        const isLoading = loadingUserId === user._id;
+
+        if (!isLoading) {
+          return (
+            <div className="flex justify-center items-center">
+              <div className="w-6 h-6 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+            </div>
+          );
+        }
+        return (
+          <Switch
+            checked={user.status == 'active'}
+            onCheckedChange={(event) => {
+              const checked = event;
+              if (checked) {
+                handleActivateAccount(user._id);
+              } else {
+                handleDeactivateAccount(user._id);
+              }
+            }}
+          />
+        );
+      },
     },
   ];
 
@@ -419,7 +436,7 @@ export default function SettingsPage() {
                   handleError(error);
                 }
               }}
-              placeholder="e.g RWF"
+              placeholder="e.g Fisrt Runner"
             />
           ))}
 

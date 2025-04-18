@@ -45,19 +45,19 @@ const DashboardPage = () => {
 
   const statistics = [
     {
-      title: 'Completed Challenges',
+      title: 'Completed',
       value: isAdmin ? data?.data.aggregates.totalCompletedChallenges : participantChallenges?.data.aggregates.totalCompletedChallenges,
     },
     {
-      title: 'Open Challenges',
+      title: 'Open',
       value: isAdmin ? data?.data.aggregates.totalOpenChallenges : participantChallenges?.data.aggregates.totalOpenChallenges,
     },
     {
-      title: 'Ongoing Challenges',
+      title: 'Ongoing',
       value: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
     },
     {
-      title: 'Total Closed Challenges',
+      title: 'Closed',
       value: isAdmin ? data?.data.aggregates.totolClosedChallenges : participantChallenges?.data.aggregates.totolClosedChallenges,
     }
   ];

@@ -157,6 +157,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
+      invalidatesTags: ['challenge'],
     }),
     giveChallengeStatistics: builder.query<{ data: IStatistics }, void>({
       query: () => ({

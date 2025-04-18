@@ -134,8 +134,8 @@ const ChallengeForm = ({
               name="startDate"
               label="Start Date"
               placeHolder="Select start date"
-              disablePast={true}
-              disableBeforeDate={today}
+              disablePast={!isEdit}
+              disableBeforeDate={!isEdit?today:undefined}
             />
             <DateInput
               form={form}

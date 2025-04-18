@@ -102,8 +102,9 @@ const HomeSingleProjectView = () => {
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
             <Badge
               variant="secondary"
-              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl capitalize ${statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
-                }`}
+              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl capitalize ${
+                statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
+              }`}
             >
               {project?.status}
             </Badge>
@@ -182,8 +183,9 @@ const HomeSingleProjectView = () => {
             <Button
               className="w-full"
               disabled={
-                project?.status === 'open' || dayjs().isAfter(project?.endDate)
-                // || !isLoggedIn
+                project?.status !== 'open' ||
+                dayjs().isAfter(project?.endDate) ||
+                !isLoggedIn
               }
               onClick={() => {
                 if (isLoggedIn) {
@@ -193,7 +195,7 @@ const HomeSingleProjectView = () => {
                 }
               }}
             >
-              {isLoggedIn ? 'Submit Your Work' : 'Join Challenge'}
+              {dayjs().isAfter(project?.endDate) ? 'Submit Your Work' : 'Join Challenge'}
             </Button>
           </Card>
         </div>

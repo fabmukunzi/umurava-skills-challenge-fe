@@ -91,7 +91,6 @@ export function AppSidebar() {
   const [hoveredItem, setHoveredItem] = useState<string | undefined>(undefined);
 
   const role = session.data?.user?.role;
-  const isParticipant = role === 'participant';
   const isAdmin = role === 'admin' || role?.toLocaleLowerCase() === 'super admin';
 
 const filteredItems = items.filter(item => {
@@ -99,7 +98,7 @@ const filteredItems = items.filter(item => {
   return true;
 });
 const filteredFooterItems = footerItems.filter(item => {
-  if (item.title === dashboardRoutes.settings.name && isParticipant) return false;
+  if (item.title === dashboardRoutes.settings.name && !isAdmin) return false;
   return true;
 });
 
@@ -259,6 +258,7 @@ const filteredFooterItems = footerItems.filter(item => {
             Get notified on the latest projects and hackathons
           </p>
           <Link
+          target='_blank'
             href="https://chat.whatsapp.com/LnPqNZ2kSj3AvqUTTluSNE"
             className="px-10 bg-primary text-white py-2 rounded-lg text-lg font-medium hover:bg-primary/80 transition-colors duration-200"
           >

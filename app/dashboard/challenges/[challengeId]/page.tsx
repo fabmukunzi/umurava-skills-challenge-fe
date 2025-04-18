@@ -286,7 +286,7 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={project?.duration + ' Days'}
+                value={dayjs(project?.startDate).format('DD-MMM-YYYY') + ' to '+dayjs(project?.endDate).format('DD-MMM-YYYY')}
               />
 
               {Array.isArray(project?.moneyPrize) &&
