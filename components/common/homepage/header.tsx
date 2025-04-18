@@ -59,7 +59,7 @@ const HeaderComponent = () => {
 
           <Button className="bg-[#041738] hover:bg-[#041738]/80 text-white">
             <Link href={dashboardRoutes.dashboard.path}>
-              {user ? 'Go to dashboard' : 'Join the Program'}
+              {user ? 'Go to dashboard' : 'Join the Platform'}
             </Link>
           </Button>
 

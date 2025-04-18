@@ -24,14 +24,14 @@ import {
   useSubmitChallengeMutation,
 } from '@/store/actions/challenge';
 import { zodResolver } from '@hookform/resolvers/zod';
-import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const HomeSingleProjectView = () => {
+  const router = useRouter();
   const form = useForm<SubmitChallengeDto>({
     resolver: zodResolver(challengeSubmissionSchema),
     defaultValues: {},
@@ -102,9 +102,8 @@ const HomeSingleProjectView = () => {
             <Image src={UmuravaWhiteLogo} alt="Umarava Logo" />
             <Badge
               variant="secondary"
-              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl capitalize ${
-                statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
-              }`}
+              className={`absolute top-2 font-medium right-2 px-5 py-1.5 rounded-xl capitalize ${statusStyles[project?.status || ''] || 'bg-gray-200 text-black'
+                }`}
             >
               {project?.status}
             </Badge>
@@ -180,23 +179,22 @@ const HomeSingleProjectView = () => {
                   </div>
                 )}
             </div>
-            <Button
+            {!['closed', 'completed'].includes(project?.status || '') && (<Button
               className="w-full"
-              disabled={
-                project?.status !== 'open' ||
-                dayjs().isAfter(project?.endDate) ||
-                !isLoggedIn
-              }
               onClick={() => {
-                if (isLoggedIn) {
+                if (isLoggedIn && project?.status === 'ongoing') {
                   setOpenSubmitDialog(!openSubmitDialog);
                 } else {
+                  if (!isLoggedIn) {
+                    router.push(homepageRoutes.login.path);
+                    return
+                  }
                   setOpenJoinDialog(!openJoinDialog);
                 }
               }}
             >
-              {dayjs().isAfter(project?.endDate) ? 'Submit Your Work' : 'Join Challenge'}
-            </Button>
+              {isLoggedIn && project?.status === 'ongoing' ? 'Submit Your Work' : 'Join Challenge'}
+            </Button>)}
           </Card>
         </div>
       </div>
