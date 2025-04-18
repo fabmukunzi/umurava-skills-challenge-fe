@@ -48,7 +48,7 @@ const notificationEndpoints = baseAPI.injectEndpoints({
                 url: `/public/notifications/${notificationId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['notification'],
+            invalidatesTags: ['notifications'],
         }),
         deleteAllNotifications: builder.mutation<void, void>({
             query: () => ({
