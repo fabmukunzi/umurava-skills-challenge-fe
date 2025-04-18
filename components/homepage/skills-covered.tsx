@@ -5,7 +5,6 @@ import Carousel from '@/components/common/carousel';
 import { SokofundDashboard, SokofundLogo } from '@/lib/images';
 import AdvertCard from '@/components/common/homepage/advert-card';
 import { motion } from 'framer-motion';
-import { useGetPublicSkillsQuery } from '@/store/actions/setting';
 
 const fadeInUpVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -26,9 +25,18 @@ const containerVariant = {
 };
 
 const SkillsCovered = () => {
-  const { data, isLoading } = useGetPublicSkillsQuery({ params: {} });
-  const skillsData = data?.data?.skills;
-  const skills = skillsData?.map((skill) => skill.skillName);
+  const skills = [
+    "UI / UX Design",
+    "Data Science",
+    "Graphic Design",
+    "Data Analysis & Research",
+    "Animation",
+    "Videography",
+    "Photography",
+    "AI & Machine Learning",
+    "Web3",
+    "Digital Marketing & Communications"
+  ]
 
   const adverts = Array(4).fill({
     logo: SokofundLogo,
@@ -44,13 +52,6 @@ const SkillsCovered = () => {
 
   const OPTIONS: EmblaOptionsType = { loop: true };
 
-  if (isLoading) {
-    return (
-      <div className="w-full h-96 flex justify-center items-center">
-        <p className="text-primary_grey">Loading...</p>
-      </div>
-    );
-  }
   return (
     <div className="bg-white px-4 sm:px-6 lg:px-12 2xl:px-20 border-b pb-10">
       <motion.div
