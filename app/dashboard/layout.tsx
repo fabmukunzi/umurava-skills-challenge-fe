@@ -26,10 +26,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const user = session?.data?.user;
   const { data, isLoading } = useGetNotificationsQuery<NotificationResponse>({});
+
   const notificationsData = useMemo(() => {
     if (Array.isArray(data)) return data;
     return (data && 'data' in data) ? (data.data) : [];
   }, [data]);
+
   const notifications = useMemo(() => {
     if (Array.isArray(notificationsData)) {
       return notificationsData
