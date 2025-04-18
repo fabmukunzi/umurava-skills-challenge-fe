@@ -286,7 +286,7 @@ const SingleChallengePage = () => {
               <KeyInstruction
                 icon={<SVGIcon height={23} width={23} Icon={CalendarIcon} />}
                 title="Duration"
-                value={dayjs(project?.startDate).format('DD-MMM-YYYY') + ' to '+dayjs(project?.endDate).format('DD-MMM-YYYY')}
+                value={dayjs(project?.startDate).format('DD-MMM-YYYY') + ' to ' + dayjs(project?.endDate).format('DD-MMM-YYYY')}
               />
 
               {Array.isArray(project?.moneyPrize) &&
@@ -410,7 +410,7 @@ const SingleChallengePage = () => {
                             variant={'outline'}
                             disabled={updatingChallenge}
                           >
-                            Close
+                            {updatingChallenge ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : 'Close'}
                           </Button>
                         ) : (
                           <Button
@@ -418,7 +418,7 @@ const SingleChallengePage = () => {
                             variant={'outline'}
                             disabled={updatingChallenge}
                           >
-                            Re-open
+                            {updatingChallenge ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : 'Re-open'}
                           </Button>
                         )}
                       </AlertDialogTrigger>
@@ -426,14 +426,13 @@ const SingleChallengePage = () => {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            change challenge status to closed.
+                            This action will change challenge status to {project?.status === 'closed' ? 'Open' : 'Closed'}.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => onStatusChange('closed')}
+                            onClick={() => project?.status === 'closed' ? onStatusChange('open') : onStatusChange('closed')}
                             className="bg-red-500 hover:bg-red-500/70"
                           >
                             {updatingChallenge ? (
@@ -441,7 +440,7 @@ const SingleChallengePage = () => {
                                 <Loader2 className="animate-spin w-5 h-5 mr-2" />
                               </>
                             ) : (
-                              'Yes, Close'
+                              project?.status === 'closed' ? 'Yes, Re-open' : 'Yes, Close'
                             )}
                           </AlertDialogAction>
                         </AlertDialogFooter>
@@ -449,17 +448,15 @@ const SingleChallengePage = () => {
                     </AlertDialog>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        {!['completed', 'closed', 'open'].includes(
-                          project?.status?.toLowerCase() || ''
-                        ) && (
-                            <Button
-                              className="w-full primary-btn-outline"
-                              variant={'outline'}
-                              disabled={updatingChallenge}
-                            >
-                              Complete
-                            </Button>
-                          )}
+                        {project?.status?.toLowerCase() === 'ongoing' && (
+                          <Button
+                            className="w-full primary-btn-outline"
+                            variant={'outline'}
+                            disabled={updatingChallenge}
+                          >
+                            {updatingChallenge ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : 'Complete'}
+                          </Button>
+                        )}
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
