@@ -218,6 +218,24 @@ const SingleChallengePage = () => {
                 >
                   {project?.joined_status ? 'Joined' : 'Not Joined'}
                 </Badge>
+                {project?.status === 'closed' && (
+                  <Alert
+                    isShow={showSubmissionAlert}
+                    variant="error"
+                    title="Closed Challenge"
+                    description={'This challenge is closed for submissions.'}
+                    onClose={() => setShowSubmissionAlert(false)}
+                  />
+                )}
+                {project?.status === 'completed' && (
+                  <Alert
+                    isShow={showSubmissionAlert}
+                    variant="success"
+                    title="Completed Challenge"
+                    description={'This challenge has been completed.'}
+                    onClose={() => setShowSubmissionAlert(false)}
+                  />
+                )}
               </div>
             )}
 
