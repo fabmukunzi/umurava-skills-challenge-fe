@@ -116,7 +116,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             className="rounded-full border p-1 object-contain h-10 w-10"
           />
           <div>
-            <p className="text-sm font-medium">{user?.name}</p>
+            <p className="text-sm font-medium capitalize">{user?.name}</p>
             <p className="text-xs text-gray-500">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
