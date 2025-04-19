@@ -2,10 +2,10 @@
 'use client';
 
 import {
-  CareerTicketLogo,
   FacebookIcon,
   GoogleIcon,
   LinkedinIcon,
+  SkillsLogo,
   YoutubeIcon,
 } from '@/lib/images';
 import { LucideLoader2, Mail, MapPin, Phone } from 'lucide-react';
@@ -79,7 +79,7 @@ const FooterComponent = () => {
   return (
     <footer id='contact-us' className="bg-[#041738] px-5 md:px-20 py-4 text-white">
       <div className="flex items-center justify-between py-8">
-        <Image src={CareerTicketLogo} alt="Career Ticket Logo" width={70} />
+        <Image src={SkillsLogo} alt="Career Ticket Logo" width={180} />
         <div className="flex gap-2">
           {socialLinks.map((socialLink, index) => (
             <Link
@@ -110,7 +110,7 @@ const FooterComponent = () => {
           </div>
           <div className="flex items-center gap-4">
             <Phone size={20} className="text-[#bbbbbb]" />{' '}
-            <a href="tel:+250700000">+ 250 789 263 354</a>
+            <a href="tel:+250789263354">+ 250 789 263 354</a>
           </div>
         </div>
         <div className="md:w-1/3 flex flex-col gap-4">
