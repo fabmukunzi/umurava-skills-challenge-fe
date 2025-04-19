@@ -48,8 +48,8 @@ const items = [
 
 const footerItems = [
   { title: 'App Controls', icon: GearIcon, url: dashboardRoutes.settings.path },
-  { title: 'Help Center', icon: HeadsetIcon, url: '/help' },
-  { title: 'Refer Family & Friends', icon: GiftBoxIcon, url: '/refer' },
+  { title: 'Help Center', icon: HeadsetIcon, url: '/dashboard/help' },
+  { title: 'Refer Family & Friends', icon: GiftBoxIcon, url: '/dashboard/refer' },
 ];
 
 declare module 'next-auth' {
@@ -93,14 +93,14 @@ export function AppSidebar() {
   const role = session.data?.user?.role;
   const isAdmin = role === 'admin' || role?.toLocaleLowerCase() === 'super admin';
 
-const filteredItems = items.filter(item => {
-  if (item.title === dashboardRoutes.community.label && isAdmin) return false;
-  return true;
-});
-const filteredFooterItems = footerItems.filter(item => {
-  if (item.title === dashboardRoutes.settings.name && !isAdmin) return false;
-  return true;
-});
+  const filteredItems = items.filter(item => {
+    if (item.title === dashboardRoutes.community.label && isAdmin) return false;
+    return true;
+  });
+  const filteredFooterItems = footerItems.filter(item => {
+    if (item.title === dashboardRoutes.settings.name && !isAdmin) return false;
+    return true;
+  });
 
   if (!session?.data) {
     return <SidebarSkeleton />;
@@ -124,11 +124,10 @@ const filteredFooterItems = footerItems.filter(item => {
                   return (
                     <SidebarMenuItem
                       key={index}
-                      className={`rounded group py-0 ${
-                        selectedItem === item.title
-                          ? 'bg-white text-primary'
-                          : 'hover:bg-white hover:text-primary text-white'
-                      }`}
+                      className={`rounded group py-0 ${selectedItem === item.title
+                        ? 'bg-white text-primary'
+                        : 'hover:bg-white hover:text-primary text-white'
+                        }`}
                       onClick={() => {
                         if (item.isDialog) {
                           setIsDialogOpen(true);
@@ -190,11 +189,10 @@ const filteredFooterItems = footerItems.filter(item => {
                     return (
                       <SidebarMenuItem
                         key={index}
-                        className={`rounded group py-0 ${
-                          isHovered || isSelected
-                            ? 'bg-white text-primary'
-                            : ' text-white'
-                        }`}
+                        className={`rounded group py-0 ${isHovered || isSelected
+                          ? 'bg-white text-primary'
+                          : ' text-white'
+                          }`}
                         onClick={() => setSelectedItem(item.title)}
                         onMouseEnter={() => setHoveredItem(item.title)}
                         onMouseLeave={() => setHoveredItem(undefined)}
@@ -258,7 +256,7 @@ const filteredFooterItems = footerItems.filter(item => {
             Get notified on the latest projects and hackathons
           </p>
           <Link
-          target='_blank'
+            target='_blank'
             href="https://chat.whatsapp.com/LnPqNZ2kSj3AvqUTTluSNE"
             className="px-10 bg-primary text-white py-2 rounded-lg text-lg font-medium hover:bg-primary/80 transition-colors duration-200"
           >
