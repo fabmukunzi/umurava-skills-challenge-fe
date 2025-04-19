@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
-import { CollapsedUmuravaLogo, MessageIcon, SkillsLogo2 } from '@/lib/images';
+import { MessageIcon, SkillsLogo2 } from '@/lib/images';
 import { dashboardRoutes, homepageRoutes } from '@/lib/routes';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
