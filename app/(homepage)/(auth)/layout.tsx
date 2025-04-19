@@ -1,10 +1,4 @@
 import { ReactNode } from 'react';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Umurava skills challenge',
-  description: 'Build Work Experience through Skills Challenges Program',
-};
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (

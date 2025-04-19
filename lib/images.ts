@@ -1,4 +1,6 @@
 import UmuravaLogo from '@/assets/logos/umurava-logo.png';
+import SkillsLogo from '@/assets/logos/skills_challenges_new.png';
+import SkillsLogo2 from '@/assets/logos/skills-white.png';
 import HomeImage from '@/assets/images/home-image.svg';
 import SchoolCaseIcon from '@/assets/images/school-case.svg';
 import CareerTicketLogo from '@/assets/logos/career-ticket-logo.svg';
@@ -39,6 +41,8 @@ import GoogleIcon2 from '@/assets/images/google-icon-logo-svgrepo-com.svg'
 
 export {
   UmuravaLogo,
+  SkillsLogo,
+  SkillsLogo2,
   HomeImage,
   SchoolCaseIcon,
   CareerTicketLogo,

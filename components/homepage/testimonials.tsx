@@ -21,12 +21,12 @@ const TestimonialSection = () => {
         viewport={{ once: true }}
       >
         {isMobile ? (
-          <TestimonialCard />
+          <TestimonialCard link={`https://www.youtube.com/embed/RuBohIvzF10?si=oXiuQtjBq_c6mj_O`} />
         ) : (
           <>
-            <TestimonialCard />
-            <TestimonialCard />
-            <TestimonialCard />
+            <TestimonialCard link={`https://www.youtube.com/embed/RuBohIvzF10?si=oXiuQtjBq_c6mj_O`} />
+            <TestimonialCard link={`https://www.youtube.com/embed/j8v9kIJ_xWE?si=I4WMByDwoZu6hJPB`} />
+            <TestimonialCard link={`https://www.youtube.com/embed/wvb_RGG_aq8?si=TUN0Jvhf934wkqPu`} />
           </>
         )}
       </motion.div>

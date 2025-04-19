@@ -3,7 +3,7 @@
 import { Fragment, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { UmuravaLogo } from '@/lib/images';
+import { SkillsLogo } from '@/lib/images';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
@@ -37,7 +37,7 @@ const HeaderComponent = () => {
         <div className="mx-auto flex items-center justify-between md:px-6 lg:px-14 2xl:px-20 py-4">
           <div className="flex items-center">
             <a href="/">
-              <Image src={UmuravaLogo} alt="Umurava Logo" width={180} />
+              <Image src={SkillsLogo} alt="Umurava Logo" width={150} />
             </a>
           </div>
 

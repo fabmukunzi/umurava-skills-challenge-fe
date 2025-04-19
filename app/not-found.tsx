@@ -1,6 +1,5 @@
 'use client';
 
-import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -8,11 +7,6 @@ import { useRouter } from 'next/navigation';
 const workSans = Work_Sans({
   subsets: ['latin'],
 });
-
-export const metadata: Metadata = {
-  title: 'Umurava skills challenge',
-  description: 'Build Work Experience through Skills Challenges Program',
-};
 
 export default function RootLayout() {
   const { back } = useRouter();

@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
-import { CollapsedUmuravaLogo, MessageIcon } from '@/lib/images';
+import { CollapsedUmuravaLogo, MessageIcon, SkillsLogo2 } from '@/lib/images';
 import { dashboardRoutes, homepageRoutes } from '@/lib/routes';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -113,7 +113,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel className="my-5">
               <Link href={homepageRoutes.home.path}>
-                <Image src={CollapsedUmuravaLogo} alt="Umurava logo" />
+                <Image src={SkillsLogo2} alt="Umurava logo" width={130} />
               </Link>
             </SidebarGroupLabel>
             <SidebarGroupContent>
