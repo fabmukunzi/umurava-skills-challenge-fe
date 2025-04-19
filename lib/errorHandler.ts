@@ -10,7 +10,7 @@ export const handleError = (error: unknown) => {
   if (isCustomError(error)) {    const message = error.data.message || 'An unknown error occurred';
 
     toast({
-      title: 'Something went wrong', 
+      title: 'Something went wrong',
       description: message,
       variant: 'destructive',
     });
