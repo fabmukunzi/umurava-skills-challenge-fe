@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback } from 'react';
-import { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel';
-import {
-  DotButton,
-  useDotButton,
-} from '@/components/common/carousel/CarouselDotButton';
-import Autoplay from 'embla-carousel-autoplay';
+// import { useCallback } from 'react';
+import { EmblaOptionsType } from 'embla-carousel';
+// import {  EmblaCarouselType } from 'embla-carousel';
+// import {
+//   DotButton,
+//   useDotButton,
+// } from '@/components/common/carousel/CarouselDotButton';
+// import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 
 type PropType = {
@@ -16,24 +17,25 @@ type PropType = {
 
 const Carousel: React.FC<PropType> = (props) => {
   const { slides, options } = props;
-  const [emblaRef, emblaApi] = useEmblaCarousel(options, [Autoplay()]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(options);
+  console.log(emblaApi)
 
-  const onNavButtonClick = useCallback((emblaApi: EmblaCarouselType) => {
-    const autoplay = emblaApi?.plugins()?.autoplay;
-    if (!autoplay) return;
+  // const onNavButtonClick = useCallback((emblaApi: EmblaCarouselType) => {
+  //   const autoplay = emblaApi?.plugins()?.autoplay;
+  //   if (!autoplay) return;
 
-    const resetOrStop =
-      autoplay.options.stopOnInteraction === false
-        ? autoplay.reset
-        : autoplay.stop;
+  //   const resetOrStop =
+  //     autoplay.options.stopOnInteraction === false
+  //       ? autoplay.reset
+  //       : autoplay.stop;
 
-    resetOrStop();
-  }, []);
+  //   resetOrStop();
+  // }, []);
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(
-    emblaApi,
-    onNavButtonClick
-  );
+  // const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(
+  //   emblaApi,
+  //   onNavButtonClick
+  // );
 
   return (
     <section className="embla">
@@ -47,7 +49,7 @@ const Carousel: React.FC<PropType> = (props) => {
         </div>
       </div>
 
-      <div className="embla__controls">
+      {/* <div className="embla__controls">
         <div className="embla__dots">
           {scrollSnaps.map((_, index) => (
             <DotButton
@@ -59,7 +61,7 @@ const Carousel: React.FC<PropType> = (props) => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };
