@@ -159,7 +159,7 @@ const challengeEndpoints = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ['challenge'],
     }),
-    giveChallengeStatistics: builder.query<{ data: IStatistics }, void>({
+    giveChallengeStatistics: builder.query<{ data: IStatistics }, unknown>({
       query: () => ({
         url: `admin/challenge/statistics`,
         method: 'GET',

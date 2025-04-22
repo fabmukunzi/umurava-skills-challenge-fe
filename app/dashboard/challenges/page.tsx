@@ -6,7 +6,10 @@ import SVGIcon from '@/components/common/svg';
 import PaperIcon from '@/components/common/svg/paper-icon';
 import { Button } from '@/components/ui/button';
 import { dashboardRoutes } from '@/lib/routes';
-import { useGetChallengesQuery, useGetParticipantChallengesQuery } from '@/store/actions/challenge';
+import {
+  useGetChallengesQuery,
+  useGetParticipantChallengesQuery,
+} from '@/store/actions/challenge';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -19,7 +22,9 @@ const ITEMS_PER_PAGE = 6;
 const ChallengesPage = () => {
   const session = useSession();
   const user = session.data?.user;
-  const isAdmin = ['admin', 'super admin'].includes(user?.role?.toLowerCase() || '');
+  const isAdmin = ['admin', 'super admin'].includes(
+    user?.role?.toLowerCase() || ''
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('');
   const [searchParam, setSearchParam] = useState('');
@@ -33,23 +38,36 @@ const ChallengesPage = () => {
     }
   }, [searchParams]);
 
-  const { data, isLoading, isFetching } = useGetChallengesQuery({
-    limit: ITEMS_PER_PAGE,
-    page: currentPage,
-    status,
-    search: searchParam
-  }, { skip: !isAdmin });
-  const { data: participantChallenges, isLoading: participantChallengesLoading, isFetching: particpantChallengeFetching } = useGetParticipantChallengesQuery(
+  const { data, isLoading, isFetching } = useGetChallengesQuery(
     {
       limit: ITEMS_PER_PAGE,
       page: currentPage,
       status,
-      search: searchParam
-    }, { skip: isAdmin });
+      search: searchParam,
+    },
+    { skip: !isAdmin }
+  );
+  const {
+    data: participantChallenges,
+    isLoading: participantChallengesLoading,
+    isFetching: particpantChallengeFetching,
+  } = useGetParticipantChallengesQuery(
+    {
+      limit: ITEMS_PER_PAGE,
+      page: currentPage,
+      status,
+      search: searchParam,
+    },
+    { skip: isAdmin }
+  );
 
-  const challengesData = isAdmin ? data?.data?.challenges : participantChallenges?.data?.challenges;
+  const challengesData = isAdmin
+    ? data?.data?.challenges
+    : participantChallenges?.data?.challenges;
 
-  const totalPages = isAdmin ? data?.data.pagination.totalPages || 0 : participantChallenges?.data.pagination.totalPages || 0;
+  const totalPages = isAdmin
+    ? data?.data.pagination.totalPages || 0
+    : participantChallenges?.data.pagination.totalPages || 0;
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -68,34 +86,49 @@ const ChallengesPage = () => {
     {
       label: 'All Challenges',
       value: '',
-      count: isAdmin ? data?.data.aggregates.totalChallenges : participantChallenges?.data.aggregates.totalChallenges,
+      count: isAdmin
+        ? data?.data.aggregates.totalChallenges
+        : participantChallenges?.data.aggregates.totalChallenges,
     },
     {
       label: 'Completed',
       value: 'completed',
-      count: isAdmin ? data?.data.aggregates.totalCompletedChallenges : participantChallenges?.data.aggregates.totalCompletedChallenges,
+      count: isAdmin
+        ? data?.data.aggregates.totalCompletedChallenges
+        : participantChallenges?.data.aggregates.totalCompletedChallenges,
     },
     {
       label: 'Open',
       value: 'open',
-      count: isAdmin ? data?.data.aggregates.totalOpenChallenges : participantChallenges?.data.aggregates.totalOpenChallenges,
+      count: isAdmin
+        ? data?.data.aggregates.totalOpenChallenges
+        : participantChallenges?.data.aggregates.totalOpenChallenges,
     },
     {
       label: 'Ongoing',
       value: 'ongoing',
-      count: isAdmin ? data?.data.aggregates.totalOngoingChallenges : participantChallenges?.data.aggregates.totalOngoingChallenges,
-    },
-    {
-      label: 'Draft',
-      value: 'draft',
-      count: isAdmin ? data?.data.aggregates.totalDraftChallenges : participantChallenges?.data.aggregates.totalDraftChallenges,
+      count: isAdmin
+        ? data?.data.aggregates.totalOngoingChallenges
+        : participantChallenges?.data.aggregates.totalOngoingChallenges,
     },
     {
       label: 'Closed',
       value: 'closed',
-      count: isAdmin ? data?.data.aggregates.totolClosedChallenges : participantChallenges?.data.aggregates.totolClosedChallenges,
+      count: isAdmin
+        ? data?.data.aggregates.totolClosedChallenges
+        : participantChallenges?.data.aggregates.totolClosedChallenges,
     },
   ];
+
+  if (isAdmin) {
+    statusOptions.push({
+      label: 'Draft',
+      value: 'draft',
+      count: isAdmin
+        ? data?.data.aggregates.totalDraftChallenges
+        : participantChallenges?.data.aggregates.totalDraftChallenges,
+    });
+  }
 
   return (
     <div className="md:px-4">
@@ -114,7 +147,7 @@ const ChallengesPage = () => {
             className={clsx(
               'flex items-center justify-between gap-2 bg-secondary_bg w-full text-sm font-normal border-[#98A2B3] text-black px-4 py-3',
               status === value &&
-              'bg-blue-200 hover:bg-blue-200 border-primary text-black'
+                'bg-blue-200 hover:bg-blue-200 border-primary text-black'
             )}
           >
             <div className="flex items-center gap-2">
@@ -130,7 +163,7 @@ const ChallengesPage = () => {
                 status === value && 'bg-primary text-white'
               )}
             >
-              {count}
+              {count || 0}
             </span>
           </Button>
         ))}
@@ -144,7 +177,10 @@ const ChallengesPage = () => {
           </Link>
         )}
       </div>
-      {((isLoading || isFetching)) || (!isAdmin && (participantChallengesLoading || particpantChallengeFetching)) ? (
+      {isLoading ||
+      isFetching ||
+      (!isAdmin &&
+        (participantChallengesLoading || particpantChallengeFetching)) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(6)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
@@ -170,7 +206,12 @@ const ChallengesPage = () => {
 
       <div className="flex justify-between md:mx-20 my-10 pb-10">
         <Button
-          disabled={(isAdmin ? (isLoading || isFetching) : (participantChallengesLoading || particpantChallengeFetching)) || currentPage === 1}
+          disabled={
+            (isAdmin
+              ? isLoading || isFetching
+              : participantChallengesLoading || particpantChallengeFetching) ||
+            currentPage === 1
+          }
           variant="outline"
           className="w-24"
           onClick={handlePrev}
@@ -178,7 +219,12 @@ const ChallengesPage = () => {
           Previous
         </Button>
         <Button
-          disabled={(isAdmin ? (isLoading || isFetching) : (participantChallengesLoading || particpantChallengeFetching)) || currentPage === totalPages}
+          disabled={
+            (isAdmin
+              ? isLoading || isFetching
+              : participantChallengesLoading || particpantChallengeFetching) ||
+            currentPage === totalPages
+          }
           className="w-24"
           onClick={handleNext}
         >
