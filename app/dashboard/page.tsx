@@ -78,7 +78,7 @@ const DashboardPage = () => {
     },
     {
       title: 'Closed',
-      value: participantChallenges?.data.aggregates.totolClosedChallenges || 0,
+      value: participantChallenges?.data.aggregates.totalClosedChallenges || 0,
     },
   ];
 

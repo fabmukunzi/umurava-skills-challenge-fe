@@ -115,8 +115,8 @@ const ChallengesPage = () => {
       label: 'Closed',
       value: 'closed',
       count: isAdmin
-        ? data?.data.aggregates.totolClosedChallenges
-        : participantChallenges?.data.aggregates.totolClosedChallenges,
+        ? data?.data.aggregates.totalClosedChallenges
+        : participantChallenges?.data.aggregates.totalClosedChallenges,
     },
   ];
 
