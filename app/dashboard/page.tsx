@@ -147,7 +147,7 @@ const DashboardPage = () => {
         </div>
       </div>
       {!isAdmin ? (
-        <div className="flex md:gap-10 gap-3 flex-wrap justify-center mx-auto my-10">
+        <div className="flex md:gap-6 gap-3 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard
               title={stat.title}
