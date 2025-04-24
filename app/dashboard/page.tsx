@@ -90,7 +90,7 @@ const DashboardPage = () => {
       percentage: statisticsData?.data?.totalChallengesThisWeekChange || 0,
       direction: String(
         statisticsData?.data?.totalChallengesThisWeekChangeDirection ||
-          'negative'
+        'negative'
       ),
     },
     {
@@ -100,7 +100,7 @@ const DashboardPage = () => {
       percentage: statisticsData?.data?.totalParticipantsThisWeekChange || 0,
       direction: String(
         statisticsData?.data?.totalParticipantsThisWeekChangeDirection ||
-          'negative'
+        'negative'
       ),
     },
     {
@@ -110,7 +110,7 @@ const DashboardPage = () => {
       percentage: statisticsData?.data?.totalCompletedChallengesChange || 0,
       direction: String(
         statisticsData?.data?.totalCompletedChallengesChangeDirection ||
-          'negative'
+        'negative'
       ),
     },
     {
@@ -129,7 +129,7 @@ const DashboardPage = () => {
       percentage: statisticsData?.data?.totalOngoingChallengesChange || 0,
       direction: String(
         statisticsData?.data?.totalOngoingChallengesChangeDirection ||
-          'negative'
+        'negative'
       ),
     },
   ];
@@ -160,28 +160,27 @@ const DashboardPage = () => {
         <div className="grid md:grid-cols-6 gap-6 my-10 !z-0">
           {statisticsLoading || statisticsFetching
             ? Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`${
-                    i < 2 ? 'md:col-span-3' : 'md:col-span-2'
+              <div
+                key={i}
+                className={`${i < 2 ? 'md:col-span-3' : 'md:col-span-2'
                   } h-32 rounded-xl bg-primary/30 animate-pulse`}
-                />
-              ))
+              />
+            ))
             : adminStatData.map((card, index) => (
-                <div
-                  key={index}
-                  className={index < 2 ? 'md:col-span-3' : 'md:col-span-2'}
-                >
-                  <AdminStatCard {...card} />
-                </div>
-              ))}
+              <div
+                key={index}
+                className={index < 2 ? 'md:col-span-3' : 'md:col-span-2'}
+              >
+                <AdminStatCard {...card} />
+              </div>
+            ))}
         </div>
       )}
 
       {isLoading ||
-      isFetching ||
-      (!isAdmin &&
-        (participantChallengesLoading || particpantChallengeFetching)) ? (
+        isFetching ||
+        (!isAdmin &&
+          (participantChallengesLoading || particpantChallengeFetching)) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(3)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
