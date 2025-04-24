@@ -158,11 +158,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <header className={`bg-white flex items-center justify-between  px-6 py-4 shadow-sm `}>
               <SidebarTrigger className="lg:hidden" />
               {currentPathLength < 4 && (<div className="flex relative items-center w-1/2 md:w-full max-w-md">
-                <Search className="text-gray-400 absolute w-5 h-5 left-3" />
+                <Search className="text-gray-400 absolute w-5 h-5 left-3 z-10" />
                 <Input
                   type="text"
                   placeholder="Search here... "
-                  className="pl-10 text-black bg-secondary_bg"
+                  className="pl-10 text-black bg-secondary_bg relative z-0"
                   onChange={handleSearch}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
