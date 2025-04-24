@@ -37,7 +37,7 @@ const HeaderComponent = () => {
         <div className="mx-auto flex items-center justify-between md:px-6 lg:px-14 2xl:px-20 py-4">
           <div className="flex items-center">
             <a href="/">
-              <Image src={SkillsLogo} alt="Umurava Logo" width={150} />
+              <Image src={SkillsLogo} alt="Umurava Logo" width={200} />
             </a>
           </div>
 

@@ -113,7 +113,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel className="my-5">
               <Link href={homepageRoutes.home.path}>
-                <Image src={SkillsLogo2} alt="Umurava logo" width={130} />
+                <Image src={SkillsLogo2} alt="Umurava logo" width={150} />
               </Link>
             </SidebarGroupLabel>
             <SidebarGroupContent>
