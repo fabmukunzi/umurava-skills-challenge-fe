@@ -121,7 +121,7 @@ const ReferPage = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => shareOnPlatform('whatsapp')}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 text-green-500 hover:text-green-500/80"
                             >
                                 <FaWhatsapp className="h-4 w-4" />
                                 Whatsapp
@@ -129,7 +129,7 @@ const ReferPage = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => shareOnPlatform('linkedin')}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 text-[#0b65c2] hover:text-[#0b65c2]/80"
                             >
                                 <FiLinkedin className="h-4 w-4" />
                                 LinkedIn
@@ -137,7 +137,7 @@ const ReferPage = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => shareOnPlatform('email')}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 text-[#cc3a2f] hover:text-[#cc3a2f]/80"
                             >
                                 <Mail className="h-4 w-4" />
                                 Email
