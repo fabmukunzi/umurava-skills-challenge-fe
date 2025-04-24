@@ -15,8 +15,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { NotificationResponse } from './notifications/page';
-import dayjs from 'dayjs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { getTimeAgo } from '@/lib/utils';
 
 const workSans = Work_Sans({
   subsets: ['latin'],
@@ -74,7 +74,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <DropdownMenuTrigger className='rounded-full flex items-center justify-center border p-1 object-contain h-10 w-10'>
         <NotificationIcon />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-52'>
+      <DropdownMenuContent className='w-64'>
         <DropdownMenuLabel>Unread {notificationsCount > 0 && `(${notificationsCount})`}</DropdownMenuLabel>
         <>
           {isLoading && (
@@ -86,9 +86,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <DropdownMenuItem>No unread notifications</DropdownMenuItem>
           )}
           {notifications.map((notif: INotification) => (
-            <DropdownMenuItem key={notif._id} className='flex flex-col items-start gap-2'>
+            <DropdownMenuItem key={notif._id} className='flex flex-col items-start gap-0.5'>
               <p className="text-sm">{notif.title}</p>
-              <span className="text-xs text-gray-500">{dayjs(notif.timestamp).format('YYYY-MM-DD HH:ss A')}</span>
+              <span className="text-xs text-gray-500">{getTimeAgo(notif.timestamp)}</span>
             </DropdownMenuItem>
           ))}
         </>
