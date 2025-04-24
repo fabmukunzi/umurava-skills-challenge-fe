@@ -147,17 +147,18 @@ const DashboardPage = () => {
         </div>
       </div>
       {!isAdmin ? (
-        <div className="flex md:gap-6 gap-3 flex-wrap justify-center mx-auto my-10">
+        <div className="flex md:gap-4 gap-2 flex-wrap justify-center mx-auto my-10">
           {statistics.map((stat, index) => (
             <TalentStasticsCard
               title={stat.title}
               value={stat?.value?.toString() || '0'}
               key={index}
+              isFirst={index === 0}
             />
           ))}
         </div>
       ) : (
-        <div className="grid md:grid-cols-6 gap-6 my-10 !z-0">
+        <div className="grid md:grid-cols-6 md:gap-4 gap-2 my-10 !z-0">
           {statisticsLoading || statisticsFetching
             ? Array.from({ length: 5 }).map((_, i) => (
               <div

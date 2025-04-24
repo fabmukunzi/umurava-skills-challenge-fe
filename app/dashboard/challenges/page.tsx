@@ -138,7 +138,7 @@ const ChallengesPage = () => {
           Join a challenge or a hackathon to gain valuable work experience,
         </p>
       </div>
-      <div className="my-10 grid md:grid-cols-2 lg:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div className="my-10 grid md:grid-cols-2 lg:grid-cols-5 2xl:grid-cols-6 md:gap-4 gap-2">
         {statusOptions.map(({ label, value, count }) => (
           <Button
             key={value}
@@ -147,7 +147,7 @@ const ChallengesPage = () => {
             className={clsx(
               'flex items-center justify-between gap-2 bg-secondary_bg w-full text-sm font-normal border-[#98A2B3] text-black px-4 py-3',
               status === value &&
-                'bg-blue-200 hover:bg-blue-200 border-primary text-black'
+              'bg-blue-200 hover:bg-blue-200 border-primary text-black'
             )}
           >
             <div className="flex items-center gap-2">
@@ -178,9 +178,9 @@ const ChallengesPage = () => {
         )}
       </div>
       {isLoading ||
-      isFetching ||
-      (!isAdmin &&
-        (participantChallengesLoading || particpantChallengeFetching)) ? (
+        isFetching ||
+        (!isAdmin &&
+          (participantChallengesLoading || particpantChallengeFetching)) ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-11/12 mx-auto pb-20">
           {[...Array(6)].map((_, index) => (
             <SkeletonCard className="w-full" key={index} />
