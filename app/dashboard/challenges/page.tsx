@@ -69,7 +69,7 @@ const ChallengesPage = () => {
     ? data?.data.pagination.totalPages || 0
     : participantChallenges?.data.pagination.totalPages || 0;
 
-  const handleNext = () => {
+  const handleNext = () => { 
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
 
